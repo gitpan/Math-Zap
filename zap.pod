@@ -1,0 +1,14 @@
+#______________________________________________________________________
+# User guide.
+#______________________________________________________________________
+
+=head1 NAME
+
+Math::zap - Zap objects in 3d space
+
+=head1 AUTHOR
+
+Philip R Brenan at B<philiprbrenan@yahoo.com>
+
+=cut
+

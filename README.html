@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Math::zap</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#math::zap">Math::zap</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="math::zap">Math::zap</a></h1>
+<p>Zap objects in 3d space</p>
+<p>Copyright Philip R Brenan, 2004</p>
+<p>This package supplies functions and operators to draw and zap object in 3d space:</p>
+<p>#!perl -w
+#______________________________________________________________________
+# Zap
+# Perl License.
+# <a href="mailto:PhilipRBrenan@yahoo.com,">PhilipRBrenan@yahoo.com,</a> 2004.
+#______________________________________________________________________</p>
+<p>use draw;
+use color;
+use cube;
+use triangle;
+use vector;</p>
+<p>#_ Draw _______________________________________________________________
+# Draw this set of objects.
+#______________________________________________________________________</p>
+<p>draw 
+  -&gt;from    (vector( 10,   10,  10))
+  -&gt;to      (vector(  0,    0,   0))
+  -&gt;horizon (vector(  1,  0.5,   0))
+  -&gt;light   (vector( 20,   30, -20))</p>
+<pre>
+    -&gt;object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0,  8,  0)),                         'red')
+    -&gt;object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0,  8,  0)),                         'green')
+    -&gt;object(triangle(vector( 0,  0,  0), vector(12,  0,  0), vector( 0,  0, 12)) - vector(2.5,  0,  2.5), 'blue')
+    -&gt;object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0, -8,  0)),                         'pink')
+    -&gt;object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0, -8,  0)),                         'orange')
+-&gt;done;</pre>
+<p>This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.</p>
+<p>This is alpha code. It is written in pure Perl. It uses the standard
+Perl install mechanism.</p>
+<p>Download Math-zap-1.01.tar.gz from CPAN, untar and:</p>
+<pre>
+  perl Makefile.PL
+  make
+  make test
+  make install</pre>
+<p>If you are on Windows, use nmake, available at:</p>
+<p><a href="http://download.microsoft.com/download/vc15/Patch/1.52/W95/EN-US/Nmake15.exe">http://download.microsoft.com/download/vc15/Patch/1.52/W95/EN-US/Nmake15.exe</a></p>
+<p>Zapping is used in Nuclear Fusion Experiments to determine the power
+incident on an object placed in the path of a high energy particle beam.</p>
+<p>Help with this project would be appreciated.</p>
+<p>For bug reports or suggestions please send email to:
+<a href="mailto:philiprbrenan@yahoo.com">philiprbrenan@yahoo.com</a></p>
+
+</body>
+
+</html>
