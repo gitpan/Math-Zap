@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Vector2</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#vector2">Vector2</a></li>
+	<ul>
+
+		<li><a href="#synopsis">Synopsis</a></li>
+		<li><a href="#description">Description</a></li>
+		<li><a href="#constructors">Constructors</a></li>
+		<ul>
+
+			<li><a href="#new">new</a></li>
+			<li><a href="#vector2">vector2</a></li>
+			<li><a href="#units">units</a></li>
+		</ul>
+
+		<li><a href="#methods">Methods</a></li>
+		<ul>
+
+			<li><a href="#check">check</a></li>
+			<li><a href="#is">is</a></li>
+			<li><a href="#accuracy">accuracy</a></li>
+			<li><a href="#round">round</a></li>
+			<li><a href="#components">components</a></li>
+			<li><a href="#clone">clone</a></li>
+			<li><a href="#length">length</a></li>
+			<li><a href="#print">print</a></li>
+			<li><a href="#normalize">normalize</a></li>
+			<li><a href="#rightangle">rightAngle</a></li>
+			<li><a href="#dot">dot</a></li>
+			<li><a href="#angle">angle</a></li>
+			<li><a href="#add">add</a></li>
+			<li><a href="#subtract">subtract</a></li>
+			<li><a href="#multiply">multiply</a></li>
+			<li><a href="#divide">divide</a></li>
+			<li><a href="#equals">equals</a></li>
+		</ul>
+
+		<li><a href="#operators">Operators</a></li>
+		<ul>
+
+			<li><a href="#add">add</a></li>
+			<li><a href="#subtract">subtract</a></li>
+			<li><a href="#multiply">multiply</a></li>
+			<li><a href="#divide">divide</a></li>
+			<li><a href="#angle">angle</a></li>
+			<li><a href="#equals">equals</a></li>
+			<li><a href="#print">print</a></li>
+		</ul>
+
+		<li><a href="#exports">Exports</a></li>
+		<li><a href="#credits">Credits</a></li>
+		<ul>
+
+			<li><a href="#author">Author</a></li>
+			<li><a href="#copyright">Copyright</a></li>
+			<li><a href="#license">License</a></li>
+		</ul>
+
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="vector2">Vector2</a></h1>
+<p>Manipulate 2D vectors    
+</p>
+<pre>
+
+PhilipRBrenan@yahoo.com, 2004, Perl License</pre>
+<p>
+</p>
+<h2><a name="synopsis">Synopsis</a></h2>
+<p>Example t/vector2.t</p>
+<pre>
+ #_ Vector _____________________________________________________________
+ # Test 2d vectors    
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Vector2 vector2=&gt;v, units=&gt;u;
+ use Test::Simple tests=&gt;7;
+ 
+ my ($x, $y) = u();
+ 
+ ok(!$x                    == 1);
+ ok(2*$x+3*$y              == v( 2,  3));
+ ok(-$x-$y                 == v(-1, -1));
+ ok((2*$x+3*$y) + (-$x-$y) == v( 1,  2));
+ ok((2*$x+3*$y) * (-$x-$y) == -5);  
+ ok($x*2                   == v( 2,  0));
+ ok($y/2                   == v( 0,  0.5));</pre>
+<p>
+</p>
+<h2><a name="description">Description</a></h2>
+<p>Manipulate 2D vectors</p>
+<pre>
+ 
+ package Math::Zap::Vector2; 
+ $VERSION=1.03;
+ use Math::Trig;
+ use Carp;
+ use constant debug =&gt; 0; # Debugging level</pre>
+<p>
+</p>
+<h2><a name="constructors">Constructors</a></h2>
+<p>
+</p>
+<h3><a name="new">new</a></h3>
+<p>Create a vector from numbers</p>
+<pre>
+ 
+ sub new($$)
+  {return bless {x=&gt;$_[0], y=&gt;$_[1]} unless debug;
+   my ($x, $y) = @_; 
+   round(bless({x=&gt;$x, y=&gt;$y})); 
+  }</pre>
+<p>
+</p>
+<h3><a name="vector2">vector2</a></h3>
+<p>Create a vector from numbers - synonym for <a href="#new">new</a></p>
+<pre>
+ 
+ sub vector2($$) {new($_[0],$_[1])}</pre>
+<p>
+</p>
+<h3><a name="units">units</a></h3>
+<p>Unit vectors</p>
+<pre>
+ 
+ $x = new(1,0);
+ $y = new(0,1);
+ 
+ sub units() {($x, $y)}</pre>
+<p>
+</p>
+<h2><a name="methods">Methods</a></h2>
+<p>
+</p>
+<h3><a name="check">check</a></h3>
+<p>Check its a vector</p>
+<pre>
+ 
+ sub check(@)
+  {if (debug)
+    {for my $v(@_)
+      {confess &quot;$v is not a vector2&quot; unless ref($v) eq __PACKAGE__;
+      }
+    }
+   return (@_)
+  }</pre>
+<p>
+</p>
+<h3><a name="is">is</a></h3>
+<p>Test its a vector</p>
+<pre>
+ 
+ sub is(@)
+  {for my $v(@_)
+    {return 0 unless ref($v) eq __PACKAGE__;
+    }
+   1;
+  }</pre>
+<p>
+</p>
+<h3><a name="accuracy">accuracy</a></h3>
+<p>Get/Set accuracy for comparisons</p>
+<pre>
+ 
+ my $accuracy = 1e-10;
+ 
+ sub accuracy
+  {return $accuracy unless scalar(@_);
+   $accuracy = shift();
+  }</pre>
+<p>
+</p>
+<h3><a name="round">round</a></h3>
+<p>Round: round to nearest integer if within accuracy of that integer</p>
+<pre>
+ 
+ sub round($)
+  {unless (debug)
+    {return $_[0];
+    }
+   else
+    {my ($a) = @_;
+     for my $k(keys(%$a))
+      {my $n = $a-&gt;{$k};
+       my $N = int($n);
+       $a-&gt;{$k} = $N if abs($n-$N) &lt; $accuracy;
+      }
+     return $a;
+    }
+  }</pre>
+<p>
+</p>
+<h3><a name="components">components</a></h3>
+<p>x,y components of vector</p>
+<pre>
+ 
+ sub x($) {check(@_) if debug; $_[0]-&gt;{x}}
+ sub y($) {check(@_) if debug; $_[0]-&gt;{y}}</pre>
+<p>
+</p>
+<h3><a name="clone">clone</a></h3>
+<p>Create a vector from another vector</p>
+<pre>
+ 
+ sub clone($)
+  {my ($v) = check(@_); # Vectors
+   round bless {x=&gt;$v-&gt;x, y=&gt;$v-&gt;y}; 
+  }</pre>
+<p>
+</p>
+<h3><a name="length">length</a></h3>
+<p>Length of a vector</p>
+<pre>
+ 
+ sub length($)
+  {check(@_[0..0]) if debug; # Vectors
+   sqrt($_[0]-&gt;{x}**2+$_[0]-&gt;{y}**2);
+  }</pre>
+<p>
+</p>
+<h3><a name="print">print</a></h3>
+<p>Print vector</p>
+<pre>
+ 
+ sub print($)
+  {my ($v) = check(@_); # Vectors
+   my ($x, $y) = ($v-&gt;x, $v-&gt;y);
+ 
+   &quot;vector2($x, $y)&quot;;
+  }</pre>
+<p>
+</p>
+<h3><a name="normalize">normalize</a></h3>
+<p>Normalize vector</p>
+<pre>
+ 
+ sub norm($)
+  {my ($v) = check(@_); # Vectors
+   my $l = $v-&gt;length;
+ 
+   $l &gt; 0 or confess &quot;Cannot normalize zero length vector $v&quot;;
+ 
+   new($v-&gt;x / $l, $v-&gt;y / $l);
+  }</pre>
+<p>
+</p>
+<h3><a name="rightangle">rightAngle</a></h3>
+<p>At right angles</p>
+<pre>
+ 
+ sub rightAngle($)
+  {my ($v) = check(@_); # Vectors
+   new(-$v-&gt;y, $v-&gt;x);
+  }</pre>
+<p>
+</p>
+<h3><a name="dot">dot</a></h3>
+<p>Dot product</p>
+<pre>
+ 
+ sub dot($$)
+  {my ($a, $b) = check(@_); # Vectors
+   $a-&gt;x*$b-&gt;x+$a-&gt;y*$b-&gt;y;
+  }</pre>
+<p>
+</p>
+<h3><a name="angle">angle</a></h3>
+<p>Angle between two vectors</p>
+<pre>
+ 
+ sub angle($$)
+  {my ($a, $b) = check(@_); # Vectors
+   acos($a-&gt;norm-&gt;dot($b-&gt;norm));
+  }</pre>
+<p>
+</p>
+<h3><a name="add">add</a></h3>
+<p>Add vectors</p>
+<pre>
+ 
+ sub add($$)
+  {my ($a, $b) = check(@_); # Vectors
+   new($a-&gt;x+$b-&gt;x, $a-&gt;y+$b-&gt;y);
+  }</pre>
+<p>
+</p>
+<h3><a name="subtract">subtract</a></h3>
+<p>Subtract vectors</p>
+<pre>
+ 
+ sub subtract($$)
+  {check(@_) if debug; # Vectors
+   new($_[0]-&gt;{x}-$_[1]-&gt;{x}, $_[0]-&gt;{y}-$_[1]-&gt;{y});
+  }</pre>
+<p>
+</p>
+<h3><a name="multiply">multiply</a></h3>
+<p>Vector times a scalar</p>
+<pre>
+ 
+ sub multiply($$)
+  {my ($a) = check(@_[0..0]); # Vector 
+   my ($b) =       @_[1..1];  # Scalar
+   
+   confess &quot;$b is not a scalar&quot; if ref($b);
+   new($a-&gt;x*$b, $a-&gt;y*$b);
+  }</pre>
+<p>
+</p>
+<h3><a name="divide">divide</a></h3>
+<p>Vector divided by a non zero scalar</p>
+<pre>
+ 
+ sub divide($$)
+  {my ($a) = check(@_[0..0]); # Vector 
+   my ($b) =       @_[1..1];  # Scalar
+ 
+   confess &quot;$b is not a scalar&quot; if ref($b);
+   confess &quot;$b is zero&quot;         if $b == 0;
+   new($a-&gt;x/$b, $a-&gt;y/$b);
+  }</pre>
+<p>
+</p>
+<h3><a name="equals">equals</a></h3>
+<p>Equals to within accuracy</p>
+<pre>
+ 
+ sub equals($$)
+  {my ($a, $b) = check(@_); # Vectors
+   abs($a-&gt;x-$b-&gt;x) &lt; $accuracy and
+   abs($a-&gt;y-$b-&gt;y) &lt; $accuracy;
+  }</pre>
+<p>
+</p>
+<h2><a name="operators">Operators</a></h2>
+<p># Operator overloads</p>
+<pre>
+ 
+ use overload
+  '+'        =&gt; \&amp;add3,      # Add two vectors
+  '-'        =&gt; \&amp;subtract3, # Subtract one vector from another
+  '*'        =&gt; \&amp;multiply3, # Times by a scalar, or vector dot product 
+  '/'        =&gt; \&amp;divide3,   # Divide by a scalar
+  '&lt;'        =&gt; \&amp;angle3,    # Angle in radians between two vectors
+  '&gt;'        =&gt; \&amp;angle3,    # Angle in radians between two vectors
+  '=='       =&gt; \&amp;equals3,   # Equals
+  '&quot;&quot;'       =&gt; \&amp;print3,    # Print
+  '!'        =&gt; \&amp;length,    # Length
+  'fallback' =&gt; FALSE;</pre>
+<p>
+</p>
+<h3><a name="add">add</a></h3>
+<p>Add operator.</p>
+<pre>
+ 
+ sub add3
+  {my ($a, $b) = @_;
+   $a-&gt;add($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="subtract">subtract</a></h3>
+<p>Subtract operator.</p>
+<pre>
+ 
+ sub subtract3
+  {#my ($a, $b, $c) = @_;
+   #return $a-&gt;subtract($b) if ref($b);
+   return new($_[0]-&gt;{x}-$_[1]-&gt;{x}, $_[0]-&gt;{y}-$_[1]-&gt;{y}) if ref($_[1]);
+   new(-$_[0]-&gt;{x}, -$_[0]-&gt;{y});
+  }</pre>
+<p>
+</p>
+<h3><a name="multiply">multiply</a></h3>
+<p>Multiply operator.</p>
+<pre>
+ 
+ sub multiply3
+  {my ($a, $b) = @_;
+   return $a-&gt;dot     ($b) if ref($b);
+   return $a-&gt;multiply($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="divide">divide</a></h3>
+<p>Divide operator.</p>
+<pre>
+ 
+ sub divide3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;divide($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="angle">angle</a></h3>
+<p>Angle between two vectors.</p>
+<pre>
+ 
+ sub angle3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;angle($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="equals">equals</a></h3>
+<p>Equals operator.</p>
+<pre>
+ 
+ sub equals3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;equals($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="print">print</a></h3>
+<p>Print a vector.</p>
+<pre>
+ 
+ sub print3
+  {my ($a) = @_;
+   return $a-&gt;print;
+  }</pre>
+<p>
+</p>
+<h2><a name="exports">Exports</a></h2>
+<p>Export <a href="#vector2">vector2</a>, <a href="#units">units</a>, <a href="#check">check</a>, <a href="#is">is</a></p>
+<pre>
+ 
+ use Math::Zap::Exports qw(                               
+   vector2 ($$)  
+   units   ()
+   check   (@)
+   is      (@)
+  );
+ 
+ #_ Vector2 ____________________________________________________________
+ # Package loaded successfully
+ #______________________________________________________________________
+ 
+ 1;</pre>
+<p>
+</p>
+<h2><a name="credits">Credits</a></h2>
+<p>
+</p>
+<h3><a name="author">Author</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com">philiprbrenan@yahoo.com</a></p>
+<p>
+</p>
+<h3><a name="copyright">Copyright</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com,">philiprbrenan@yahoo.com,</a> 2004</p>
+<p>
+</p>
+<h3><a name="license">License</a></h3>
+<p>Perl License.
+
+</p>
+
+</body>
+
+</html>

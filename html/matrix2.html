@@ -1,0 +1,591 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Matrix2</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#matrix2">Matrix2</a></li>
+	<ul>
+
+		<li><a href="#synopsis">Synopsis</a></li>
+		<li><a href="#description">Description</a></li>
+		<li><a href="#constructors">Constructors</a></li>
+		<ul>
+
+			<li><a href="#new">new</a></li>
+			<li><a href="#matrix2">matrix2</a></li>
+			<li><a href="#identity">identity</a></li>
+			<li><a href="#new2v">new2v</a></li>
+		</ul>
+
+		<li><a href="#methods">Methods</a></li>
+		<ul>
+
+			<li><a href="#check">check</a></li>
+			<li><a href="#is">is</a></li>
+			<li><a href="#accuracy">accuracy</a></li>
+			<li><a href="#round">round</a></li>
+			<li><a href="#singular">singular</a></li>
+			<li><a href="#clone">clone</a></li>
+			<li><a href="#print">print</a></li>
+			<li><a href="#add">add</a></li>
+			<li><a href="#negate">negate</a></li>
+			<li><a href="#subtract">subtract</a></li>
+			<li><a href="#matrixvectormultiply">matrixVectorMultiply</a></li>
+			<li><a href="#matrixscalarmultiply">matrixScalarMultiply</a></li>
+			<li><a href="#matrixmatrixmultiply">matrixMatrixMultiply</a></li>
+			<li><a href="#matrixscalardivide">matrixScalarDivide</a></li>
+			<li><a href="#det">det</a></li>
+			<li><a href="#inverse">inverse</a></li>
+			<li><a href="#rotate">rotate</a></li>
+			<li><a href="#equals">equals</a></li>
+		</ul>
+
+		<li><a href="#operators">Operators</a></li>
+		<ul>
+
+			<li><a href="#add_operator">add operator</a></li>
+			<li><a href="#subtract_operator">subtract operator</a></li>
+			<li><a href="#multiply_operator">multiply operator</a></li>
+			<li><a href="#divide_operator">divide operator</a></li>
+			<li><a href="#equals_operator">equals operator</a></li>
+			<li><a href="#determinant_operator">determinant operator</a></li>
+			<li><a href="#print_operator">print operator</a></li>
+		</ul>
+
+		<li><a href="#exports">Exports</a></li>
+		<li><a href="#credits">Credits</a></li>
+		<ul>
+
+			<li><a href="#author">Author</a></li>
+			<li><a href="#copyright">Copyright</a></li>
+			<li><a href="#license">License</a></li>
+		</ul>
+
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="matrix2">Matrix2</a></h1>
+<p>2*2 matrix manipulation</p>
+<p><a href="mailto:PhilipRBrenan@yahoo.com,">PhilipRBrenan@yahoo.com,</a> 2004, Perl License</p>
+<p>
+</p>
+<h2><a name="synopsis">Synopsis</a></h2>
+<p>Example t/matrix2.t</p>
+<pre>
+ #_ Matrix _____________________________________________________________
+ # Test 2*2 matrices    
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Matrix2 identity=&gt;i;
+ use Math::Zap::Vector2;
+ use Test::Simple tests=&gt;8;
+ 
+ my ($a, $b, $c, $v);
+ 
+ $a = matrix2
+  (8, 0,
+   0, 8,
+  );
+ 
+ $b = matrix2
+  (4, 2,
+   2, 4,
+  );
+ 
+ $c = matrix2
+  (2, 2,
+   1, 2,
+  );
+ 
+ $v = vector2(1,2);
+ 
+ ok($a/$a           == i());
+ ok($b/$b           == i());
+ ok($c/$c           == i());
+ ok(2/$a*$a/2       == i());
+ ok(($a+$b)/($a+$b) == i());
+ ok(($a-$c)/($a-$c) == i());
+ ok(-$a/-$a         == i());
+ ok(1/$a*($a*$v)    == $v);</pre>
+<p>
+</p>
+<h2><a name="description">Description</a></h2>
+<p>2*2 matrix manipulation</p>
+<pre>
+ 
+ package Math::Zap::Matrix2;
+ $VERSION=1.03;
+ use Math::Zap::Vector2 check=&gt;'vector2Check', is=&gt;'vector2Is';
+ use Carp;
+ use constant debug =&gt; 0; # Debugging level</pre>
+<p>
+</p>
+<h2><a name="constructors">Constructors</a></h2>
+<p>
+</p>
+<h3><a name="new">new</a></h3>
+<p>Create a matrix</p>
+<pre>
+ 
+ sub new($$$$)
+  {my
+   ($a11, $a12,
+    $a21, $a22,
+   ) = @_;
+ 
+   my $m = round(bless(
+    {11=&gt;$a11, 12=&gt;$a12,
+     21=&gt;$a21, 22=&gt;$a22,
+    }));
+   singular($m, 1);
+   $m;
+  }</pre>
+<p>
+</p>
+<h3><a name="matrix2">matrix2</a></h3>
+<p>Create a matrix. Synonym for <a href="#new">new</a>.</p>
+<pre>
+ 
+ sub matrix2($$$$)
+  {new($_[0],$_[1],$_[2],$_[3]);
+  }</pre>
+<p>
+</p>
+<h3><a name="identity">identity</a></h3>
+<p>Identity matrix</p>
+<pre>
+ 
+ sub identity()
+  {bless
+    {11=&gt;1, 21=&gt;0,                              
+     12=&gt;0, 22=&gt;1,                              
+    }; 
+  }</pre>
+<p>
+</p>
+<h3><a name="new2v">new2v</a></h3>
+<p>Create a matrix from two vectors</p>
+<pre>
+ 
+ sub new2v($$)
+  {vector2Check(@_) if debug;
+   my ($a, $b, $c) =  @_;
+   my $m = round(bless(
+    {11=&gt;$a-&gt;{x}, 12=&gt;$b-&gt;{x},
+     21=&gt;$a-&gt;{y}, 22=&gt;$b-&gt;{y},
+    }));
+   singular($m, 1);
+   $m;
+  }</pre>
+<p>
+</p>
+<h2><a name="methods">Methods</a></h2>
+<p>
+</p>
+<h3><a name="check">check</a></h3>
+<p>Check its a matrix</p>
+<pre>
+ 
+ sub check(@)
+  {if (debug)
+    {for my $m(@_)
+      {confess &quot;$m is not a matrix2&quot; unless ref($m) eq __PACKAGE__;
+      } 
+    }
+   return (@_)
+  }</pre>
+<p>
+</p>
+<h3><a name="is">is</a></h3>
+<p>Test its a matrix</p>
+<pre>
+ 
+ sub is(@)
+  {for my $m(@_)
+    {return 0 unless ref($m) eq __PACKAGE__;
+    }
+   'matrix2';
+  }</pre>
+<p>
+</p>
+<h3><a name="accuracy">accuracy</a></h3>
+<p>Get/Set accuracy</p>
+<pre>
+ 
+ my $accuracy = 1e-10;
+ 
+ sub accuracy
+  {return $accuracy unless scalar(@_);
+   $accuracy = shift();
+  }</pre>
+<p>
+</p>
+<h3><a name="round">round</a></h3>
+<p>Round: round to nearest integer if within accuracy of that integer</p>
+<pre>
+ 
+ sub round($)
+  {unless (debug)
+    {return $_[0];
+    }
+   else
+    {my ($a) = @_;
+     for my $k(keys(%$a))
+      {my $n = $a-&gt;{$k};
+       my $N = int($n);
+       $a-&gt;{$k} = $N if abs($n-$N) &lt; $accuracy;
+      }
+     return $a;
+    }
+  }</pre>
+<p>
+</p>
+<h3><a name="singular">singular</a></h3>
+<p>Singular matrix?</p>
+<pre>
+ 
+ sub singular($$)
+  {my $m = shift;  # Matrix   
+   my $a = 1e-2;   # Accuracy
+   my $A = shift;  # Action 0: return indicator, 1: confess 
+   my $n = abs
+     ($m-&gt;{11} * $m-&gt;{22} -                                        
+      $m-&gt;{12} * $m-&gt;{21})
+     &lt; $a;
+   confess &quot;Singular matrix2&quot; if $n and $A;
+   $n;      
+  }</pre>
+<p>
+</p>
+<h3><a name="clone">clone</a></h3>
+<p>Create a matrix from another matrix</p>
+<pre>
+ 
+ sub clone($)
+  {my ($m) = check(@_); # Matrix
+   round bless
+    {11=&gt;$m-&gt;{11}, 12=&gt;$m-&gt;{12},
+     21=&gt;$m-&gt;{21}, 22=&gt;$m-&gt;{22},
+    }; 
+  }</pre>
+<p>
+</p>
+<h3><a name="print">print</a></h3>
+<p>Print matrix</p>
+<pre>
+ 
+ sub print($)
+  {my ($m) = check(@_); # Matrix 
+   'matrix2('.$m-&gt;{11}.', '.$m-&gt;{12}. 
+         ', '.$m-&gt;{21}.', '.$m-&gt;{22}.
+   ')';
+  }</pre>
+<p>
+</p>
+<h3><a name="add">add</a></h3>
+<p>Add matrices</p>
+<pre>
+ 
+ sub add($$)
+  {my ($a, $b) = check(@_); # Matrices
+   my $m = round bless
+    {11=&gt;$a-&gt;{11}+$b-&gt;{11}, 12=&gt;$a-&gt;{12}+$b-&gt;{12}, 
+     21=&gt;$a-&gt;{21}+$b-&gt;{21}, 22=&gt;$a-&gt;{22}+$b-&gt;{22}, 
+    }; 
+   singular($m, 1);
+   $m;
+  }</pre>
+<p>
+</p>
+<h3><a name="negate">negate</a></h3>
+<p>Negate matrix</p>
+<pre>
+ 
+ sub negate($)
+  {my ($a) = check(@_); # Matrices
+   my $m = round bless
+    {11=&gt;-$a-&gt;{11}, 12=&gt;-$a-&gt;{12},
+     21=&gt;-$a-&gt;{21}, 22=&gt;-$a-&gt;{22},
+    }; 
+   singular($m, 1);
+   $m;
+  }</pre>
+<p>
+</p>
+<h3><a name="subtract">subtract</a></h3>
+<p>Subtract matrices</p>
+<pre>
+ 
+ sub subtract($$)
+  {my ($a, $b) = check(@_); # Matrices
+   my $m = round bless
+    {11=&gt;$a-&gt;{11}-$b-&gt;{11}, 12=&gt;$a-&gt;{12}-$b-&gt;{12},
+     21=&gt;$a-&gt;{21}-$b-&gt;{21}, 22=&gt;$a-&gt;{22}-$b-&gt;{22},
+    }; 
+   singular($m, 1);
+   $m;
+  }</pre>
+<p>
+</p>
+<h3><a name="matrixvectormultiply">matrixVectorMultiply</a></h3>
+<p>Vector = Matrix * Vector</p>
+<pre>
+ 
+ sub matrixVectorMultiply($$)
+  {       check(@_[0..0]) if debug; # Matrix
+   vector2Check(@_[1..1]) if debug; # Vector 
+   my ($a, $b) = @_;
+   vector2
+    ($a-&gt;{11}*$b-&gt;{x}+$a-&gt;{12}*$b-&gt;{y},
+     $a-&gt;{21}*$b-&gt;{x}+$a-&gt;{22}*$b-&gt;{y},
+    );
+  }</pre>
+<p>
+</p>
+<h3><a name="matrixscalarmultiply">matrixScalarMultiply</a></h3>
+<p>Matrix = Matrix * scalar</p>
+<pre>
+ 
+ sub matrixScalarMultiply($$)
+  {my ($a) = check(@_[0..0]); # Matrix
+   my ($b) = @_[1..1];        # Scalar
+   confess &quot;$b is not a scalar&quot; if ref($b);   
+   round bless
+    {11=&gt;$a-&gt;{11}*$b, 12=&gt;$a-&gt;{12}*$b,
+     21=&gt;$a-&gt;{21}*$b, 22=&gt;$a-&gt;{22}*$b,
+    }; 
+  }</pre>
+<p>
+</p>
+<h3><a name="matrixmatrixmultiply">matrixMatrixMultiply</a></h3>
+<p>Matrix = Matrix * Matrix</p>
+<pre>
+ 
+ sub matrixMatrixMultiply($$)
+  {my ($a, $b) = check(@_); # Matrices
+   round bless
+    {11=&gt;$a-&gt;{11}*$b-&gt;{11}+$a-&gt;{12}*$b-&gt;{21}, 12=&gt;$a-&gt;{11}*$b-&gt;{12}+$a-&gt;{12}*$b-&gt;{22},
+     21=&gt;$a-&gt;{21}*$b-&gt;{11}+$a-&gt;{22}*$b-&gt;{21}, 22=&gt;$a-&gt;{21}*$b-&gt;{12}+$a-&gt;{22}*$b-&gt;{22},
+    }; 
+  }</pre>
+<p>
+</p>
+<h3><a name="matrixscalardivide">matrixScalarDivide</a></h3>
+<p>Matrix=Matrix / non zero scalar</p>
+<pre>
+ 
+ sub matrixScalarDivide($$)
+  {my ($a) = check(@_[0..0]); # Matrices
+   my ($b) = @_[1..1];        # Scalar
+   confess &quot;$b is not a scalar&quot; if ref($b);   
+   confess &quot;$b is zero&quot;         if $b == 0;   
+   round bless
+    {11=&gt;$a-&gt;{11}/$b, 12=&gt;$a-&gt;{12}/$b,
+     21=&gt;$a-&gt;{21}/$b, 22=&gt;$a-&gt;{22}/$b,
+    }; 
+  }</pre>
+<p>
+</p>
+<h3><a name="det">det</a></h3>
+<p>Determinant of matrix.</p>
+<pre>
+ 
+ sub det($)
+  {my ($a) = check(@_); # Matrices
+ 
+ +$a-&gt;{11}*$a-&gt;{22}
+ -$a-&gt;{12}*$a-&gt;{21}
+  }</pre>
+<p>
+</p>
+<h3><a name="inverse">inverse</a></h3>
+<p>Inverse of matrix</p>
+<pre>
+ 
+ sub inverse($)
+  {my ($a) = check(@_); # Matrices
+ 
+   my $d = det($a);
+   return undef if $d == 0;
+ 
+   round bless
+    {11=&gt; $a-&gt;{22}/$d, 21=&gt;-$a-&gt;{21}/$d,
+     12=&gt;-$a-&gt;{12}/$d, 22=&gt; $a-&gt;{11}/$d,
+    }; 
+  }</pre>
+<p>
+</p>
+<h3><a name="rotate">rotate</a></h3>
+<p>Rotation matrix: rotate anti-clockwise by t radians</p>
+<pre>
+ 
+ sub rotate($)
+  {my ($a) = @_;
+    bless
+    {11=&gt;cos($t), 21=&gt;-sin($t),                              
+     12=&gt;sin($t), 22=&gt; cos($t),                              
+    }; 
+  }</pre>
+<p>
+</p>
+<h3><a name="equals">equals</a></h3>
+<p>Equals to within accuracy</p>
+<pre>
+ 
+ sub equals($$)
+  {my ($a, $b) = check(@_); # Matrices
+   abs($a-&gt;{11}-$b-&gt;{11}) &lt; $accuracy and
+   abs($a-&gt;{12}-$b-&gt;{12}) &lt; $accuracy and
+ 
+   abs($a-&gt;{21}-$b-&gt;{21}) &lt; $accuracy and
+   abs($a-&gt;{22}-$b-&gt;{22}) &lt; $accuracy;
+  }</pre>
+<p>
+</p>
+<h2><a name="operators">Operators</a></h2>
+<p>Operator overloads</p>
+<pre>
+ 
+ use overload
+  '+'        =&gt; \&amp;add3,      # Add two vectors
+  '-'        =&gt; \&amp;subtract3, # Subtract one vector from another
+  '*'        =&gt; \&amp;multiply3, # Times by a scalar, or vector dot product 
+  '/'        =&gt; \&amp;divide3,   # Divide by a scalar
+  '!'        =&gt; \&amp;det3,      # Determinant                       
+  '=='       =&gt; \&amp;equals3,   # Equals (to accuracy)
+  '&quot;&quot;'       =&gt; \&amp;print3,    # Print
+  'fallback' =&gt; FALSE;</pre>
+<p>
+</p>
+<h3><a name="add_operator">add operator</a></h3>
+<p>Add operator.</p>
+<pre>
+ 
+ sub add3
+  {my ($a, $b) = @_;
+   $a-&gt;add($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="subtract_operator">subtract operator</a></h3>
+<p>Subtract operator.</p>
+<pre>
+ 
+ sub subtract3
+  {my ($a, $b, $c) = @_;
+ 
+   return $a-&gt;subtract($b) if $b;
+   negate($a);
+  }</pre>
+<p>
+</p>
+<h3><a name="multiply_operator">multiply operator</a></h3>
+<p>Multiply operator.</p>
+<pre>
+ 
+ sub multiply3
+  {my ($a, $b) = @_;
+   return $a-&gt;matrixScalarMultiply($b) unless ref($b);
+   return $a-&gt;matrixVectorMultiply($b) if vector2Is($b);
+   return $a-&gt;matrixMatrixMultiply($b) if is($b);
+   confess &quot;Cannot multiply $a by $b\n&quot;;
+  }</pre>
+<p>
+</p>
+<h3><a name="divide_operator">divide operator</a></h3>
+<p>Divide operator.</p>
+<pre>
+ 
+ sub divide3
+  {my ($a, $b, $c) = @_;
+   if (!ref($b))
+    {return $a-&gt;matrixScalarDivide($b)            unless $c;
+     return $a-&gt;inverse-&gt;matrixScalarMultiply($b) if     $c;
+    }
+   else 
+    {return $a-&gt;inverse-&gt;matrixVectorMultiply($b) if vector2Is($b);
+     return $a-&gt;matrixMatrixMultiply($b-&gt;inverse) if is($b);
+     confess &quot;Cannot multiply $a by $b\n&quot;;
+    }
+  }</pre>
+<p>
+</p>
+<h3><a name="equals_operator">equals operator</a></h3>
+<p>Equals operator.</p>
+<pre>
+ 
+ sub equals3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;equals($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="determinant_operator">determinant operator</a></h3>
+<p>Determinant of a matrix</p>
+<pre>
+ 
+ sub det3
+  {my ($a, $b, $c) = @_;
+   $a-&gt;det;
+  }</pre>
+<p>
+</p>
+<h3><a name="print_operator">print operator</a></h3>
+<p>Print a vector.</p>
+<pre>
+ 
+ sub print3
+  {my ($a) = @_;
+   return $a-&gt;print;
+  }</pre>
+<p>
+</p>
+<h2><a name="exports">Exports</a></h2>
+<p>Export <a href="#matrix2">matrix2</a>, <a href="#identity">identity</a></p>
+<pre>
+ 
+ use Math::Zap::Exports qw(
+   matrix2  ($$$$)
+   new2v    ($$)
+   identity ()
+  );
+ 
+ #_ Matrix2 ____________________________________________________________
+ # Package loaded successfully
+ #______________________________________________________________________
+ 
+ 1;</pre>
+<p>
+</p>
+<h2><a name="credits">Credits</a></h2>
+<p>
+</p>
+<h3><a name="author">Author</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com">philiprbrenan@yahoo.com</a></p>
+<p>
+</p>
+<h3><a name="copyright">Copyright</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com,">philiprbrenan@yahoo.com,</a> 2004</p>
+<p>
+</p>
+<h3><a name="license">License</a></h3>
+<p>Perl License.</p>
+
+</body>
+
+</html>

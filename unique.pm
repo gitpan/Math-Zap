@@ -1,44 +1,76 @@
-#!perl -w
-#_ Unique _____________________________________________________________
-# Unique id    
-# Perl licence
-# PhilipRBrenan@yahoo.com, 2004
-#______________________________________________________________________
+=head1 Unique__________________________________________________________
+Unique id    
 
-package Math::Zap::unique;
-$VERSION=1.02;
+PhilipRBrenan@yahoo.com, 2004, Perl license
+
+=head2 Synopsis_________________________________________________________
+Example t/unique.t
+
+ #_ Unique _____________________________________________________________
+ # Unique           
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Unique;
+ use Test::Simple tests=>3;
+    
+ ok(unique() ne unique());
+ ok(unique() ne unique());
+ ok(unique() ne unique());
+ 
 
 
-#_ Unique _____________________________________________________________
-# Exports 
-#______________________________________________________________________
+=head2 Description______________________________________________________
+Returns a unique id each time it is called.
+=cut____________________________________________________________________
 
-require Exporter;
-use vars qw(@ISA $VERSION @EXPORT);
+package Math::Zap::Unique;
+$VERSION=1.03;
+use Carp;
 
-@ISA    = qw(Exporter);
-@EXPORT = qw(unique);
-
-#_ Unique _____________________________________________________________
-# Unique id
-#______________________________________________________________________
+=head2 Constructors____________________________________________________
+=head3 unique__________________________________________________________
+Return new unique id
+=cut___________________________________________________________________
 
 my $unique = 0;
 
-#_ Unique _____________________________________________________________
-# Return new unique id
-#______________________________________________________________________
-
 sub unique() {++$unique}
 
-#_ Unique _____________________________________________________________
-# Return new unique id
-#______________________________________________________________________
+=head3 new_____________________________________________________________
+Return new unique id, synonym for L</unique>
+=cut___________________________________________________________________
 
 sub new {unique()}
+
+=head2 Exports__________________________________________________________
+Export L</unique>
+=cut____________________________________________________________________
+
+use Math::Zap::Exports qw(
+  unique ()
+ );
 
 #_ Unique _____________________________________________________________
 # Package loaded successfully
 #______________________________________________________________________
 
 1;
+
+
+=head2 Credits
+
+=head3 Author
+
+philiprbrenan@yahoo.com
+
+=head3 Copyright
+
+philiprbrenan@yahoo.com, 2004
+
+=head3 License
+
+Perl License.
+
+
+=cut

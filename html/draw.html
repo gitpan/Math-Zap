@@ -1,0 +1,798 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Draw</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#draw">Draw</a></li>
+	<ul>
+
+		<li><a href="#synopsis">Synopsis</a></li>
+		<li><a href="#description">Description</a></li>
+		<li><a href="#constructors">Constructors</a></li>
+		<ul>
+
+			<li><a href="#draw">draw</a></li>
+		</ul>
+
+		<li><a href="#methods">Methods</a></li>
+		<ul>
+
+			<li><a href="#from">from</a></li>
+			<li><a href="#to">to</a></li>
+			<li><a href="#horizon">Horizon</a></li>
+			<li><a href="#light">light</a></li>
+			<li><a href="#withcontrols">withControls</a></li>
+			<li><a href="#object">object</a></li>
+			<li><a href="#done">done</a></li>
+		</ul>
+
+		<li><a href="#methods">Methods</a></li>
+		<ul>
+
+			<li><a href="#print">print</a></li>
+			<li><a href="#check">check</a></li>
+			<li><a href="#is">is</a></li>
+			<li><a href="#showfissionfragments">showFissionFragments</a></li>
+			<li><a href="#fission">Fission</a></li>
+			<li><a href="#new">new</a></li>
+			<li><a href="#newcanvas">newCanvas</a></li>
+			<li><a href="#newcontrol">newControl</a></li>
+			<li><a href="#configure">Configure</a></li>
+			<li><a href="#drawing">drawing</a></li>
+			<li><a href="#shadows">shadows</a></li>
+			<ul>
+
+				<li><a href="#zorder">zorder</a></li>
+			</ul>
+
+		</ul>
+
+		<li><a href="#exports">Exports</a></li>
+		<li><a href="#credits">Credits</a></li>
+		<ul>
+
+			<li><a href="#author">Author</a></li>
+			<li><a href="#copyright">Copyright</a></li>
+			<li><a href="#license">License</a></li>
+		</ul>
+
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="draw">Draw</a></h1>
+<p>Draw 3d scene as 2d image with lighting and shadowing to assist the human
+observer in reconstructing the original 3d scene.</p>
+<p><a href="mailto:PhilipRBrenan@yahoo.com,">PhilipRBrenan@yahoo.com,</a> 2004, Perl License</p>
+<p>
+</p>
+<h2><a name="synopsis">Synopsis</a></h2>
+<p>Example t/draw.t</p>
+<pre>
+ #!perl -w
+ #______________________________________________________________________
+ # Test drawing.
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Draw;
+ use Math::Zap::Cube unit=&gt;'cu';
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector;
+ 
+ use Test::Simple tests=&gt;1;
+ 
+ #_ Draw _______________________________________________________________
+ # Draw this set of objects.
+ #______________________________________________________________________
+ 
+ $l = 
+ draw 
+   -&gt;from    (vector( 10,   10,  10))
+   -&gt;to      (vector(  0,    0,   0))
+   -&gt;horizon (vector(  1,  0.5,   0))
+   -&gt;light   (vector( 20,   30, -20))
+ 
+     -&gt;object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0,  8,  0)),                         'red')
+     -&gt;object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0,  8,  0)),                         'green')
+     -&gt;object(triangle(vector( 0,  0,  0), vector(12,  0,  0), vector( 0,  0, 12)) - vector(2.5,  0,  2.5), 'blue')
+     -&gt;object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0, -8,  0)),                         'pink')
+     -&gt;object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0, -8,  0)),                         'orange')
+     -&gt;object(cu()*2+vector(3,5,1), 'lightblue')
+ 
+ -&gt;print;
+ 
+ $L = &lt;&lt;'END'; 
+ #!perl -w
+ use Math::Zap::Draw;
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector;
+ 
+ draw
+ -&gt;from    (vector(10, 10, 10))
+ -&gt;to      (vector(0, 0, 0))
+ -&gt;horizon (vector(1, 0.5, 0))
+ -&gt;light   (vector(20, 30, -20))
+   -&gt;object(triangle(vector(0, 0, 0), vector(8, 0, 0), vector(0, 8, 0)), 'red')
+   -&gt;object(triangle(vector(0, 0, 0), vector(0, 0, 8), vector(0, 8, 0)), 'green')
+   -&gt;object(triangle(vector(-2.5, 0, -2.5), vector(9.5, 0, -2.5), vector(-2.5, 0, 9.5)), 'blue')
+   -&gt;object(triangle(vector(0, 0, 0), vector(8, 0, 0), vector(0, -8, 0)), 'pink')
+   -&gt;object(triangle(vector(0, 0, 0), vector(0, 0, 8), vector(0, -8, 0)), 'orange')
+   -&gt;object(triangle(vector(3, 5, 1), vector(5, 5, 1), vector(3, 7, 1)), 'lightblue')
+   -&gt;object(triangle(vector(5, 7, 1), vector(5, 5, 1), vector(3, 7, 1)), 'lightblue')
+   -&gt;object(triangle(vector(3, 5, 3), vector(5, 5, 3), vector(3, 7, 3)), 'lightblue')
+   -&gt;object(triangle(vector(5, 7, 3), vector(5, 5, 3), vector(3, 7, 3)), 'lightblue')
+   -&gt;object(triangle(vector(3, 5, 1), vector(3, 7, 1), vector(3, 5, 3)), 'lightblue')
+   -&gt;object(triangle(vector(3, 7, 3), vector(3, 7, 1), vector(3, 5, 3)), 'lightblue')
+   -&gt;object(triangle(vector(5, 5, 1), vector(5, 7, 1), vector(5, 5, 3)), 'lightblue')
+   -&gt;object(triangle(vector(5, 7, 3), vector(5, 7, 1), vector(5, 5, 3)), 'lightblue')
+   -&gt;object(triangle(vector(3, 5, 1), vector(3, 5, 3), vector(5, 5, 1)), 'lightblue')
+   -&gt;object(triangle(vector(5, 5, 3), vector(3, 5, 3), vector(5, 5, 1)), 'lightblue')
+   -&gt;object(triangle(vector(3, 7, 1), vector(3, 7, 3), vector(5, 7, 1)), 'lightblue')
+   -&gt;object(triangle(vector(5, 7, 3), vector(3, 7, 3), vector(5, 7, 1)), 'lightblue')
+ -&gt;done;
+ END
+ 
+ ok($l eq $L);</pre>
+<p>
+</p>
+<h2><a name="description">Description</a></h2>
+<p>This package supplies methods to draw a scene, containing three dimensional
+objects, as a two dimensional image, using lighting and shadowing to assist the
+human observer in reconstructing the original three dimensional scene.</p>
+<p>There are many existing packages to perform this important task: this
+package Math::Zap::Is the only one to make the attempt in Pure Perl. Pending the
+$VERSION=1.03;
+power of Petaflop Parallel Perl (when we will be set free from C), this
+approach is slow. However, it is not so slow as to be completely useless
+for simple scenes as might be encountered inside, say for instance, beam
+lines used in high energy particle physics, the owners of which often
+have large Perl computers.</p>
+<p>The key advantage of this package is that is open: you can manipulate
+both the objects to be drawn and the drawing itself all in Pure Perl.</p>
+<pre>
+ 
+ package Math::Zap::Draw;
+ $VERSION=1.03;
+ use Math::Zap::Vector check=&gt;'vectorCheck';
+ use Math::Zap::Vector2;
+ use Math::Zap::Triangle2  newnnc=&gt;'triangle2Newnnc';
+ use Math::Zap::Triangle;
+ use Math::Zap::Color;
+ use Tk;
+ use Carp;
+ 
+ use constant debug=&gt;0;</pre>
+<p>
+</p>
+<h2><a name="constructors">Constructors</a></h2>
+<p>
+</p>
+<h3><a name="draw">draw</a></h3>
+<p>Constructor</p>
+<pre>
+ 
+ sub draw() {bless {}}</pre>
+<p>
+</p>
+<h2><a name="methods">Methods</a></h2>
+<p>
+</p>
+<h3><a name="from">from</a></h3>
+<p>Set view point</p>
+<pre>
+ 
+ sub from($$)
+  {my ($d) =         check(@_[0..0]); # Drawing 
+   my ($v) = vectorCheck(@_[1..1]); # Vector
+ 
+   $d-&gt;{from} = $v;
+   $d;
+  }</pre>
+<p>
+</p>
+<h3><a name="to">to</a></h3>
+<p>Viewing this point</p>
+<pre>
+ 
+ sub to($$)
+  {my ($d) =         check(@_[0..0]); # Drawing 
+   my ($v) = vectorCheck(@_[1..1]); # Vector
+ 
+   $d-&gt;{to} = $v;
+   $d;
+  }</pre>
+<p>
+</p>
+<h3><a name="horizon">Horizon</a></h3>
+<p>Sets the direction of the horizon.</p>
+<pre>
+ 
+ sub horizon($$)
+  {my ($d) =         check(@_[0..0]); # Drawing 
+   my ($v) = vectorCheck(@_[1..1]); # Vector
+ 
+   $d-&gt;{horizon} = $v;
+   $d;
+  }</pre>
+<p>
+</p>
+<h3><a name="light">light</a></h3>
+<p>Light source position</p>
+<pre>
+ 
+ sub light($$)
+  {my ($d) =         check(@_[0..0]); # Drawing 
+   my ($v) = vectorCheck(@_[1..1]); # Vector
+ 
+   $d-&gt;{light} = $v;
+   $d;
+  }</pre>
+<p>
+</p>
+<h3><a name="withcontrols">withControls</a></h3>
+<p>Display a window allowing the user to set to,from,horizon,light</p>
+<pre>
+ 
+ sub withControls($)
+  {my ($d) =         check(@_[0..0]); # Drawing 
+ 
+   $d-&gt;{withControls} = 1;
+   $d;
+  }</pre>
+<p>
+</p>
+<h3><a name="object">object</a></h3>
+<p>Draw this object</p>
+<pre>
+ 
+ sub object($$$)
+  {my ($d) = check(@_[0..0]); # Drawing 
+   my ($o) =       @_[1..1];  # Object to be drawn
+   my ($c) =       @_[2..2];  # Color of object's surfaces
+ 
+   if ($o-&gt;can('triangulate'))
+    {push @{$d-&gt;{triangles}}, $o-&gt;triangulate($c);
+    }
+   else
+    {die &quot;Cannot draw $o&quot;;
+    }
+   $d;
+  }</pre>
+<p>
+</p>
+<h3><a name="done">done</a></h3>
+<p>Draw the complete object list</p>
+<pre>
+ 
+ sub done($)
+  {my ($d) = check(@_[0..0]); # Drawing 
+   &amp;fission($d);
+   &amp;new($d);
+  }</pre>
+<p>
+</p>
+<h2><a name="methods">Methods</a></h2>
+<p>
+</p>
+<h3><a name="print">print</a></h3>
+<p>Print the complete object list as a triangles in a reusable manner.</p>
+<pre>
+ 
+ sub print($)
+  {my ($d) = check(@_[0..0]); # Drawing
+   my $l = &lt;&lt; 'END';
+ #!perl -w
+ use Math::Zap::Draw;
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector;
+ 
+ draw
+ END
+   $l .= '-&gt;from    ('. $d-&gt;{from}   -&gt;print .&quot;)\n&quot;;
+   $l .= '-&gt;to      ('. $d-&gt;{to}     -&gt;print .&quot;)\n&quot;;
+   $l .= '-&gt;horizon ('. $d-&gt;{horizon}-&gt;print .&quot;)\n&quot;;
+   $l .= '-&gt;light   ('. $d-&gt;{light}  -&gt;print .&quot;)\n&quot;;
+ 
+   for my $p(@{$d-&gt;{triangles}}) # Triangulation
+    {$l .= '  -&gt;object('. $p-&gt;{triangle}-&gt;print .', \''. $p-&gt;{color}. &quot;\')\n&quot;;
+    }
+   $l .= &quot;-&gt;done;\n&quot;;
+  }</pre>
+<p>
+</p>
+<h3><a name="check">check</a></h3>
+<p>Check its a drawing</p>
+<pre>
+ 
+ sub check(@)
+  {if (debug)
+    {for my $t(@_)
+      {confess &quot;$t is not a drawing&quot; unless ref($t) eq __PACKAGE__;
+      }
+    } 
+   return (@_)
+  }</pre>
+<p>
+</p>
+<h3><a name="is">is</a></h3>
+<p>Test its a drawing</p>
+<pre>
+ 
+ sub is(@)
+  {for my $t(@_)
+    {return 0 unless ref($t) eq __PACKAGE__;
+    }
+   'draw';
+  }</pre>
+<p>
+</p>
+<h3><a name="showfissionfragments">showFissionFragments</a></h3>
+<p>Show fission fragments: the objects to be drawn are triangulated
+where-ever they may intersect.  It is useful to see these sub triangles
+when debugging.  See also <a href="#fission">fission</a>.</p>
+<pre>
+ 
+ sub showFissionFragments($)
+  {my ($d) =         check(@_[0..0]); # Drawing 
+ 
+   $d-&gt;{showFissionFragments} = 1;
+   $d;
+  }</pre>
+<p>
+</p>
+<h3><a name="fission">Fission</a></h3>
+<p>Fission the triangles that intersect.  See <a href="#showfissionfragments">showFissionFragments</a></p>
+<pre>
+ 
+ sub fission($)
+  {my ($d) = check(@_[0..0]);    # Drawing 
+   my @P   = @{$d-&gt;{triangles}}; # Triangles to be fissoned
+   my $tested;                   # Source triangles already tested
+ 
+ #_ Draw ________________________________________________________________
+ # Check each pair of triangles
+ #_______________________________________________________________________
+ 
+   L: for(;;)
+    {for   (my $i = 0; $i &lt; scalar(@P); ++$i)
+      {my $p = $P[$i];
+       next unless defined($p);
+ 
+ #_ Draw ________________________________________________________________
+ # Check against triangle 
+ #_______________________________________________________________________
+ 
+       for (my $j = $i+1; $j &lt; scalar(@P); ++$j)
+        {my $q = $P[$j];
+         next unless defined($q);
+         my ($t, @t, @T);
+ 
+ #_ Draw ________________________________________________________________
+ # Already tested
+ #_______________________________________________________________________
+ 
+         next if $tested-&gt;{$p-&gt;{plane}}{$q-&gt;{plane}};
+         $tested-&gt;{$p-&gt;{plane}}{$q-&gt;{plane}} = 1;
+         $tested-&gt;{$q-&gt;{plane}}{$p-&gt;{plane}} = 1;
+         next if $p-&gt;{triangle}-&gt;parallel($q-&gt;{triangle});
+ 
+ #_ Draw ________________________________________________________________
+ # Divide intersecting triangles
+ #_______________________________________________________________________
+ 
+         @t = $p-&gt;{triangle}-&gt;divide($q-&gt;{triangle});
+         @T = $q-&gt;{triangle}-&gt;divide($p-&gt;{triangle});
+ 
+ #_ Draw ________________________________________________________________
+ # Add divisions to list of triangles
+ #_______________________________________________________________________
+ 
+         next unless @t &gt; 1 or @T &gt; 1;
+         delete $P[$i];
+         delete $P[$j];
+ 
+         push @P, {triangle=&gt;$_, color=&gt;$q-&gt;{color}, plane=&gt;$q-&gt;{plane}} for(@t);
+         push @P, {triangle=&gt;$_, color=&gt;$p-&gt;{color}, plane=&gt;$p-&gt;{plane}} for(@T);
+         next L;
+        }
+      }
+     last;
+    }
+ 
+ #_ Draw ________________________________________________________________
+ # Update list of triangles to be drawn
+ #_______________________________________________________________________
+ 
+   my @p;
+   for my $p(@P)
+    {push @p, $p if defined($p);
+    } 
+   $d-&gt;{triangles} = [@p];
+  }</pre>
+<p>
+</p>
+<h3><a name="new">new</a></h3>
+<p>New drawing - not a constructor</p>
+<pre>
+ 
+ sub new($)
+  {my ($d) = check(@_[0..0]); # Drawing 
+   &amp;newCanvas ($d);
+   &amp;newControl($d);
+   &amp;drawing   ($d, 1);
+   MainLoop;
+  }</pre>
+<p>
+</p>
+<h3><a name="newcanvas">newCanvas</a></h3>
+<p>Canvas for drawing</p>
+<pre>
+ 
+ sub newCanvas($)
+  {my ($d) = check(@_[0..0]); # Drawing 
+   my $m = $d-&gt;{MainWindowCanvas}</pre>
+<pre>
+        = new MainWindow;
+  my $c = $d-&gt;{canvas}
+        = $m-&gt;Canvas(-background=&gt;'yellow')-&gt;pack(-expand=&gt;1, -fill=&gt;'both');</pre>
+<pre>
+  $d-&gt;{canvas}{width}  = $c-&gt;cget(-width=&gt;);
+  $d-&gt;{canvas}{height} = $c-&gt;cget(-height=&gt;);</pre>
+<pre>
+  $c-&gt;CanvasBind('&lt;Configure&gt;' =&gt; [$d=&gt;'configure', Ev('w'), Ev('h')]);
+ }</pre>
+<p>
+</p>
+<h3><a name="newcontrol">newControl</a></h3>
+<p>Controls for drawing</p>
+<pre>
+ 
+ sub newControl()
+  {my ($d) = check(@_[0..0]);                   # Drawing 
+   my  $m  = $d-&gt;{MainWindowControls} = new MainWindow;
+ 
+   my $a11 = $d-&gt;{a11} = $m-&gt;Label(-text=&gt;'View point');
+   my $a12 = $d-&gt;{a12} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{from}-&gt;{x});
+   my $a13 = $d-&gt;{a13} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{from}-&gt;{y});
+   my $a14 = $d-&gt;{a14} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{from}-&gt;{z});
+   my $a21 = $d-&gt;{a21} = $m-&gt;Label(-text=&gt;'Looking to');
+   my $a22 = $d-&gt;{a22} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{to}-&gt;{x});
+   my $a23 = $d-&gt;{a23} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{to}-&gt;{y});
+   my $a24 = $d-&gt;{a24} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{to}-&gt;{z});
+   my $a31 = $d-&gt;{a31} = $m-&gt;Label(-text=&gt;'Horizontal');
+   my $a32 = $d-&gt;{a32} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{horizon}-&gt;{x});
+   my $a33 = $d-&gt;{a33} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{horizon}-&gt;{y});
+   my $a34 = $d-&gt;{a34} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{horizon}-&gt;{z});
+   my $a41 = $d-&gt;{a41} = $m-&gt;Label(-text=&gt;'Lit from');
+   my $a42 = $d-&gt;{a42} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{light}-&gt;{x});
+   my $a43 = $d-&gt;{a43} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{light}-&gt;{y});
+   my $a44 = $d-&gt;{a44} = $m-&gt;Entry(-textvariable=&gt;\$d-&gt;{light}-&gt;{z});
+   my $a51 = $d-&gt;{a51} = $m-&gt;Button(-text=&gt;'Redraw', -command=&gt;sub{&amp;drawing($d, 1)});
+   my $a52 = $d-&gt;{a52} = $m-&gt;Button(-text=&gt;'In');
+   my $a53 = $d-&gt;{a53} = $m-&gt;Button(-text=&gt;'Out');
+   my $a54 = $d-&gt;{a54} = $m-&gt;Button(-text=&gt;'Quit',   -command=&gt;sub{exit(0)});
+ 
+   $a11-&gt;grid($a12, $a13, $a14);
+   $a21-&gt;grid($a22, $a23, $a24);
+   $a31-&gt;grid($a32, $a33, $a34);
+   $a41-&gt;grid($a42, $a43, $a44);
+   $a51-&gt;grid($a52, $a53, $a54);
+  }</pre>
+<p>
+</p>
+<h3><a name="configure">Configure</a></h3>
+<p>Configuration of canvas has been changed</p>
+<pre>
+ 
+ sub configure
+  {my ($d)    = check(@_[0..0]);                # Drawing 
+   my $c      = $d-&gt;{canvas};
+   $d-&gt;{canvas}{width}  = $_[1];
+   $d-&gt;{canvas}{height} = $_[2];
+   &amp;drawing($d, 0);
+  }</pre>
+<p>
+</p>
+<h3><a name="drawing">drawing</a></h3>
+<p>New drawing of objects</p>
+<pre>
+ 
+ sub drawing($$)
+  {my ($d)    = check(@_[0..0]);                # Drawing 
+   my $zorder = shift;                          # Re-sort of zorder required?
+ 
+ #_ Draw ________________________________________________________________
+ # Locate background
+ #_______________________________________________________________________
+ 
+   my $from   = $d-&gt;{from};                     # View point
+   my $lt     = $d-&gt;{light};                    # Light     
+   my $to     = $d-&gt;{to};                       # View towards
+   my $hz     = $d-&gt;{horizon};                  # Horizon  
+   
+   my $v = (($from-$to) x $hz)-&gt;norm;           # Vertical   in background plane
+   my $h = ($v  x ($from-$to))-&gt;norm;           # Horizontal in background plane
+   my $B = triangle($to, $to+$h, $to+$v);       # Background plane
+   $d-&gt;{background} = $B;
+ 
+   &amp;zorder($d) if $zorder;                      # Partially order triangles from view point 
+   $d-&gt;{canvas}-&gt;delete('all');                 # Clear canvas
+ 
+ #_ Draw ________________________________________________________________
+ # Dimensions of projected image
+ #_______________________________________________________________________
+ 
+   my ($mx, $Mx, $my, $My);
+   for my $D(@{$d-&gt;{triangles}})
+    {my $t = $B-&gt;project($D-&gt;{triangle}, $from); # Project onto background
+     $D-&gt;{project} = $t;                         # Optimization - record for reuse
+ 
+     my ($ax, $ay) = ($t-&gt;a-&gt;x, $t-&gt;a-&gt;y);
+     my ($bx, $by) = ($t-&gt;b-&gt;x, $t-&gt;b-&gt;y);
+     my ($cx, $cy) = ($t-&gt;c-&gt;x, $t-&gt;c-&gt;y);
+ 
+     $mx = $ax if !defined($mx) or $mx &gt; $ax;   
+     $mx = $bx if !defined($mx) or $mx &gt; $bx;   
+     $mx = $cx if !defined($mx) or $mx &gt; $cx;   
+     $Mx = $ax if !defined($Mx) or $Mx &lt; $ax;   
+     $Mx = $bx if !defined($Mx) or $Mx &lt; $bx;   
+     $Mx = $cx if !defined($Mx) or $Mx &lt; $cx;   
+ 
+     $my = $ay if !defined($my) or $my &gt; $ay;   
+     $my = $by if !defined($my) or $my &gt; $by;   
+     $my = $cy if !defined($my) or $my &gt; $cy;   
+     $My = $ay if !defined($My) or $My &lt; $ay;   
+     $My = $by if !defined($My) or $My &lt; $by;   
+     $My = $cy if !defined($My) or $My &lt; $cy;
+    }
+ 
+   my $cw = $d-&gt;{canvas}{width};
+   my $ch = $d-&gt;{canvas}{height};
+ 
+   my $sx = int($d-&gt;{canvas}{width} /($Mx-$mx));  
+   my $sy = int($d-&gt;{canvas}{height}/($My-$my));
+   my $s  = $d-&gt;{canvas}{scale} = ($sx &lt; $sy ? $sx : $sy);
+ 
+   my $dx = $d-&gt;{canvas}{dx} = -$mx * $s + ($cw - $s * ($Mx-$mx)) / 2;
+   my $dy = $d-&gt;{canvas}{dy} =  $My * $s + ($ch - $s * ($My-$my)) / 2;
+ 
+ #_ Draw ________________________________________________________________
+ # Draw each triangle
+ #_______________________________________________________________________
+ 
+   for my $D(@{$d-&gt;{triangles}})
+    {my $T     = $D-&gt;{triangle};
+     my $color = $D-&gt;{color};
+     my $p     = $D-&gt;{plane};
+     my $t     = $D-&gt;{project};
+ 
+ # Coordinates of triangle to be drawn
+     my @a = ($dx+$t-&gt;a-&gt;x*$s, $dy-$t-&gt;a-&gt;y*$s, 
+              $dx+$t-&gt;b-&gt;x*$s, $dy-$t-&gt;b-&gt;y*$s,
+              $dx+$t-&gt;c-&gt;x*$s, $dy-$t-&gt;c-&gt;y*$s,
+              );
+     push @a,  -outline=&gt;'black' if defined($d-&gt;{showFissionFragments});
+ 
+ #_ Draw ________________________________________________________________
+ # Side towards/away from the light
+ #_______________________________________________________________________
+ 
+     my $fb = $T-&gt;frontInBehindZ($from, $lt);   
+ 
+     if (!defined($fb) or $fb &lt; 0)              # Towards light              
+      {push @a, -fill=&gt;$color;
+       $d-&gt;{canvas}-&gt;createPolygon(@a);
+       &amp;shadows($d, $D);
+      }
+     else                                       # Away from light
+      {$d-&gt;{canvas}-&gt;createPolygon(@a, -fill=&gt;color($color)-&gt;dark);
+      }                        
+    }
+  }</pre>
+<p>
+</p>
+<h3><a name="shadows">shadows</a></h3>
+<p>Shadows from a point of illumination</p>
+<pre>
+ 
+ sub shadows($$)
+  {my ($d)   = check(@_[0..0]);                           # Drawing 
+   my ($p)   =      (@_[1..1]);                           # Current triangle to be drawn
+   my $from  = $d-&gt;{from};                                # View point       
+   my $to    = $d-&gt;{to};                                  # Look towards     
+   my $light = $d-&gt;{light};                               # Position of light
+   my $back  = $d-&gt;{background};                          # Background
+   my $c     = $d-&gt;{canvas};                              # Canvas
+   my $dx    = $d-&gt;{canvas}{dx};                          # Canvas center x
+   my $dy    = $d-&gt;{canvas}{dy};                          # Canvas center y
+   my $s     = $d-&gt;{canvas}{scale};                       # Scale factor
+ 
+ #_ Draw ________________________________________________________________
+ # Shadow each triangle
+ #_______________________________________________________________________
+ 
+   my @s;
+   for my $q(@{$d-&gt;{triangles}})                                
+    {next if $p == $q;                                    # Do not shadow self
+     next if $p-&gt;{plane} == $q-&gt;{plane};                  # Do not shadow stuff in same plane
+     my $t = $p-&gt;{triangle};                              # Shadowed  triangle
+     my $T = $q-&gt;{triangle};                              # Shadowing triangle
+ #   next if $t-&gt;frontInBehindZ($from, $light) &gt; 0;       # Check that plane view point and light
+ 
+     my $b = $t-&gt;project($T, $light);                     # Project Shadowing triangle onto shadowed triangle
+     my $d = triangle2Newnnc                            # Shadow in shadowed plane coordinates
+      (vector2($b-&gt;a-&gt;x, $b-&gt;a-&gt;y),
+       vector2($b-&gt;b-&gt;x, $b-&gt;b-&gt;y),
+       vector2($b-&gt;c-&gt;x, $b-&gt;c-&gt;y)
+      );
+     my $D = triangle2Newnnc                            # Shadowed plane 
+      (vector2(0,0),
+       vector2(1,0),
+       vector2(0,1)
+      );
+     return if $d-&gt;narrow();                              # Projected shadow  too narrow?
+     return if $D-&gt;narrow();                              # Shadowed triangle too narrow?
+ 
+     my @r = $d-&gt;ring($D);                                # Ring of common points 
+     if (scalar(@r) &gt; 2)                                  # Less than two - small intersection
+      {my @a;
+       for my $r(@r)                                      # Points of intersection current/shadowing triangle
+        {my $sr = $t-&gt;convertPlaneToSpace($r);            # Convert intersection to space coords
+         last if $T-&gt;frontInBehind($light, $sr) == 1;     # $t gives back of shadowing plane
+         my $sb = $back-&gt;intersectionInPlane($from, $sr); # Project from view point onto background
+         push @a, $dx+$sb-&gt;x*$s, $dy-$sb-&gt;y*$s;           # Save coordinates
+        }
+ 
+ #_ Draw ________________________________________________________________
+ # Draw shadow
+ #_______________________________________________________________________
+ 
+       push @a, -outline=&gt;color($p-&gt;{color})-&gt;dark, -fill=&gt;color($p-&gt;{color})-&gt;dark;
+       $c-&gt;createPolygon(@a);
+      }
+    } 
+  }</pre>
+<p>
+</p>
+<h4><a name="zorder">zorder</a></h4>
+<p>Z-order: order the fission triangles from the back ground to the point
+of view:</p>
+<p>Compare each triangle with every other, recording for each triangle
+which triangles are behind it.</p>
+<p>Place all triangles with no triangles behind them with at the start of
+the order.</p>
+<p>Reprocess the remainder until none left (success) or a cycle is detected
+(bad algorithm).</p>
+<p>The two triangles to be compared are projected on to the background: if
+their projections have no points in common they are unordered, otherwise
+use the distance to each triangle from the view point towards the common
+point as a measure of which is first.</p>
+<p><code>fission()</code> guarantees that no two triangles intersect, this algorithm
+should correctly order each pair of triangles.</p>
+<pre>
+ 
+ sub zorder($)
+  {my ($d) = check(@_[0..0]);       # Drawing
+ 
+   my $from = $d-&gt;{from};           # View point
+   my $back = $d-&gt;{background};     # Background
+   my @P    = @{$d-&gt;{triangles}};   # Triangles to be drawn 
+ 
+ #_ Draw ________________________________________________________________
+ # Filter for useful triangles
+ #_______________________________________________________________________
+ 
+   my @o;
+   for(my $ip = 0; $ip &lt; @P; ++$ip)
+    {my $t = $P[$ip]{triangle};
+ #   next unless $t-&gt;area &gt; .1;     # Ignore small triangles
+ #   next if $t-&gt;narrow(0);
+ 
+     $o{$ip} = {};
+     push @o, $ip;
+    }
+ 
+ #_ Draw ________________________________________________________________
+ # Relationship
+ #_______________________________________________________________________
+ 
+   for my $ip(@o)
+    {my $t = $P[$ip]{triangle};
+ 
+     for my $jp(@o)
+      {next unless $ip &lt; $jp;
+       my $T = $P[$jp]{triangle};
+       my $i = $back-&gt;project($t, $from);
+       my $I = $back-&gt;project($T, $from);
+ 
+       my $i2 = triangle2Newnnc(vector2($i-&gt;a-&gt;x, $i-&gt;a-&gt;y), vector2($i-&gt;b-&gt;x, $i-&gt;b-&gt;y), vector2($i-&gt;c-&gt;x, $i-&gt;c-&gt;y));
+       my $I2 = triangle2Newnnc(vector2($I-&gt;a-&gt;x, $I-&gt;a-&gt;y), vector2($I-&gt;b-&gt;x, $I-&gt;b-&gt;y), vector2($I-&gt;c-&gt;x, $I-&gt;c-&gt;y));
+ #      next if $i2-&gt;narrow(0);
+ #      next if $I2-&gt;narrow(0);
+ 
+       my @c = $i2-&gt;pointsInCommon($I2);
+       next unless scalar(@c);
+ 
+       for my $c(@c)
+        {my $C = $back-&gt;convertPlaneToSpace($c);
+         my $d = $t-&gt;distanceToPlaneAlongLine($from, $C);
+         my $D = $T-&gt;distanceToPlaneAlongLine($from, $C);
+         next if abs($d-$D) &lt; 0.1;  # Points to close in space to disambiguate
+ 
+         $o{$ip}{$jp} = 1 if $d &lt; $D;  # Assumes order does not matter for coplanar triangles
+         $o{$jp}{$ip} = 1 if $d &gt; $D;  # Assumes order does not matter for coplanar triangles
+         last;
+        }
+      } 
+    }
+ 
+ #_ Draw ________________________________________________________________
+ # Order by relationship
+ #_______________________________________________________________________
+ 
+   my @p;
+   for(;;)
+    {my $n = 0;
+     for my $i(sort(keys(%o)))
+      {unless (keys(%{$o{$i}}))
+        {push @p, $P[$i];
+         delete $o{$i};
+         ++$n; 
+         for my $j(keys(%o))
+          {delete $o{$j}{$i};
+          }
+        }
+      }
+     last unless $n;
+    }
+   keys(%o) == 0 or warn &quot;Cycle present??&quot;;
+   $d-&gt;{triangles} = [@p];
+  }</pre>
+<p>
+</p>
+<h2><a name="exports">Exports</a></h2>
+<p>Export <a href="#draw">draw</a></p>
+<pre>
+ 
+ use Math::Zap::Exports qw(
+   draw ()
+  );
+ 
+ #_ Draw ________________________________________________________________
+ # Package loaded successfully
+ #_______________________________________________________________________
+ 
+ 1;</pre>
+<p>
+</p>
+<h2><a name="credits">Credits</a></h2>
+<p>
+</p>
+<h3><a name="author">Author</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com">philiprbrenan@yahoo.com</a></p>
+<p>
+</p>
+<h3><a name="copyright">Copyright</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com,">philiprbrenan@yahoo.com,</a> 2004</p>
+<p>
+</p>
+<h3><a name="license">License</a></h3>
+<p>Perl License.</p>
+
+</body>
+
+</html>

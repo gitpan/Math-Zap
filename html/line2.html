@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Line2</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#line2">Line2</a></li>
+	<ul>
+
+		<li><a href="#synopsis">Synopsis</a></li>
+		<li><a href="#description">Description</a></li>
+		<li><a href="#constructors">Constructors</a></li>
+		<ul>
+
+			<li><a href="#new">new</a></li>
+			<li><a href="#line2">line2</a></li>
+		</ul>
+
+		<li><a href="#methods">Methods</a></li>
+		<ul>
+
+			<li><a href="#accuracy">accuracy</a></li>
+			<li><a href="#short">short</a></li>
+			<li><a href="#check">check</a></li>
+			<li><a href="#is">is</a></li>
+			<li><a href="#a,b,ab,ba">a,b,ab,ba</a></li>
+			<li><a href="#clone">clone</a></li>
+			<li><a href="#print">print</a></li>
+			<li><a href="#angle">angle</a></li>
+			<li><a href="#parallel">parallel</a></li>
+			<li><a href="#intersect">intersect</a></li>
+			<li><a href="#intersectwithin">intersectWithin</a></li>
+			<li><a href="#crossover">crossOver</a></li>
+		</ul>
+
+		<li><a href="#exports">Exports</a></li>
+		<li><a href="#credits">Credits</a></li>
+		<ul>
+
+			<li><a href="#author">Author</a></li>
+			<li><a href="#copyright">Copyright</a></li>
+			<li><a href="#license">License</a></li>
+		</ul>
+
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="line2">Line2</a></h1>
+<p>Lines in 2d space</p>
+<p><a href="mailto:PhilipRBrenan@yahoo.com,">PhilipRBrenan@yahoo.com,</a> 2004, Perl License</p>
+<p>
+</p>
+<h2><a name="synopsis">Synopsis</a></h2>
+<p>Example t/line2.t</p>
+<pre>
+ #_ Vector _____________________________________________________________
+ # Test 2d lines    
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Line2;
+ use Math::Zap::Vector2;
+ use Test::Simple tests=&gt;12;
+ 
+ my $x = vector2(1,0);
+ my $y = vector2(0,1);
+ my $c = vector2(0,0);
+ 
+ my $a = line2( -$x,  +$x);
+ my $b = line2( -$y,  +$y);
+ my $B = line2(3*$y, 4*$y);
+ 
+ ok($a-&gt;intersect($b) == $c);
+ ok($b-&gt;intersect($a) == $c);
+ ok($a-&gt;intersectWithin($b) == 1);
+ ok($a-&gt;intersectWithin($B) == 0);
+ ok($b-&gt;intersectWithin($a) == 1);
+ ok($B-&gt;intersectWithin($a) == 1);
+ ok($a-&gt;parallel($b) == 0);
+ ok($B-&gt;parallel($b) == 1);
+ ok(!$b-&gt;intersectWithin($B), 'Parallel intersection');
+ ok( line2(-$x,       $x)-&gt;crossOver(line2(-$y,       $y)), 'Crosses 1');
+ ok(!line2(-$x,       $x)-&gt;crossOver(line2( $y * 0.5, $y)), 'Crosses 2');
+ ok(!line2( $x * 0.5, $x)-&gt;crossOver(line2( $y * 0.5, $y)), 'Crosses 3');</pre>
+<p>
+</p>
+<h2><a name="description">Description</a></h2>
+<p>Manipulate lines in 2D space</p>
+<pre>
+ 
+ package Math::Zap::Line2;
+ $VERSION=1.03;
+ use Math::Zap::Vector2 check=&gt;'vector2Check';
+ use Math::Zap::Matrix2 new2v=&gt;'matrix2New2v';
+ use Carp;
+ use constant debug =&gt; 0; # Debugging level</pre>
+<p>
+</p>
+<h2><a name="constructors">Constructors</a></h2>
+<p>
+</p>
+<h3><a name="new">new</a></h3>
+<p>Create a line from two vectors</p>
+<pre>
+ 
+ sub new($$)
+  {vector2Check(@_) if debug;
+   my $l = bless {a=&gt;$_[0], b=&gt;$_[1]};
+   short($l, 1);
+   $l; 
+  }</pre>
+<p>
+</p>
+<h3><a name="line2">line2</a></h3>
+<p>Create a line from two vectors</p>
+<pre>
+ 
+ sub line2($$) {new($_[0],$_[1])};</pre>
+<p>
+</p>
+<h2><a name="methods">Methods</a></h2>
+<p>
+</p>
+<h3><a name="accuracy">accuracy</a></h3>
+<p>Get/Set accuracy for comparisons</p>
+<pre>
+ 
+ my $accuracy = 1e-10;
+ 
+ sub accuracy
+  {return $accuracy unless scalar(@_);
+   $accuracy = shift();
+  }</pre>
+<p>
+</p>
+<h3><a name="short">short</a></h3>
+<p>Short line?</p>
+<pre>
+ 
+ sub short($$)
+  {my $l = shift;  # Line       
+   my $a = 1e-4;   # Accuracy
+   my $A = shift;  # Action 0: return indicator, 1: confess 
+   my $n =
+      ($l-&gt;{a}{x}-$l-&gt;{b}{x})**2 + ($l-&gt;{a}{y}-$l-&gt;{b}{y})**2                                      
+     &lt; $a;
+   confess &quot;Short line2&quot; if $n and $A;
+   $n;      
+  }</pre>
+<p>
+</p>
+<h3><a name="check">check</a></h3>
+<p>Check its a line</p>
+<pre>
+ 
+ sub check(@)
+  {unless (debug)
+    {for my $l(@_)
+      {confess &quot;$l is not a line&quot; unless ref($l) eq __PACKAGE__;
+      }
+    }
+    @_;
+  }</pre>
+<p>
+</p>
+<h3><a name="is">is</a></h3>
+<p>Test its a line</p>
+<pre>
+ 
+ sub is(@)
+  {for my $l(@_)
+    {return 0 unless ref($l) eq __PACKAGE__;
+    }
+   'line2';
+  }</pre>
+<p>
+</p>
+<h3><a name="a,b,ab,ba">a,b,ab,ba</a></h3>
+<p>Components of line</p>
+<pre>
+ 
+ sub a($)  {check(@_) if (debug); $_[0]-&gt;{a}}
+ sub b($)  {check(@_) if (debug); $_[0]-&gt;{b}}
+ sub ab($) {check(@_) if (debug); vector2($_[0]-&gt;{b}{x}-$_[0]-&gt;{a}{x}, $_[0]-&gt;{b}{y}-$_[0]-&gt;{a}{y})}
+ sub ba($) {check(@_) if (debug); $_[0]-&gt;a-$_[0]-&gt;b}</pre>
+<p>
+</p>
+<h3><a name="clone">clone</a></h3>
+<p>Create a line from another line</p>
+<pre>
+ 
+ sub clone($)
+  {my ($l) = check(@_); # Lines
+   bless {a=&gt;$l-&gt;a, b=&gt;$l-&gt;b}; 
+  }</pre>
+<p>
+</p>
+<h3><a name="print">print</a></h3>
+<p>Print line</p>
+<pre>
+ 
+ sub print($)
+  {my ($l) = check(@_); # Lines
+   my ($a, $b) = ($l-&gt;a, $l-&gt;b);
+   my ($A, $B) = ($a-&gt;print, $b-&gt;print);  
+   &quot;line2($A, $B)&quot;;
+  }</pre>
+<p>
+</p>
+<h3><a name="angle">angle</a></h3>
+<p>Angle between two lines</p>
+<pre>
+ 
+ sub angle($$)
+  {my ($a, $b) = check(@_); # Lines
+   $a-&gt;a-$a-&gt;b &lt; $b-&gt;a-$b-&gt;b;     
+  }</pre>
+<p>
+</p>
+<h3><a name="parallel">parallel</a></h3>
+<p>Are two lines parallel</p>
+<pre>
+ 
+ sub parallel($$)
+  {my ($a, $b) = check(@_); # Lines
+ 
+ # return 1 if abs(1 - abs($a-&gt;ab-&gt;norm * $b-&gt;ab-&gt;norm)) &lt; $accuracy;
+   return 1 if abs(1 - abs($a-&gt;ab-&gt;norm * $b-&gt;ab-&gt;norm)) &lt; 1e-3;     
+   0;
+  }</pre>
+<p>
+</p>
+<h3><a name="intersect">intersect</a></h3>
+<p>Intersection of two lines</p>
+<pre>
+ 
+ sub intersect($$)
+  {my ($a, $b) = check(@_); # Lines
+ 
+   return 0 if $a-&gt;parallel($b);
+   my $i = matrix2New2v($a-&gt;ab, $b-&gt;ba) / ($b-&gt;a - $a-&gt;a);
+ 
+   $a-&gt;a+$i-&gt;x*$a-&gt;ab;
+  }</pre>
+<p>
+</p>
+<h3><a name="intersectwithin">intersectWithin</a></h3>
+<p>Intersection of two lines occurs within second line?</p>
+<pre>
+ 
+ sub intersectWithin($$)
+  {my ($a, $b) = check(@_); # Lines
+ 
+   return 0 if $a-&gt;parallel($b);
+   my $i = matrix2New2v($a-&gt;ab, $b-&gt;ba) / ($b-&gt;a - $a-&gt;a);
+ 
+   0 &lt;= $i-&gt;y and $i-&gt;y &lt;= 1;
+  }</pre>
+<p>
+</p>
+<h3><a name="crossover">crossOver</a></h3>
+<p>Do the two line segments cross over each other?</p>
+<pre>
+ 
+ sub crossOver($$)
+  {my ($a, $b) = check(@_); # Lines
+ 
+   return 0 if $a-&gt;parallel($b);
+   my $i = matrix2New2v($a-&gt;ab, $b-&gt;ba) / ($b-&gt;a - $a-&gt;a);
+ 
+   0 &lt;= $i-&gt;x and $i-&gt;x &lt;= 1 and 0 &lt;= $i-&gt;y and $i-&gt;y &lt;= 1;
+  }</pre>
+<p>
+</p>
+<h2><a name="exports">Exports</a></h2>
+<p>Export <a href="#line2">line2</a></p>
+<pre>
+ 
+ use Math::Zap::Exports qw(
+   line2  ($$)
+  );
+ 
+ #_ Line2 ______________________________________________________________
+ # Package loaded successfully
+ #______________________________________________________________________
+ 
+ 1;</pre>
+<p>
+</p>
+<h2><a name="credits">Credits</a></h2>
+<p>
+</p>
+<h3><a name="author">Author</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com">philiprbrenan@yahoo.com</a></p>
+<p>
+</p>
+<h3><a name="copyright">Copyright</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com,">philiprbrenan@yahoo.com,</a> 2004</p>
+<p>
+</p>
+<h3><a name="license">License</a></h3>
+<p>Perl License.</p>
+
+</body>
+
+</html>

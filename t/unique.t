@@ -1,19 +1,12 @@
 #_ Unique _____________________________________________________________
 # Unique           
-# Perl licence
-# PhilipRBrenan@yahoo.com, 2004
+# philiprbrenan@yahoo.com, 2004, Perl License    
 #______________________________________________________________________
 
-use Math::Zap::unique;
-use Math::Zap::triangle;
-use Math::Zap::vector;     
-use Carp;
+use Math::Zap::Unique;
 use Test::Simple tests=>3;
-
-my $u = unique();         
-my $v = unique();         
-print "$u $v\n";
-ok($u ne '');
-ok($v ne '');
-ok($u ne $v);
+   
+ok(unique() ne unique());
+ok(unique() ne unique());
+ok(unique() ne unique());
 

@@ -5,11 +5,11 @@
 # PhilipRBrenan@yahoo.com, 2004.
 #______________________________________________________________________
 
-use Math::Zap::draw;
-use Math::Zap::color;
-use Math::Zap::cube;
-use Math::Zap::triangle;
-use Math::Zap::vector;
+use Math::Zap::Draw;
+use Math::Zap::Color;
+use Math::Zap::Cube unit=>-cu;
+use Math::Zap::Triangle;
+use Math::Zap::Vector;
 
 #_ Draw _______________________________________________________________
 # Draw this set of objects.
@@ -26,8 +26,7 @@ draw
     ->object(triangle(vector( 0,  0,  0), vector(12,  0,  0), vector( 0,  0, 12)) - vector(2.5,  0,  2.5), 'blue')
     ->object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0, -8,  0)),                         'pink')
     ->object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0, -8,  0)),                         'orange')
-    ->object(cube::unit()*2+vector(3,5,1), 'lightblue')
+    ->object(cu()*2+vector(3,5,1), 'lightblue')
 
-#->print;
 ->done; 
 

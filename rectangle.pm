@@ -1,30 +1,76 @@
-#!perl -w
-#_ Rectangle __________________________________________________________
-# Rectangles in 3d space    
-# Perl licence
-# PhilipRBrenan@yahoo.com, 2004
-#______________________________________________________________________
+=head1 Rectangle________________________________________________________
+Rectangles in 3d space    
 
-package Math::Zap::rectangle;
-$VERSION=1.02;
+PhilipRBrenan@yahoo.com, 2004, Perl License
 
-use Math::Zap::vector;
-use Math::Zap::matrix;
+=head2 Synopsis_________________________________________________________
+Example t/rectangle.t
+
+ #_ Rectangle __________________________________________________________
+ # Test 3d rectangles          
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Rectangle;
+ use Math::Zap::Vector;
+ use Test::Simple tests=>3;
+ 
+ my ($a, $b, $c, $d) =
+  (vector(0,    0, +1),
+   vector(0, -1.9, -1),
+   vector(0, -2.0, -1),
+   vector(0, -2.1, -1)
+  );
+ 
+ my $r = rectangle
+  (vector(-1,-1, 0),
+   vector( 2, 0, 0),
+   vector( 0, 2, 0)
+  );
+ 
+ ok($r->intersects($a, $b) == 1);
+ ok($r->intersects($a, $c) == 1);
+ ok($r->intersects($a, $d) == 0);
+ 
+
+
+=head2 Description______________________________________________________
+Rectangles in 3d space    
+=cut____________________________________________________________________
+
+package Math::Zap::Rectangle;
+$VERSION=1.03;
+use Math::Zap::Vector check=>'vectorCheck';
+use Math::Zap::Matrix new3v=>'matrixNew3v';
 use Carp;
 
-#_ Rectangle __________________________________________________________
-# Exports 
-#______________________________________________________________________
+=head2 Constructors_____________________________________________________
+=head3 new______________________________________________________________
+Create a rectangle from 3 vectors:
 
-require Exporter;
-use vars qw( @ISA $VERSION @EXPORT);
+ a position of any corner
+ b first side
+ c second side.
 
-@ISA    = qw(Exporter);
-@EXPORT = qw(rectangle);
+Note that vectors b,c must be at right angles to each other.
+=cut____________________________________________________________________
 
-#_ Rectangle __________________________________________________________
-# Check its a rectangle
-#______________________________________________________________________
+sub new($$$)
+ {my ($a, $b, $c) = vectorCheck(@_);
+  $b->dot($c) == 0 or confess 'non rectangular rectangle specified';
+  bless {a=>$a, b=>$b, c=>$c}; 
+ }
+
+=head3 rectangle________________________________________________________
+Create a rectangle from 3 vectors - synonym for L</new>.
+=cut____________________________________________________________________
+
+sub rectangle($$$) {new($_[0],$_[1],$_[2])};
+
+=head2 Methods__________________________________________________________
+=head3 check____________________________________________________________
+Check its a rectangle
+=cut____________________________________________________________________
 
 sub check(@)
  {for my $r(@_)
@@ -33,9 +79,9 @@ sub check(@)
   return (@_)
  }
 
-#_ Rectangle __________________________________________________________
-# Test its a rectangle
-#______________________________________________________________________
+=head3 is_______________________________________________________________
+Test its a rectangle
+=cut____________________________________________________________________
 
 sub is(@)
  {for my $r(@_)
@@ -44,42 +90,26 @@ sub is(@)
   'rectangle';
  }
 
-#_ Rectangle __________________________________________________________
-# Create a rectangle from 3 vectors:
-# a position of any corner
-# b first side
-# c second side.
-# Note that vectors b,c must be at right angles to each other.
-#______________________________________________________________________
-
-sub new($$$)
- {my ($a, $b, $c) = vector::check(@_);
-  $b->dot($c) == 0 or confess 'non rectangular rectangle specified';
-  bless {a=>$a, b=>$b, c=>$c}; 
- }
-
-sub rectangle($$$) {new($_[0],$_[1],$_[2])};
-
-#_ Rectangle __________________________________________________________
-# Components of rectangle
-#______________________________________________________________________
+=head3 a,b,c____________________________________________________________
+Components of rectangle
+=cut____________________________________________________________________
 
 sub a($) {my ($r) = check(@_); $r->{a}}
 sub b($) {my ($r) = check(@_); $r->{b}}
 sub c($) {my ($r) = check(@_); $r->{c}}
 
-#_ Rectangle __________________________________________________________
-# Create a rectangle from another rectangle
-#______________________________________________________________________
+=head3 clone____________________________________________________________
+Create a rectangle from another rectangle
+=cut____________________________________________________________________
 
 sub clone($)
  {my ($r) = check(@_); # Rectangles
   bless {a=>$r->a, b=>$r->b, c=>$r->c};
  }
 
-#_ Rectangle __________________________________________________________
-# Get/Set accuracy for comparisons
-#______________________________________________________________________
+=head3 accuracy_________________________________________________________
+Get/Set accuracy for comparisons
+=cut____________________________________________________________________
 
 my $accuracy = 1e-10;
 
@@ -88,33 +118,37 @@ sub accuracy
   $accuracy = shift();
  }
 
-#_ Rectangle __________________________________________________________
-# Intersect line between two vectors with plane defined by a rectangle
-# r rectangle
-# a start vector
-# b end vector
-# Solve the simultaneous equations of the plane defined by the
-# rectangle and the line between the vectors:
-#   ra+l*rb+m*rc         = a+(b-a)*n 
-# =>ra+l*rb+m*rc+n*(a-b) = a-ra 
-# Note:  no checks (yet) for line parallel to plane.
-#______________________________________________________________________
+=head3 intersection_____________________________________________________
+Intersect line between two vectors with plane defined by a rectangle
+
+ r rectangle
+ a start vector
+ b end vector
+
+Solve the simultaneous equations of the plane defined by the
+rectangle and the line between the vectors:
+
+   ra+l*rb+m*rc         = a+(b-a)*n 
+ =>ra+l*rb+m*rc+n*(a-b) = a-ra 
+
+Note:  no checks (yet) for line parallel to plane.
+=cut____________________________________________________________________
 
 sub intersection($$$)
- {my ($r)     =         check(@_[0..0]); # Rectangles
-  my ($a, $b) = vector::check(@_[1..2]); # Vectors
+ {my ($r)     =       check(@_[0..0]); # Rectangles
+  my ($a, $b) = vectorCheck(@_[1..2]); # Vectors
    
-  $s = matrix::new3v($r->b, $r->c, $a-$b)/($a-$r->a);
+  $s = matrixNew3v($r->b, $r->c, $a-$b)/($a-$r->a);
  } 
 
-#_ Rectangle __________________________________________________________
+=head3 intersects_______________________________________________________
 # Test whether a line between two vectors intersects a rectangle
 # Note:  no checks (yet) for line parallel to plane.
-#______________________________________________________________________
+=cut____________________________________________________________________
 
 sub intersects($$$)
- {my ($r)     =         check(@_[0..0]); # Rectangles
-  my ($a, $b) = vector::check(@_[1..2]); # Vectors
+ {my ($r)     =       check(@_[0..0]); # Rectangles
+  my ($a, $b) = vectorCheck(@_[1..2]); # Vectors
    
   my $s = $r->intersection($a, $b);
   return 1 if $s->x >=0 and $s->x < 1 and
@@ -123,17 +157,17 @@ sub intersects($$$)
   0;
  } 
 
-#_ Rectangle __________________________________________________________
+=head3 visible__________________________________________________________
 # Visibility of a rectangle r hid by other rectangles R from a view
 # point p.
 # Rectangle r is divided up into I*J sub rectangles: each sub rectangle
 # is tested for visibility from point p via the intervening rectangles.
-#______________________________________________________________________
+=cut____________________________________________________________________
 
 sub visible($$@)
- {my ($p)     = vector::check(@_[0.. 0]);    # Vector
-  my ($I, $J) =              (@_[1.. 2]);    # Number of divisions  
-  my ($r, @R) =         check(@_[3..scalar(@_)-1]);  # Rectangles
+ {my ($p)     = vectorCheck(@_[0.. 0]);    # Vector
+  my ($I, $J) =            (@_[1.. 2]);    # Number of divisions  
+  my ($r, @R) =       check(@_[3..scalar(@_)-1]);  # Rectangles
 
   my $v;
   $v->{r} = $r;                              # Save rectangle data
@@ -156,13 +190,13 @@ sub visible($$@)
   $v;
  } 
 
-#_ Rectangle __________________________________________________________
+=head3 project__________________________________________________________
 # Project rectangle r onto rectangle R from a point p
-#______________________________________________________________________
+=cut____________________________________________________________________
 
 sub project($$$)
- {my ($p)     = vector::check(@_[0.. 0]);    # Vector
-  my ($r, $R) =              (@_[1.. 2]);    # Rectangles           
+ {my ($p)     = vectorCheck(@_[0.. 0]);    # Vector
+  my ($r, $R) =            (@_[1.. 2]);    # Rectangles           
    
   my $A = $r->a;                             # Main  corner of r
   my $B = $r->a+$r->b;                       # One   corner of r
@@ -182,13 +216,13 @@ sub project($$$)
   rectangle($aR, $bR, $cR);
  } 
 
-#_ Rectangle __________________________________________________________
+=head3 projectInto______________________________________________________
 # Project rectangle r into rectangle R from a point p
-#______________________________________________________________________
+=cut____________________________________________________________________
 
 sub projectInto($$$)
- {my ($r, $R) =              (@_[0..1]);    # Rectangles           
-  my ($p)     = vector::check(@_[2..2]);    # Vector
+ {my ($r, $R) =            (@_[0..1]);    # Rectangles           
+  my ($p)     = vectorCheck(@_[2..2]);    # Vector
    
   my $A = $r->a;                             # Main     corner of r
   my $B = $r->a+$r->b;                       # One      corner of r
@@ -203,8 +237,34 @@ sub projectInto($$$)
   ($a, $b, $d, $c);
  } 
 
+=head2 Exports__________________________________________________________
+Export L</rectangle>                                      
+=cut____________________________________________________________________
+
+use Math::Zap::Exports qw(
+  rectangle ($$$)    
+ );
+
 #_ Rectangle __________________________________________________________
 # Package loaded successfully
 #______________________________________________________________________
 
 1;
+
+
+=head2 Credits
+
+=head3 Author
+
+philiprbrenan@yahoo.com
+
+=head3 Copyright
+
+philiprbrenan@yahoo.com, 2004
+
+=head3 License
+
+Perl License.
+
+
+=cut

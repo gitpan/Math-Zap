@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Cube</title>
+<link rev="made" href="mailto:" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#cube">Cube</a></li>
+	<ul>
+
+		<li><a href="#synopsis">Synopsis</a></li>
+		<li><a href="#description">Description</a></li>
+		<li><a href="#constructors">Constructors</a></li>
+		<ul>
+
+			<li><a href="#new">new</a></li>
+			<li><a href="#cube">cube</a></li>
+			<li><a href="#unit">unit</a></li>
+		</ul>
+
+		<li><a href="#methods">Methods</a></li>
+		<ul>
+
+			<li><a href="#check">Check</a></li>
+			<li><a href="#is">is</a></li>
+			<li><a href="#a,_x,_y,_z">a, x, y, z</a></li>
+			<li><a href="#clone">Clone</a></li>
+			<li><a href="#accuracy">Accuracy</a></li>
+			<li><a href="#add">Add</a></li>
+			<li><a href="#subtract">Subtract</a></li>
+			<li><a href="#multiply">Multiply</a></li>
+			<li><a href="#divide">Divide</a></li>
+			<li><a href="#print">Print</a></li>
+			<li><a href="#triangulate">Triangulate</a></li>
+		</ul>
+
+		<li><a href="#operator_overloads">Operator Overloads</a></li>
+		<ul>
+
+			<li><a href="#add">Add</a></li>
+			<li><a href="#subtract">Subtract</a></li>
+			<li><a href="#multiply">Multiply</a></li>
+			<li><a href="#divide">Divide</a></li>
+			<li><a href="#equals">Equals</a></li>
+			<li><a href="#print">Print</a></li>
+		</ul>
+
+		<li><a href="#exports">Exports</a></li>
+		<li><a href="#credits">Credits</a></li>
+		<ul>
+
+			<li><a href="#author">Author</a></li>
+			<li><a href="#copyright">Copyright</a></li>
+			<li><a href="#license">License</a></li>
+		</ul>
+
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="cube">Cube</a></h1>
+<p>Cubes in 3d space
+</p>
+<pre>
+
+PhilipRBrenan@yahoo.com, 2004, Perl License</pre>
+<p>
+</p>
+<h2><a name="synopsis">Synopsis</a></h2>
+<p>Example t/cube.t</p>
+<pre>
+ #_ Cube _______________________________________________________________
+ # Test cube      
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Cube unit=&gt;u;
+ use Test::Simple tests=&gt;5;
+ 
+ ok(u    eq 'cube(vector(0, 0, 0), vector(1, 0, 0), vector(0, 1, 0), vector(0, 0, 1))');
+ ok(u-&gt;a eq 'vector(0, 0, 0)');
+ ok(u-&gt;x eq 'vector(1, 0, 0)');
+ ok(u-&gt;y eq 'vector(0, 1, 0)');
+ ok(u-&gt;z eq 'vector(0, 0, 1)');</pre>
+<p>
+</p>
+<h2><a name="description">Description</a></h2>
+<p>Define and manipulate a cube in 3 dimensions</p>
+<pre>
+ 
+ package Math::Zap::Cube;
+ $VERSION=1.03;
+ use Math::Zap::Unique;
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector check=&gt;vectorCheck;     
+ use Carp;</pre>
+<p>
+</p>
+<h2><a name="constructors">Constructors</a></h2>
+<p>
+</p>
+<h3><a name="new">new</a></h3>
+<p>Create a rectangle from 3 vectors:</p>
+<dl>
+<dt><strong><a name="item_a_position_of_corner">a position of corner</a></strong><br />
+</dt>
+<dt><strong><a name="item_x_first_side">x first side</a></strong><br />
+</dt>
+<dt><strong><a name="item_y_second_side">y second side</a></strong><br />
+</dt>
+<dt><strong><a name="item_z_third_side">z third side</a></strong><br />
+</dt>
+</dl>
+<pre>
+ 
+ sub new($$$$)
+  {my ($a, $x, $y, $z) = vectorCheck(@_);
+   bless {a=&gt;$a, x=&gt;$x, y=&gt;$y, z=&gt;$z}; 
+  }</pre>
+<p>
+</p>
+<h3><a name="cube">cube</a></h3>
+<p>Synonym for <a href="#new">new</a></p>
+<pre>
+ 
+ sub cube($$$$) {new($_[0], $_[1], $_[2], $_[3])};</pre>
+<p>
+</p>
+<h3><a name="unit">unit</a></h3>
+<p>Unit cube</p>
+<pre>
+ 
+ sub unit()
+  {cube(vector(0,0,0), vector(1,0,0), vector(0,1,0), vector(0,0,1));
+  }</pre>
+<p>
+</p>
+<h2><a name="methods">Methods</a></h2>
+<p>
+</p>
+<h3><a name="check">Check</a></h3>
+<p>Check that an anonymous reference is a reference to a cube and confess
+if it is not.</p>
+<pre>
+ 
+ sub check(@)
+  {for my $c(@_)
+    {confess &quot;$c is not a cube&quot; unless ref($c) eq __PACKAGE__;
+    }
+   return (@_)
+  }</pre>
+<p>
+</p>
+<h3><a name="is">is</a></h3>
+<p>Same as <a href="#check">check</a> but return the result to the caller.</p>
+<pre>
+ 
+ sub is(@)
+  {for my $r(@_)
+    {return 0 unless ref($r) eq __PACKAGE__;
+    }
+   'cube';
+  }</pre>
+<p>
+</p>
+<h3><a name="a,_x,_y,_z">a, x, y, z</a></h3>
+<p>Components of cube</p>
+<pre>
+ 
+ sub a($) {my ($c) = check(@_); $c-&gt;{a}}
+ sub x($) {my ($c) = check(@_); $c-&gt;{x}}
+ sub y($) {my ($c) = check(@_); $c-&gt;{y}}
+ sub z($) {my ($c) = check(@_); $c-&gt;{z}}</pre>
+<p>
+</p>
+<h3><a name="clone">Clone</a></h3>
+<p>Create a cube from another cube</p>
+<pre>
+ 
+ sub clone($)
+  {my ($c) = check(@_); # Cube
+   bless {a=&gt;$c-&gt;a, x=&gt;$c-&gt;x, y=&gt;$c-&gt;y, z=&gt;$c-&gt;z};
+  }</pre>
+<p>
+</p>
+<h3><a name="accuracy">Accuracy</a></h3>
+<p>Get/Set accuracy for comparisons</p>
+<pre>
+ 
+ my $accuracy = 1e-10;
+ 
+ sub accuracy
+  {return $accuracy unless scalar(@_);
+   $accuracy = shift();
+  }</pre>
+<p>
+</p>
+<h3><a name="add">Add</a></h3>
+<p>Add a vector to a cube</p>
+<pre>
+ 
+ sub add($$)
+  {my ($c) =       check(@_[0..0]); # Cube       
+   my ($v) = vectorCheck(@_[1..1]); # Vector     
+   new($c-&gt;a+$v, $c-&gt;x, $c-&gt;y, $c-&gt;z);                         
+  }</pre>
+<p>
+</p>
+<h3><a name="subtract">Subtract</a></h3>
+<p>Subtract a vector from a cube</p>
+<pre>
+ 
+ sub subtract($$)
+  {my ($c) =       check(@_[0..0]); # Cube       
+   my ($v) = vectorCheck(@_[1..1]); # Vector     
+   new($c-&gt;a-$v, $c-&gt;x, $c-&gt;y, $c-&gt;z);                         
+  }</pre>
+<p>
+</p>
+<h3><a name="multiply">Multiply</a></h3>
+<p>Cube times a scalar</p>
+<pre>
+ 
+ sub multiply($$)
+  {my ($a) = check(@_[0..0]); # Cube   
+   my ($b) =       @_[1..1];  # Scalar
+   
+   new($a-&gt;a, $a-&gt;x*$b, $a-&gt;y*$b, $a-&gt;z*$b);
+  }</pre>
+<p>
+</p>
+<h3><a name="divide">Divide</a></h3>
+<p>Cube divided by a non zero scalar</p>
+<pre>
+ 
+ sub divide($$)
+  {my ($a) = check(@_[0..0]); # Cube   
+   my ($b) =       @_[1..1];  # Scalar
+   
+   confess &quot;$b is zero&quot; if $b == 0;
+   new($a-&gt;a, $a-&gt;x/$b, $a-&gt;y/$b, $a-&gt;z/$b);
+  }</pre>
+<p>
+</p>
+<h3><a name="print">Print</a></h3>
+<p>Print cube</p>
+<pre>
+ 
+ sub print($)
+  {my ($t) = check(@_); # Cube       
+   my ($a, $x, $y, $z) = ($t-&gt;a, $t-&gt;x, $t-&gt;y, $t-&gt;z);
+   &quot;cube($a, $x, $y, $z)&quot;;
+  }</pre>
+<p>
+</p>
+<h3><a name="triangulate">Triangulate</a></h3>
+<p>Triangulate cube</p>
+<pre>
+ 
+ sub triangulate($$)
+  {my ($c)     = check(@_[0..0]); # Cube
+   my ($color) =       @_[1..1];  # Color           
+   my  $plane;                    # Plane    
+    
+   my @t;
+   $plane = unique();           
+   push @t, {triangle=&gt;triangle($c-&gt;a,                   $c-&gt;a+$c-&gt;x,       $c-&gt;a+$c-&gt;y),       color=&gt;$color, plane=&gt;$plane};
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;x+$c-&gt;y,       $c-&gt;a+$c-&gt;x,       $c-&gt;a+$c-&gt;y),       color=&gt;$color, plane=&gt;$plane};
+   $plane = unique();           
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;z,             $c-&gt;a+$c-&gt;x+$c-&gt;z, $c-&gt;a+$c-&gt;y+$c-&gt;z), color=&gt;$color, plane=&gt;$plane};
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;x+$c-&gt;y+$c-&gt;z, $c-&gt;a+$c-&gt;x+$c-&gt;z, $c-&gt;a+$c-&gt;y+$c-&gt;z), color=&gt;$color, plane=&gt;$plane};
+ 
+ # x y z 
+ # y z x
+   $plane = unique();           
+   push @t, {triangle=&gt;triangle($c-&gt;a,                   $c-&gt;a+$c-&gt;y,       $c-&gt;a+$c-&gt;z),       color=&gt;$color, plane=&gt;$plane};
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;y+$c-&gt;z,       $c-&gt;a+$c-&gt;y,       $c-&gt;a+$c-&gt;z),       color=&gt;$color, plane=&gt;$plane};
+   $plane = unique();           
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;x,             $c-&gt;a+$c-&gt;y+$c-&gt;x, $c-&gt;a+$c-&gt;z+$c-&gt;x), color=&gt;$color, plane=&gt;$plane};
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;y+$c-&gt;z+$c-&gt;x, $c-&gt;a+$c-&gt;y+$c-&gt;x, $c-&gt;a+$c-&gt;z+$c-&gt;x), color=&gt;$color, plane=&gt;$plane};
+ 
+ # x y z 
+ # z x y
+   $plane = unique();           
+   push @t, {triangle=&gt;triangle($c-&gt;a,                   $c-&gt;a+$c-&gt;z,       $c-&gt;a+$c-&gt;x),       color=&gt;$color, plane=&gt;$plane};
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;z+$c-&gt;x,       $c-&gt;a+$c-&gt;z,       $c-&gt;a+$c-&gt;x),       color=&gt;$color, plane=&gt;$plane};
+   $plane = unique();           
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;y,             $c-&gt;a+$c-&gt;z+$c-&gt;y, $c-&gt;a+$c-&gt;x+$c-&gt;y), color=&gt;$color, plane=&gt;$plane};
+   push @t, {triangle=&gt;triangle($c-&gt;a+$c-&gt;z+$c-&gt;x+$c-&gt;y, $c-&gt;a+$c-&gt;z+$c-&gt;y, $c-&gt;a+$c-&gt;x+$c-&gt;y), color=&gt;$color, plane=&gt;$plane};
+   @t;
+  }
+ 
+ unless (caller())
+  {$c = cube(vector(0,0,0), vector(1,0,0), vector(0,1,0), vector(0,0,1));
+   @t = $c-&gt;triangulate('red');
+   print &quot;Done&quot;;
+  }</pre>
+<p>
+</p>
+<h2><a name="operator_overloads">Operator Overloads</a></h2>
+<p>Operator overloads</p>
+<pre>
+ 
+ use overload
+  '+',       =&gt; \&amp;add3,      # Add a vector
+  '-',       =&gt; \&amp;sub3,      # Subtract a vector
+  '*',       =&gt; \&amp;multiply3, # Multiply by scalar
+  '/',       =&gt; \&amp;divide3,   # Divide by scalar 
+  '=='       =&gt; \&amp;equals3,   # Equals
+  '&quot;&quot;'       =&gt; \&amp;print3,    # Print
+  'fallback' =&gt; FALSE;</pre>
+<p>
+</p>
+<h3><a name="add">Add</a></h3>
+<p>Add operator.</p>
+<pre>
+ sub add3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;add($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="subtract">Subtract</a></h3>
+<p>Subtract operator.</p>
+<pre>
+ 
+ sub sub3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;subtract($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="multiply">Multiply</a></h3>
+<p>Multiply operator.</p>
+<pre>
+ 
+ sub multiply3
+  {my ($a, $b) = @_;
+   return $a-&gt;multiply($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="divide">Divide</a></h3>
+<p>Divide operator.</p>
+<pre>
+ 
+ sub divide3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;divide($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="equals">Equals</a></h3>
+<p>Equals operator.</p>
+<pre>
+ 
+ sub equals3
+  {my ($a, $b, $c) = @_;
+   return $a-&gt;equals($b);
+  }</pre>
+<p>
+</p>
+<h3><a name="print">Print</a></h3>
+<p>Print a cube</p>
+<pre>
+ 
+ sub print3
+  {my ($a) = @_;
+   return $a-&gt;print;
+  }</pre>
+<p>
+</p>
+<h2><a name="exports">Exports</a></h2>
+<p>Export <a href="#cube">cube</a>, <a href="#unit">unit</a></p>
+<pre>
+ 
+ use Math::Zap::Exports qw(                               
+   cube ($$$)  
+   unit ()
+  );
+ 
+ #______________________________________________________________________
+ # Package loaded successfully
+ #______________________________________________________________________
+ 
+ 1;</pre>
+<p>
+</p>
+<h2><a name="credits">Credits</a></h2>
+<p>
+</p>
+<h3><a name="author">Author</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com">philiprbrenan@yahoo.com</a></p>
+<p>
+</p>
+<h3><a name="copyright">Copyright</a></h3>
+<p><a href="mailto:philiprbrenan@yahoo.com,">philiprbrenan@yahoo.com,</a> 2004</p>
+<p>
+</p>
+<h3><a name="license">License</a></h3>
+<p>Perl License.
+
+</p>
+
+</body>
+
+</html>

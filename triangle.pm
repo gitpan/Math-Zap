@@ -1,40 +1,198 @@
-#!perl -w
-#_ Triangle ___________________________________________________________
-# Triangles in 3d space    
-# Perl licence
-# PhilipRBrenan@yahoo.com, 2004
-# Definitions:
-#   Space coordinates = 3d space
-#   Plane coordinates = a triangle in 3d space defines a 2d plane
-#     with a natural coordinate system:  the origin is the first point
-#     of the triangle, the (x,y) units of this plane are the sides from
-#     the triangles first point to its other points.   
-#______________________________________________________________________
+=head1 Triangle_________________________________________________________
+Triangles in 3D space
 
-package Math::Zap::triangle;
-$VERSION=1.02;
+PhilipRBrenan@yahoo.com, 2004, Perl License
 
-use Math::Zap::line2;
-use Math::Zap::unique;
-use Math::Zap::vector2;
-use Math::Zap::vector;
-use Math::Zap::matrix;
+=head2 Synopsis_________________________________________________________
+Example t/triangle.t
+
+ #_ Triangle ___________________________________________________________
+ # Test 3d triangles    
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Vector;
+ use Math::Zap::Vector2;
+ use Math::Zap::Triangle;
+ use Test::Simple tests=>25;
+  
+ $t = triangle
+  (vector( 0,  0,  0), 
+   vector( 0,  0,  4), 
+   vector( 4,  0,  0),
+  );
+  
+ $u = triangle
+  (vector( 0,  0,  0), 
+   vector( 0,  1,  4), 
+   vector( 4,  1,  0),
+  );
+ 
+ $T = triangle
+  (vector( 0,  1,  0), 
+   vector( 0,  1,  1), 
+   vector( 1,  1,  0),
+  );
+ 
+ $c = vector(1, 1, 1);
+ 
+ #_ Triangle ___________________________________________________________
+ # Distance to plane
+ #______________________________________________________________________
+ 
+ ok($t->distance($c)   == 1, 'Distance to plane');
+ ok($T->distance($c)   == 0, 'Distance to plane');
+ ok($t->distance(2*$c) == 2, 'Distance to plane');
+ ok($t->distanceToPlaneAlongLine(vector(0,-1,0), vector(0,1,0)) == 1, 'Distance to plane towards a point');
+ ok($T->distanceToPlaneAlongLine(vector(0,-1,0), vector(0,1,0)) == 2, 'Distance to plane towards a point');
+ 
+ #_ Triangle ___________________________________________________________
+ # Permute the points of a triangle
+ #______________________________________________________________________
+ 
+ ok($t->permute                   == $t, 'Permute 1');
+ ok($t->permute->permute          == $t, 'Permute 2');
+ ok($t->permute->permute->permute == $t, 'Permute 3');
+ 
+ #_ Triangle ___________________________________________________________
+ # Intersection of a line with a plane defined by a triangle
+ #______________________________________________________________________
+ 
+ #ok($t->intersection($c, vector(1,  -1,  1)) == vector(1, 0, 1), 'Intersection of line with plane');
+ #ok($t->intersection($c, vector(-1, -1, -1)) == vector(0, 0, 0), 'Intersection of line with plane');
+ 
+ #_ Triangle ___________________________________________________________
+ # Test whether a point is in front or behind a plane relative to another
+ # point
+ #______________________________________________________________________
+  
+ ok($t->frontInBehind($c, vector(1,  0.5,  1)) == +1, 'Front');
+ ok($t->frontInBehind($c, vector(1,    0,  1)) ==  0, 'In');
+ ok($t->frontInBehind($c, vector(1, -0.5,  1)) == -1, 'Behind');
+ 
+ #_ Triangle ___________________________________________________________
+ # Parallel
+ #______________________________________________________________________
+  
+ ok($t->parallel($T) == 1, 'Parallel');
+ ok($t->parallel($u) == 0, 'Not Parallel');
+ 
+ #_ Triangle ___________________________________________________________
+ # Coplanar
+ #______________________________________________________________________
+  
+ #ok($t->coplanar($t) == 1, 'Coplanar');
+ #ok($t->coplanar($u) == 0, 'Not coplanar');
+ #ok($t->coplanar($T) == 0, 'Not coplanar');
+ 
+ #_ Triangle ___________________________________________________________
+ # Project one triangle onto another
+ #______________________________________________________________________
+ 
+ $p = vector(0, 2, 0);
+ $s = $t->project($T, $p);
+ 
+ ok($s == triangle
+  (vector(0,   0,   2),
+   vector(0.5, 0,   2),
+   vector(0,   0.5, 2),
+  ), 'Projection of corner 3');
+ 
+ #_ Triangle ___________________________________________________________
+ # Convert space to plane coordinates and vice versa
+ #______________________________________________________________________
+ 
+ ok($t->convertSpaceToPlane(vector(2, 2, 2))   == vector(0.5,0.5,2), 'Space to Plane');
+ ok($t->convertPlaneToSpace(vector2(0.5, 0.5)) == vector(2, 0, 2),   'Plane to Space');
+ 
+ #_ Triangle ___________________________________________________________
+ # Divide 
+ #______________________________________________________________________
+ 
+ $it = triangle          # Intersects t
+  (vector(  0, -1,  2), 
+   vector(  0,  2,  2), 
+   vector(  3,  2,  2),
+  );
+ 
+ @d = $t->divide($it);
+ 
+ ok($d[0] == triangle(vector(0, -1, 2), vector(0, 0, 2), vector(1, 0, 2)));
+ ok($d[1] == triangle(vector(0,  2, 2), vector(0, 0, 2), vector(1, 0, 2)));
+ ok($d[2] == triangle(vector(0,  2, 2), vector(1, 0, 2), vector(3, 2, 2)));
+ 
+ $it = triangle          # Intersects t
+  (vector(  3,  2,  2),
+   vector(  0,  2,  2), 
+   vector(  0, -1,  2), 
+  );
+ 
+ @d = $t->divide($it);
+ 
+ ok($d[0] == triangle(vector(0, -1, 2), vector(0, 0, 2), vector(1, 0, 2)));
+ ok($d[1] == triangle(vector(3,  2, 2), vector(1, 0, 2), vector(0, 0, 2)));
+ ok($d[2] == triangle(vector(3,  2, 2), vector(0, 0, 2), vector(0, 2, 2)));
+ 
+ $it = triangle          # Intersects t
+  (vector(  3,  2,  2),
+   vector(  0, -1,  2), 
+   vector(  0,  2,  2), 
+  );
+ 
+ @d = $t->divide($it);
+ 
+ ok($d[0] == triangle(vector(0, -1, 2), vector(1, 0, 2), vector(0, 0, 2)));
+ ok($d[1] == triangle(vector(3,  2, 2), vector(1, 0, 2), vector(0, 0, 2)));
+ ok($d[2] == triangle(vector(3,  2, 2), vector(0, 0, 2), vector(0, 2, 2)));
+
+
+=head2 Description______________________________________________________
+Triangles in 3D space
+
+Definitions:
+
+Space coordinates = 3d space
+
+Plane coordinates = a triangle in 3d space defines a 2d plane with a
+natural coordinate system: the origin is the first point of the
+triangle, the (x,y) units of this plane are the sides from the triangles
+first point to its other points.
+=cut____________________________________________________________________
+
+package Math::Zap::Triangle;
+$VERSION=1.03;
+use Math::Zap::Line2;
+use Math::Zap::Unique;
+use Math::Zap::Vector2 check=>'vector2Check';
+use Math::Zap::Vector  check=>'vectorCheck';
+use Math::Zap::Matrix  new3v=>'matrixNew3v';
 use Carp qw(cluck confess);
 use constant debug => 0; # Debugging level
 
-#_ Triangle ___________________________________________________________
-# Exports
-#______________________________________________________________________
+=head2 Constructors_____________________________________________________
+=head3 new______________________________________________________________
+Create a triangle from 3 vectors specifying the coordinates of each
+corner in space coordinates.
+=cut____________________________________________________________________
 
-require Exporter;
-use vars qw( @ISA $VERSION @EXPORT);
+sub new($$$)
+ {my ($a, $b, $c) = vectorCheck(@_);
+  my $t = bless {a=>$a, b=>$b, c=>$c};
+  narrow($t, 1);
+  $t; 
+ }
 
-@ISA    = qw(Exporter);
-@EXPORT = qw(triangle);
+=head3 triangle_________________________________________________________
+Create a triangle from 3 vectors specifying the coordinates of each
+corner in space coordinates - synonym for L</new>.
+=cut____________________________________________________________________
 
-#_ Triangle ___________________________________________________________
-# Narrow (colinear) triangle?
-#______________________________________________________________________
+sub triangle($$$) {new($_[0],$_[1],$_[2])};
+
+=head2 Methods__________________________________________________________
+=head3 narrow___________________________________________________________
+Narrow (colinear) triangle?
+=cut____________________________________________________________________
 
 sub narrow($$)
  {my $t = shift;  # Triangle
@@ -47,9 +205,9 @@ sub narrow($$)
   $n;      
  }
 
-#_ Triangle ___________________________________________________________
-# Check its a triangle
-#______________________________________________________________________
+=head3 check____________________________________________________________
+Check its a triangle
+=cut____________________________________________________________________
 
 sub check(@)
  {if (debug)
@@ -60,9 +218,9 @@ sub check(@)
   return (@_)
  }
 
-#_ Triangle ___________________________________________________________
-# Test its a triangle
-#______________________________________________________________________
+=head3 is_______________________________________________________________
+Test its a triangle
+=cut____________________________________________________________________
 
 sub is(@)
  {for my $t(@_)
@@ -71,23 +229,9 @@ sub is(@)
   'triangle';
  }
 
-#_ Triangle ___________________________________________________________
-# Create a triangle from 3 vectors specifying the coordinates of each
-# corner in space coordinates.
-#______________________________________________________________________
-
-sub new($$$)
- {my ($a, $b, $c) = vector::check(@_);
-  my $t = bless {a=>$a, b=>$b, c=>$c};
-  narrow($t, 1);
-  $t; 
- }
-
-sub triangle($$$) {new($_[0],$_[1],$_[2])};
-
-#_ Triangle ___________________________________________________________
-# Components of a triangle
-#______________________________________________________________________
+=head3 components_______________________________________________________
+Components of a triangle
+=cut____________________________________________________________________
 
 sub a($)   {check(@_) if debug; $_[0]->{a}}
 sub b($)   {check(@_) if debug; $_[0]->{b}}
@@ -103,56 +247,56 @@ sub cb($)  {check(@_) if debug; ($_[0]->{b}-$_[0]->{c})}
 sub abc($) {check(@_) if debug; ($_[0]->{a}, $_[0]->{b}, $_[0]->{c})}
 sub area($){check(@_) if debug; ($_[0]->ab x $_[0]->ac)->length}
 
-#_ Triangle ___________________________________________________________
-# Create a triangle from another triangle 
-#______________________________________________________________________
+=head3 clone____________________________________________________________
+Create a triangle from another triangle 
+=cut____________________________________________________________________
 
 sub clone($)
  {my ($t) = check(@_); # Triangle   
   bless {a=>$t->a, b=>$t->b, c=>$t->c};
  }
 
-#_ Triangle ___________________________________________________________
-# Cyclically permute the points of a triangle
-#______________________________________________________________________
+=head3 permute__________________________________________________________
+Cyclically permute the points of a triangle
+=cut____________________________________________________________________
 
 sub permute($)
  {my ($t) = check(@_); # Triangle   
   bless {a=>$t->b, b=>$t->c, c=>$t->a};
  }
 
-#_ Triangle ___________________________________________________________
-# Center 
-#______________________________________________________________________
+=head3 center___________________________________________________________
+Center 
+=cut____________________________________________________________________
 
 sub center($)
  {my ($t) = check(@_); # Triangle   
   ($t->a + $t->b + $t->c) / 3;
  }
 
-#_ Triangle ___________________________________________________________
-# Add a vector to a triangle               
-#______________________________________________________________________
+=head3 add______________________________________________________________
+Add a vector to a triangle               
+=cut____________________________________________________________________
 
 sub add($$)
  {my ($t) =         check(@_[0..0]); # Triangle   
-  my ($v) = vector::check(@_[1..1]); # Vector     
+  my ($v) = vectorCheck(@_[1..1]); # Vector     
   new($t->a+$v, $t->b+$v, $t->c+$v);                         
  }
 
-#_ Triangle ___________________________________________________________
-# Subtract a vector from a triangle               
-#______________________________________________________________________
+=head3 subtract_________________________________________________________
+Subtract a vector from a triangle               
+=cut____________________________________________________________________
 
 sub subtract($$)
  {my ($t) =         check(@_[0..0]); # Triangle   
-  my ($v) = vector::check(@_[1..1]); # Vector     
+  my ($v) = vectorCheck(@_[1..1]); # Vector     
   new($t->a-$v, $t->b-$v, $t->c-$v);                         
  }
 
-#_ Triangle ___________________________________________________________
-# Print triangle 
-#______________________________________________________________________
+=head3 print____________________________________________________________
+Print triangle 
+=cut____________________________________________________________________
 
 sub print($)
  {my ($t) = check(@_); # Triangle   
@@ -160,9 +304,9 @@ sub print($)
   "triangle($a, $b, $c)";
  }
 
-#_ Triangle ___________________________________________________________
+=head3 accuracy_________________________________________________________
 # Get/Set accuracy for comparisons
-#______________________________________________________________________
+=cut____________________________________________________________________
 
 my $accuracy = 1e-10;
 
@@ -171,100 +315,57 @@ sub accuracy
   $accuracy = shift();
  }
 
-#_ Triangle ___________________________________________________________
-# Is point in plane defined by triangle?
-#______________________________________________________________________
-
-#sub isPointInPlane($$)
-# {my ($t) =         check(@_[0..0]); # Triangle 
-#  my ($p) = vector::check(@_[1..1]); # Point
-#
-#  my ($a, $b, $c) = $t->abc;
-#
-#  my $ab = $b-$a;
-#  my $ac = $c-$a;
-#  my $ap = $p-$a;
-#
-#  my $w  = $ab < $ac;  # Angle between ab and ac
-#  my $w1 = $ap < $ab;  # Angle between ap and ab
-#  my $w2 = $ap < $ac;  # Angle between ap and ac
-#  
-#  return 1 if abs($w-$w1-$w2) < $accuracy;
-#  0;
-# }
-
-#_ Triangle ___________________________________________________________
-# Intersect line between two points with plane defined by triangle and
-# return the intersection in space coordinates.
-# t = triangle
-# a = start vector
-# b = end vector
-# Solve the simultaneous equations of the plane defined by the
-# triangle and the line between the vectors:
-#   ta+l*tab+m*tac = a+(b-a)*n 
-# =>ta+l*tab+m*tac+n*(a-b) = a-ta 
-# Note:  no checks (yet) for line parallel to plane.
-#______________________________________________________________________
-
-#sub intersection($$$)
-# {my ($t)     =         check(@_[0..0]); # Triangle  
-#  my ($a, $b) = vector::check(@_[1..2]); # Vectors
-#   
-#  $s = matrix::new3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
-#
-#  $t->a+$s->x*$t->ab+$s->y*$t->ac;
-# }
-
-#_ Triangle ___________________________________________________________
-# Shortest distance from plane defined by triangle t to point p                                
-#______________________________________________________________________
+=head3 distance_________________________________________________________
+Shortest distance from plane defined by triangle t to point p                                
+=cut____________________________________________________________________
 
 sub distance($$)
  {my ($t) =         check(@_[0..0]); # Triangle  
-  my ($p) = vector::check(@_[1..1]); # Vector
+  my ($p) = vectorCheck(@_[1..1]); # Vector
   my  $n  = $t->ab x $t->ac;         # Plane normal
   my ($a, $b) = ($p, $p+$n);
    
-  my $s = matrix::new3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
+  my $s = matrixNew3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
 
   ($n*$s->z)->length;
  }
 
-#_ Triangle ___________________________________________________________
-# Intersect line between two points with plane defined by triangle and
-# return the intersection in plane coordinates. 
-# Identical logic as per intersection().
-# Note:  no checks (yet) for line parallel to plane.
-#______________________________________________________________________
+=head3 intersectionInPlane______________________________________________
+Intersect line between two points with plane defined by triangle and
+return the intersection in plane coordinates. 
+Identical logic as per intersection().
+Note:  no checks (yet) for line parallel to plane.
+=cut____________________________________________________________________
 
 sub intersectionInPlane($$$)
  {my ($t)     =         check(@_[0..0]); # Triangle  
-  my ($a, $b) = vector::check(@_[1..2]); # Vectors
+  my ($a, $b) = vectorCheck(@_[1..2]); # Vectors
    
-  matrix::new3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
+  matrixNew3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
  }
-#_ Triangle ___________________________________________________________
-# Distance to plane defined by triangle t going from a to b, or undef 
-# if the line is parallel to the plane           
-#______________________________________________________________________
+
+=head3 distanceToPlaneAlongLine_________________________________________
+Distance to plane defined by triangle t going from a to b, or undef 
+if the line is parallel to the plane           
+=cut____________________________________________________________________
 
 sub distanceToPlaneAlongLine($$$)
  {my ($t)     =         check(@_[0..0]); # Triangle  
-  my ($a, $b) = vector::check(@_[1..2]); # Vectors
+  my ($a, $b) = vectorCheck(@_[1..2]); # Vectors
 
   return undef if abs(($t->ab x $t->ac) * ($b - $a)) < $accuracy;
    
-  my $i = matrix::new3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
+  my $i = matrixNew3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
   $i->z * ($a-$b)->length;
  }
 
-#_ Triangle ___________________________________________________________
-# Convert space to plane coordinates                                   
-#______________________________________________________________________
+=head3 convertSpaceToPlane______________________________________________
+Convert space to plane coordinates                                   
+=cut____________________________________________________________________
 
 sub convertSpaceToPlane($$)
  {my ($t) =         check(@_[0..0]); # Triangle  
-  my ($p) = vector::check(@_[1..1]); # Vector
+  my ($p) = vectorCheck(@_[1..1]); # Vector
    
   my $q = $p-$t->a;
 
@@ -275,80 +376,75 @@ sub convertSpaceToPlane($$)
    );
  }
 
-#_ Triangle ___________________________________________________________
-# Convert splane to space coordinates                                   
-#______________________________________________________________________
+=head3 convertPlaneToSpace______________________________________________
+Convert splane to space coordinates                                   
+=cut____________________________________________________________________
 
 sub convertPlaneToSpace($$)
  {my ($t, $p) = @_;
-           check(@_[0..0]) if debug; # Triangle  
-  vector2::check(@_[1..1]) if debug; # Vector in plane
+         check(@_[0..0]) if debug; # Triangle  
+  vector2Check(@_[1..1]) if debug; # Vector in plane
    
   $t->a + ($p->x * $t->ab) + ($p->y * $t->ac);
  }
 
-#_ Triangle ___________________________________________________________
-# Determine whether a test point b as viewed from a view point a is in
-# front of(1), in(0), or behind(-1) a plane defined by a triangle t.
-# Identical logic as per intersection(), except this time we use the
-# z component to determine the relative position of the point b.
-# Note:  no checks (yet) for line parallel to plane.
-#______________________________________________________________________
+=head3 frontInBehind____________________________________________________
+Determine whether a test point b as viewed from a view point a is in
+front of(1), in(0), or behind(-1) a plane defined by a triangle t.
+Identical logic as per intersection(), except this time we use the
+z component to determine the relative position of the point b.
+Note:  no checks (yet) for line parallel to plane.
+=cut____________________________________________________________________
 
 sub frontInBehind($$$)
  {my ($t, $a, $b) = @_;
           check(@_[0..0]) if debug; # Triangle  
-  vector::check(@_[1..2]) if debug; # Vectors
+  vectorCheck(@_[1..2]) if debug; # Vectors
   return 1 if abs(($t->ab x $t->ac) * ($a-$b)) < $accuracy; # Parallel
-  $s = matrix::new3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
+  $s = matrixNew3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
   $s->z <=> 1;
  }
+
+=head3 frontInBehindZ___________________________________________________
+Determine whether a test point b as viewed from a view point a is in
+front of(1), in(0), or behind(-1) a plane defined by a triangle t.
+Identical logic as per intersection(), except this time we use the
+z component to determine the relative position of the point b.
+Note:  no checks (yet) for line parallel to plane.
+=cut____________________________________________________________________
 
 sub frontInBehindZ($$$)
  {my ($t, $a, $b) = @_;
           check(@_[0..0]) if debug; # Triangle  
-  vector::check(@_[1..2]) if debug; # Vectors
+  vectorCheck(@_[1..2]) if debug; # Vectors
   return undef if abs(($t->ab x $t->ac) * ($a-$b)) < $accuracy;  # Parallel
-  $s = matrix::new3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
+  $s = matrixNew3v($t->ab, $t->ac, $a-$b)/($a-$t->a);
   $s->z;
  }
 
-#_ Triangle ___________________________________________________________
-# Are two triangle parallel?
-# I.e. do they define planes that are parallel?
-# If they are parallel, their normals will have zero cross product
-#______________________________________________________________________
+=head3 parallel_________________________________________________________
+Are two triangle parallel?
+I.e. do they define planes that are parallel?
+If they are parallel, their normals will have zero cross product
+=cut____________________________________________________________________
 
 sub parallel($$)
  {my ($a, $b) = check(@_); # Triangles
   !(($a->ab x $a->ac) x ($b->ab x $b->ac))->length;
  }
 
-#_ Triangle ___________________________________________________________
-# Are two triangle co-planar?
-#______________________________________________________________________
-
-#sub coplanar($$)
-# {my ($a, $b) = check(@_); # Triangles
-#  return 0 unless $a->parallel($b);
-#  my $d = $a->a - $b->a;
-#  return 1 if $d->length < $accuracy;
-#  return 1 if abs(($a->ab x $a->ac) * $d) < $accuracy;
-#  0;
-# }
-
-#_ Triangle ___________________________________________________________
-# Divide triangle b by a:  split b into triangles each of which is not
-# intersected by a. 
-# Triangles are easy to draw in 3d except when they intersect:
-# If they do not intersect, we can always draw one on top of the other
-# and obtain the correct result;
-# If they do intersect, they have to be split along the line of
-# intersection into a sub triangle and a quadralateral: which can
-# be be split again to obtain a result consisting of only triangles.
-# The splitting can be done once: Each new view point only requires
-# the correct ordering of the non intersecting triangles.
-#______________________________________________________________________
+=head3 divide___________________________________________________________
+Divide triangle b by a:  split b into triangles each of which is not
+intersected by a. 
+Triangles are easy to draw in 3d except when they intersect:
+If they do not intersect, we can always draw one on top of the other
+and obtain the correct result;
+If they do intersect, they have to be split along the line of
+intersection into a sub triangle and a quadralateral: which can
+be be split again to obtain a result consisting of only triangles.
+The splitting can be done once: Each new view point only requires
+the correct ordering of the non intersecting triangles.
+=cut____________________________________________________________________
 
 sub divide($$)
  {my ($a, $b) = check(@_);         # Triangles  
@@ -462,36 +558,36 @@ sub divide($$)
   confess "Unable to divide triangle $a by $b\n"
  }
 
-#_ Triangle ___________________________________________________________
-# Project onto the plane defined by triangle t the image of a triangle
-# triangle T as viewed from a view point p.
-# Return the coordinates of the projection of T onto t using the plane
-# coordinates induced by t.
-# The projection coordinates are (of course) 2d in the projection plane,
-# however they are returned as the x,y components of a 3d vector with 
-# the z component set to the multiple of the distance from the view point
-# to the corresponding corner of T required to reach t. If z > 1, this
-# corner of T is in front the plane of t, if z < 1 this corner of T is
-# behind the plane of t.
-# The logic is the same as intersection().
-#______________________________________________________________________
+=head3 project__________________________________________________________
+Project onto the plane defined by triangle t the image of a triangle
+triangle T as viewed from a view point p.
+Return the coordinates of the projection of T onto t using the plane
+coordinates induced by t.
+The projection coordinates are (of course) 2d in the projection plane,
+however they are returned as the x,y components of a 3d vector with 
+the z component set to the multiple of the distance from the view point
+to the corresponding corner of T required to reach t. If z > 1, this
+corner of T is in front the plane of t, if z < 1 this corner of T is
+behind the plane of t.
+The logic is the same as intersection().
+=cut____________________________________________________________________
 
 sub project($$$)
  {my ($t, $T, $p) = @_;
           check(@_[0..1]) if debug; # Triangles 
-  vector::check(@_[2..2]) if debug; # Vector
+  vectorCheck(@_[2..2]) if debug; # Vector
 
   new
-   (matrix::new3v($t->ab, $t->ac, $p-$T->a)/($p-$t->a),
-    matrix::new3v($t->ab, $t->ac, $p-$T->b)/($p-$t->a),
-    matrix::new3v($t->ab, $t->ac, $p-$T->c)/($p-$t->a),
+   (matrixNew3v($t->ab, $t->ac, $p-$T->a)/($p-$t->a),
+    matrixNew3v($t->ab, $t->ac, $p-$T->b)/($p-$t->a),
+    matrixNew3v($t->ab, $t->ac, $p-$T->c)/($p-$t->a),
    );
  } 
 
-#_ Triangle ___________________________________________________________
-# Split a triangle into 4 sub triangles unless the sub triangles would
-# be too small
-#______________________________________________________________________
+=head3 split____________________________________________________________
+Split a triangle into 4 sub triangles unless the sub triangles would
+be too small
+=cut____________________________________________________________________
 
 sub split($$)
  {my ($t) = check(@_[0..0]); # Triangles 
@@ -509,9 +605,9 @@ sub split($$)
    )
  } 
 
-#_ Triangle ___________________________________________________________
-# Triangulate
-#______________________________________________________________________
+=head3 triangulate______________________________________________________
+Triangulate
+=cut____________________________________________________________________
 
 sub triangulate($$)
  {my ($t)    = check(@_[0..0]); # Triangle
@@ -521,9 +617,9 @@ sub triangulate($$)
   {triangle=>$t, color=>$color, plane=>$plane};
  }
 
-#_ Triangle ___________________________________________________________
-# Compare two triangles for equality                                  
-#______________________________________________________________________
+=head3 equals___________________________________________________________
+Compare two triangles for equality                                  
+=cut____________________________________________________________________
 
 sub equals($$)
  {my ($a, $b) = check(@_); # Triangles
@@ -541,9 +637,9 @@ abs(($aa-$bc)->length) < $d and abs(($ab-$bb)->length) < $d and abs(($ac-$ba)->l
   0;
  } 
 
-#_ Triangle ___________________________________________________________
-# Operator overloads
-#______________________________________________________________________
+=head2 Operators________________________________________________________
+Operator overloads
+=cut____________________________________________________________________
 
 use overload
  '+',       => \&add3,      # Add a vector
@@ -552,41 +648,49 @@ use overload
  '""'       => \&print3,    # Print
  'fallback' => FALSE;
 
-#_ Vector _____________________________________________________________
-# Add operator.
-#______________________________________________________________________
+=head3 add______________________________________________________________
+Add operator.
+=cut____________________________________________________________________
 
 sub add3
  {my ($a, $b, $c) = @_;
   return $a->add($b);
  }
 
-#_ Vector _____________________________________________________________
-# Subtract operator.
-#______________________________________________________________________
+=head3 subtract_________________________________________________________
+Subtract operator.
+=cut____________________________________________________________________
 
 sub sub3
  {my ($a, $b, $c) = @_;
   return $a->subtract($b);
  }
 
-#_ Vector _____________________________________________________________
-# Equals operator.
-#______________________________________________________________________
+=head3 equals___________________________________________________________
+Equals operator.
+=cut____________________________________________________________________
 
 sub equals3
  {my ($a, $b, $c) = @_;
   return $a->equals($b);
  }
 
-#_ Triangle ___________________________________________________________
-# Print a triangle
-#______________________________________________________________________
+=head3 print____________________________________________________________
+Print a triangle
+=cut____________________________________________________________________
 
 sub print3
  {my ($a) = @_;
   return $a->print;
  }
+
+=head2 Exports__________________________________________________________
+Export L</triangle>
+=cut____________________________________________________________________
+
+use Math::Zap::Exports qw(
+  triangle ($$$)
+ );
 
 #_ Triangle ___________________________________________________________
 # Package loaded successfully
@@ -594,3 +698,21 @@ sub print3
 
 1;
 
+
+
+=head2 Credits
+
+=head3 Author
+
+philiprbrenan@yahoo.com
+
+=head3 Copyright
+
+philiprbrenan@yahoo.com, 2004
+
+=head3 License
+
+Perl License.
+
+
+=cut

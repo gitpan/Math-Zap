@@ -1,29 +1,108 @@
-#!perl -w
-#_ Color ________________________________________________________________
-# Colors.
-# Perl License.
-# PhilipRBrenan@yahoo.com, 2004.
-#________________________________________________________________________
+=head1 Color____________________________________________________________
+Translate, lighten, darken, invert named colors.
 
-package Math::Zap::color;
-$VERSION=1.02;
+PhilipRBrenan@yahoo.com, 2004, Perl License
 
+=head2 Synopsis_________________________________________________________
+Example t/color.t
+
+ #_ Color _______________________________________________________________
+ # Test colors
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #_______________________________________________________________________
+ 
+ use Math::Zap::Color;
+ use Test::Simple tests=>20;
+ 
+ ok(color('dark red')->normal eq '#8b0000');
+ ok(color('dark red')->light  eq '#c58080');
+ ok(color('red')->normal      eq '#ff0000');
+ ok(color('red')->light       eq '#ff8080');
+ ok(color('red')->dark        eq '#7f0000');
+ ok(color('red')->invert      eq '#00ffff');
+ 
+ use Math::Zap::Color color=>'c', invert=>-i;
+ 
+ my $c = c -red;
+ ok("$c"                  eq '#ff0000');
+ ok(i(-red)               eq '#00ffff');
+ ok(c('dark red')->normal eq '#8b0000');
+ ok(c('dark red')->light  eq '#c58080');
+ ok($c->normal            eq '#ff0000');
+ ok($c->light             eq '#ff8080');
+ ok($c->dark              eq '#7f0000');
+ ok($c->invert            eq '#00ffff');
+ ok(c(-green)             eq '#00ff00');
+ ok(c('ReD')              eq '#ff0000');
+ ok(c(-red)               eq '#ff0000');
+ ok(c('#ff0000')          eq '#ff0000');
+ ok(c('ff0000')           eq '#ff0000');
+ ok(c('255,0,0')          eq '#ff0000');
+ 
+
+=head2 Description______________________________________________________
+Simplifies the management of colors by allowing X11 color names to be
+used; provides methods for manipulating the colors.
+=cut____________________________________________________________________
+
+package Math::Zap::Color;
+$VERSION=1.03;
 use Carp;
 use constant debug=>0; # Debugging level
 
-#_ Color ______________________________________________________________
-# Exports 
-#______________________________________________________________________
+=head2 Constructors_____________________________________________________
+=head3 color____________________________________________________________
+A color may be constructed from a reference to an existing color, or
+from a string containing: a color name (quoted or preceeded by -, case
+insensitive), or 3 hexadecimal numbers optionally preceeded by #, or 3
+decimal numbers separated by commas: these number representing the rgb
+color values in the range 0..255. Thus:
 
-require Exporter;
-use vars qw( @ISA $VERSION @EXPORT);
+ 'ReD'
+ -red
+ 'ff0000'
+ '255,0,0'
+=cut____________________________________________________________________
 
-@ISA    = qw(Exporter);
-@EXPORT = qw(color);
+sub color($)
+ {my $C  = shift;
+  my @rgb;
 
-#_ Color ______________________________________________________________
-# Check its a color   
-#______________________________________________________________________
+  if (ref($C))
+   {if (ref($C) eq 'ARRAY')
+     {@rgb = @$C;
+     }
+    else
+     {die "Unknown color format $C";
+     }
+   } 
+  else
+   {my $c =  lc($C);    # lowercase
+       $c =~ s/\s+//g;  # remove spaces
+       $c =~ s/^-//g;   # remove leading '-' as alternative to quotes
+       $c =~ s/^#//g;   # remove leading '#'
+
+    if ($color->{$c})
+     {@rgb = ($color->{$c}[0], $color->{$c}[1], $color->{$c}[2]);
+     }
+    elsif ($c =~ /^([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])/)
+     {@rgb = (hex($1), hex($2), hex($3));
+     }
+    elsif ($c =~ /^(\d+),(\d+),(\d+)$/)
+     {@rgb = ($1, $2, $3);
+     }
+    else
+     {croak "Unknown color format $C";
+     }
+   }
+  bless \@rgb;
+ }
+
+=head2 Methods__________________________________________________________
+=head3 check____________________________________________________________
+Check that an anonymous reference is a reference to a color and confess
+if it is not.
+=cut____________________________________________________________________
 
 sub check(@)
  {if (debug)
@@ -34,9 +113,9 @@ sub check(@)
   return (@_)
  }
 
-#_ Color ______________________________________________________________
-# Test its a color   
-#______________________________________________________________________
+=head3 is_______________________________________________________________
+Same as L</check> but return the result to the caller.   
+=cut____________________________________________________________________
 
 sub is(@)
  {for my $t(@_)
@@ -44,9 +123,50 @@ sub is(@)
    }
   'color';
  }
-#_ Color ________________________________________________________________
-# X11 Color table
-#________________________________________________________________________
+
+=head3 normal___________________________________________________________
+Normal value of the color
+=cut____________________________________________________________________
+
+sub normal($)
+ {my $c = shift;
+     $c = color($c) unless ref($c) eq __PACKAGE__;
+  sprintf("#%02x%02x%02x", $c->[0], $c->[1], $c->[2]);
+ }
+
+=head3 light____________________________________________________________
+Lighter shade of the color
+=cut____________________________________________________________________
+
+sub light($)
+ {my $c = shift;
+     $c = color($c) unless ref($c) eq __PACKAGE__;
+  sprintf("#%02x%02x%02x", 128+int($c->[0]/2), 128+int($c->[1]/2), 128+int($c->[2]/2));
+ }
+
+=head3 dark_____________________________________________________________
+Darker shade of the color
+=cut____________________________________________________________________
+
+sub dark($)
+ {my $c = shift;
+     $c = color($c) unless ref($c) eq __PACKAGE__;
+  sprintf("#%02x%02x%02x", int($c->[0]/2), int($c->[1]/2), int($c->[2]/2));
+ }
+
+=head3 invert___________________________________________________________
+Inversion of the color
+=cut____________________________________________________________________
+
+sub invert($)
+ {my $c = shift;
+     $c = color($c) unless ref($c) eq __PACKAGE__;
+  sprintf("#%02x%02x%02x", 255-$c->[0], 255-$c->[1], 255-$c->[2]);
+ }
+
+=head2 Color table______________________________________________________
+The names of the colors and their matching RGB values.
+=cut____________________________________________________________________
 
 $colors = <<'END';
 255 250 250  snow
@@ -803,8 +923,8 @@ $colors = <<'END';
 144 238 144  LightGreen
 END
 
-#_ Color ________________________________________________________________
-# Parse the color table 
+#________________________________________________________________________
+# Parse the color table once at compile time.
 #________________________________________________________________________
 
 for (split(/\n/, $colors))
@@ -818,80 +938,46 @@ for (split(/\n/, $colors))
   $color->{$c} = [$r, $g, $b];
  }
 
-#_ Color ________________________________________________________________
-# Constructor.
+=head2 Operator Overloads_______________________________________________
+Stringification returns the normal value of the color
+=cut____________________________________________________________________
+
+use overload
+ '""'       => \&normal, 
+ 'fallback' => FALSE;
+
+=head2 Exports__________________________________________________________
+Export L</color>, L</light>, L</dark>, L</invert>
+=cut____________________________________________________________________
+
+use Math::Zap::Exports qw(
+  color  ($)
+  light  ($)
+  dark   ($)
+  invert ($)
+ );
+
 #________________________________________________________________________
-
-sub color($)
- {my $C  = shift;
-  my @rgb;
-
-  if (ref($C))
-   {if (ref($C) eq 'ARRAY')
-     {@rgb = @$C;
-     }
-    else
-     {die "Unknown color format $C";
-     }
-   } 
-  else
-   {my $c =  lc($C);
-       $c =~ s/\s+//g;
-
-    if ($color->{$c})
-     {@rgb = ($color->{$c}[0], $color->{$c}[1], $color->{$c}[2]);
-     }
-    elsif ($c =~ /^#?([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])([[:xdigit:]][[:xdigit:]])/)
-     {@rgb = (hex($1), hex($2), hex($3));
-     }
-    elsif ($c =~ /^(\d+),(\d+),(\d+)$/)
-     {@rgb = ($1, $2, $3);
-     }
-    else
-     {croak "Unknown color format $C";
-     }
-   }
-  bless \@rgb;
- }
-
-#_ Color ________________________________________________________________
-# Color - normal
-#________________________________________________________________________
-
-sub normal($)
- {my $c = shift;
-  sprintf("#%02x%02x%02x", $c->[0], $c->[1], $c->[2]);
- }
-
-#_ Color ________________________________________________________________
-# Color - light  
-#________________________________________________________________________
-
-sub light($)
- {my $c = shift;
-  sprintf("#%02x%02x%02x", 128+int($c->[0]/2), 128+int($c->[1]/2), 128+int($c->[2]/2));
- }
-
-#_ Color ________________________________________________________________
-# Color - dark  
-#________________________________________________________________________
-
-sub dark($)
- {my $c = shift;
-  sprintf("#%02x%02x%02x", int($c->[0]/2), int($c->[1]/2), int($c->[2]/2));
- }
-
-#_ Color ________________________________________________________________
-# Color - invert  
-#________________________________________________________________________
-
-sub invert($)
- {my $c = shift;
-  sprintf("#%02x%02x%02x", 255-$c->[0], 255-$c->[1], 255-$c->[2]);
- }
-
-#_ Color ________________________________________________________________
 # Package installed successfully
 #________________________________________________________________________
 
 1;
+
+
+
+=head2 Credits
+
+=head3 Author
+
+philiprbrenan@yahoo.com
+
+=head3 Copyright
+
+philiprbrenan@yahoo.com, 2004
+
+=head3 License
+
+Perl License.
+
+
+=cut
