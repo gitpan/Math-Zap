@@ -1,5 +1,7 @@
 =head1 README: Math::Zap
 
+Draw 3D objects in 2D
+
 This package supplies methods to draw a scene, containing three dimensional
 objects, as a two dimensional image, using lighting and shadowing to assist the
 human observer in reconstructing the original three dimensional scene.
@@ -49,7 +51,7 @@ under the same terms as Perl itself.
 This is alpha code. It is written in pure Perl. It uses the standard
 Perl install mechanism.
 
-Download Math-Zap-1.06.tar.gz from CPAN, untar and:
+Download Math-Zap-1.07.tar.gz from CPAN, untar and:
 
   perl Makefile.PL
   make

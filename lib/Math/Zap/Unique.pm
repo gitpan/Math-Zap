@@ -33,7 +33,7 @@ Returns a unique id each time it is called.
 
 
 package Math::Zap::Unique;
-$VERSION=1.06;
+$VERSION=1.07;
 use Carp;
 
 

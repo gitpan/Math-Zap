@@ -53,7 +53,7 @@ Rectangles in 3d space
  
  
  package Math::Zap::Rectangle;
- $VERSION=1.06;
+ $VERSION=1.07;
  use Math::Zap::Vector check=>'vectorCheck';
  use Math::Zap::Matrix new3v=>'matrixNew3v';
  use Carp;

@@ -2,7 +2,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile
  (NAME     => 'Math::Zap',
-  VERSION  => '1.06',	
+  VERSION  => '1.07',	
   ABSTRACT => 'Draw 3D objects in 2D',
   AUTHOR   => 'philiprbrenan@yahoo.com',
   PREREQ_PM=> 

@@ -97,7 +97,7 @@ Triangles in 2d space
  
  
  package Math::Zap::Triangle2;
- $VERSION=1.06;
+ $VERSION=1.07;
  use Math::Zap::Line2;
  use Math::Zap::Matrix2 new2v=>'matrix2New2v';
  use Math::Zap::Vector2 check=>'vector2Check';

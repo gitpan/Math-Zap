@@ -23,7 +23,7 @@ Rather than:
 Export routines from a package with names specified by caller of the
 package. The routines to be exported are defined in the exporting
 package Math::Zap::As:
-$VERSION=1.06;
+$VERSION=1.07;
 
  use Math::Zap::Exports qw(
    vector ($$$)
@@ -50,7 +50,7 @@ have identical effects.
 
 The advantage of this is approach is that it allows the importing
 package Math::Zap::To control the names of the exported routines in its name space
-$VERSION=1.06;
+$VERSION=1.07;
 rather than the developer of the exporting package, a facility I have
 not been able to discover in the standard Perl Exporter.pm.
                                  
@@ -66,7 +66,7 @@ Construct import routine.
 
 ##1
 package Math::Zap::Exports;
-$VERSION=1.06;
+$VERSION=1.07;
 
 #______________________________________________________________________
 # Import for exports: export from exporting package.

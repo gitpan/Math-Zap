@@ -1,4 +1,8 @@
 CHANGES: Math::Zap
+    2004/06/14 1.07 Library structure.
+
+    2004/06/13 1.06 Capitalized package file names.
+
     2004/06/13 1.05 Expanded pod in pm files.
 
     2004/06/11 1.04 Created lib directory in order to create a more perfect

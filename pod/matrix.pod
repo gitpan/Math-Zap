@@ -67,7 +67,7 @@ Example t/matrix.t
  
  
  package Math::Zap::Matrix;
- $VERSION=1.06;
+ $VERSION=1.07;
  use Math::Zap::Vector check=>'vectorCheck', is=>'vectorIs';
  use Carp;
  use constant debug => 0; # Debugging level

@@ -1,93 +1,81 @@
 
-=head1 Vector2
+=head1 Vector
 
-Manipulate 2D vectors    
-    
-PhilipRBrenan@yahoo.com, 2004, Perl License
+Manipulate 3D vectors
+
+PhilipRBrenan@yahoo.com, 2004, Perl licence
 
 
 =head2 Synopsis
 
-Example t/vector2.t
+Example t/vector.t
 
  #_ Vector _____________________________________________________________
- # Test 2d vectors    
+ # Test 3d vectors    
  # philiprbrenan@yahoo.com, 2004, Perl License    
  #______________________________________________________________________
  
- use Math::Zap::Vector2 vector2=>v, units=>u;
+ use Math::Zap::Vector vector=>'v', units=>'u';
  use Test::Simple tests=>7;
  
- my ($x, $y) = u();
+ my ($x, $y, $z) = u();
  
- ok(!$x                    == 1);
- ok(2*$x+3*$y              == v( 2,  3));
- ok(-$x-$y                 == v(-1, -1));
- ok((2*$x+3*$y) + (-$x-$y) == v( 1,  2));
- ok((2*$x+3*$y) * (-$x-$y) == -5);  
- ok($x*2                   == v( 2,  0));
- ok($y/2                   == v( 0,  0.5));
+ ok(!$x                            == 1);
+ ok(2*$x+3*$y+4*$z                 == v( 2,  3,   4));
+ ok(-$x-$y-$z                      == v(-1, -1,  -1));
+ ok((2*$x+3*$y+4*$z) + (-$x-$y-$z) == v( 1,  2,   3));
+ ok((2*$x+3*$y+4*$z) * (-$x-$y-$z) == -9);  
+ ok($x*2                           == v( 2,  0,   0));
+ ok($y/2                           == v( 0,  0.5, 0));
  
 
 
 =head2 Description
 
-Manipulate 2D vectors    
+Manipulate 3 dimensional vectors via operators.
 
 =cut
 
 
-package Math::Zap::Vector2; 
-$VERSION=1.06;
+package Math::Zap::Vector; 
+$VERSION=1.07;
 use Math::Trig;
 use Carp;
 use constant debug => 0; # Debugging level
 
 
-=head2 Constructors
+=head3 Constructors
 
 
-=head3 new
+=head4 new
 
 Create a vector from numbers
 
 =cut
 
 
-sub new($$)
- {return bless {x=>$_[0], y=>$_[1]} unless debug;
-  my ($x, $y) = @_; 
-  round(bless({x=>$x, y=>$y})); 
+sub new($$$)
+ {return round(bless({x=>$_[0], y=>$_[1], z=>$_[2]})) if debug; 
+  bless {x=>$_[0], y=>$_[1], z=>$_[2]}; 
  }
 
-
-=head3 vector2
-
-Create a vector from numbers - synonym for L</new>
-
-=cut
+sub vector($$$) {new($_[0], $_[1], $_[2])}
 
 
-sub vector2($$) {new($_[0],$_[1])}
+=head4 units
 
-
-=head3 units
-
-Unit vectors                                        
+Unit vectors              
 
 =cut
 
 
-$x = new(1,0);
-$y = new(0,1);
-
-sub units() {($x, $y)}
+sub units() {($x, $y, $z)}
 
 
-=head2 Methods
+=head3 Methods
 
 
-=head3 check
+=head4 check
 
 Check its a vector
 
@@ -97,14 +85,14 @@ Check its a vector
 sub check(@)
  {if (debug)
    {for my $v(@_)
-     {confess "$v is not a vector2" unless ref($v) eq __PACKAGE__;
+     {confess "$v is not a vector" unless ref($v) eq __PACKAGE__;
      }
    }
   return (@_)
  }
 
 
-=head3 is
+=head4 is
 
 Test its a vector
 
@@ -115,11 +103,11 @@ sub is(@)
  {for my $v(@_)
    {return 0 unless ref($v) eq __PACKAGE__;
    }
-  1;
+  'vector';
  }
 
 
-=head3 accuracy
+=head4 accuracy
 
 Get/Set accuracy for comparisons
 
@@ -134,7 +122,7 @@ sub accuracy
  }
 
 
-=head3 round
+=head4 round
 
 Round: round to nearest integer if within accuracy of that integer 
 
@@ -157,18 +145,23 @@ sub round($)
  }
 
 
-=head3 components
+=head4 x,y,z
 
-x,y components of vector
+x,y,z components of vector
 
 =cut
 
 
 sub x($) {check(@_) if debug; $_[0]->{x}}
 sub y($) {check(@_) if debug; $_[0]->{y}}
+sub z($) {check(@_) if debug; $_[0]->{z}}
+
+$x = new(1,0,0);
+$y = new(0,1,0);
+$z = new(0,0,1);
 
 
-=head3 clone
+=head4 clone
 
 Create a vector from another vector
 
@@ -177,11 +170,11 @@ Create a vector from another vector
 
 sub clone($)
  {my ($v) = check(@_); # Vectors
-  round bless {x=>$v->x, y=>$v->y}; 
+  round bless {x=>$v->x, y=>$v->y, z=>$v->z}; 
  }
 
 
-=head3 length
+=head4 length
 
 Length of a vector
 
@@ -189,12 +182,12 @@ Length of a vector
 
 
 sub length($)
- {check(@_[0..0]) if debug; # Vectors
-  sqrt($_[0]->{x}**2+$_[0]->{y}**2);
+ {my ($v) = check(@_[0..0]); # Vectors
+  sqrt($v->x**2+$v->y**2+$v->z**2);
  } 
 
 
-=head3 print
+=head4 print
 
 Print vector
 
@@ -203,13 +196,13 @@ Print vector
 
 sub print($)
  {my ($v) = check(@_); # Vectors
-  my ($x, $y) = ($v->x, $v->y);
+  my ($x, $y, $z) = ($v->x, $v->y, $v->z);
 
-  "vector2($x, $y)";
+  "vector($x, $y, $z)";
  } 
 
 
-=head3 normalize
+=head4 norm
 
 Normalize vector
 
@@ -218,28 +211,19 @@ Normalize vector
 
 sub norm($)
  {my ($v) = check(@_); # Vectors
+     $v = $v->clone;   # Copy vector
   my $l = $v->length;
 
   $l > 0 or confess "Cannot normalize zero length vector $v";
 
-  new($v->x / $l, $v->y / $l);
- }
-
-
-=head3 rightAngle
-
-At right angles
-
-=cut
-
-
-sub rightAngle($)
- {my ($v) = check(@_); # Vectors
-  new(-$v->y, $v->x);
+  $v->{x} /= $l;
+  $v->{y} /= $l;
+  $v->{z} /= $l;
+  $v;
  } 
 
 
-=head3 dot
+=head4 dot
 
 Dot product
 
@@ -248,11 +232,11 @@ Dot product
 
 sub dot($$)
  {my ($a, $b) = check(@_); # Vectors
-  $a->x*$b->x+$a->y*$b->y;
+  $a->x*$b->x+$a->y*$b->y+$a->z*$b->z;
  } 
 
 
-=head3 angle
+=head4 angle
 
 Angle between two vectors
 
@@ -265,7 +249,25 @@ sub angle($$)
  } 
 
 
-=head3 add
+=head4 cross
+
+Cross product
+
+=cut
+
+
+sub cross($$)
+ {my ($a, $b) = check(@_); # Vectors
+
+	new
+  ((($a->y * $b->z) - ($a->z * $b->y)),
+	 (($a->z * $b->x) - ($a->x * $b->z)),
+	 (($a->x * $b->y) - ($a->y * $b->x))
+  );
+ }
+
+
+=head4 add
 
 Add vectors
 
@@ -274,11 +276,11 @@ Add vectors
 
 sub add($$)
  {my ($a, $b) = check(@_); # Vectors
-  new($a->x+$b->x, $a->y+$b->y);
+  new($a->x+$b->x, $a->y+$b->y, $a->z+$b->z);
  }
 
 
-=head3 subtract
+=head4 subtract
 
 Subtract vectors
 
@@ -287,11 +289,11 @@ Subtract vectors
 
 sub subtract($$)
  {check(@_) if debug; # Vectors
-  new($_[0]->{x}-$_[1]->{x}, $_[0]->{y}-$_[1]->{y});
+  new($_[0]->{x}-$_[1]->{x}, $_[0]->{y}-$_[1]->{y}, $_[0]->{z}-$_[1]->{z});
  }
 
 
-=head3 multiply
+=head4 multiply
 
 Vector times a scalar
 
@@ -303,11 +305,11 @@ sub multiply($$)
   my ($b) =       @_[1..1];  # Scalar
   
   confess "$b is not a scalar" if ref($b);
-  new($a->x*$b, $a->y*$b);
+  new($a->x*$b, $a->y*$b, $a->z*$b);
  }
 
 
-=head3 divide
+=head4 divide
 
 Vector divided by a non zero scalar
 
@@ -320,11 +322,11 @@ sub divide($$)
 
   confess "$b is not a scalar" if ref($b);
   confess "$b is zero"         if $b == 0;
-  new($a->x/$b, $a->y/$b);
+  new($a->x/$b, $a->y/$b, $a->z/$b);
  }
 
 
-=head3 equals
+=head4 equals
 
 Equals to within accuracy
 
@@ -334,13 +336,14 @@ Equals to within accuracy
 sub equals($$)
  {my ($a, $b) = check(@_); # Vectors
   abs($a->x-$b->x) < $accuracy and
-  abs($a->y-$b->y) < $accuracy;
+  abs($a->y-$b->y) < $accuracy and
+  abs($a->z-$b->z) < $accuracy;
  }
 
 
-=head2 Operators
+=head4 Operator Overloads
 
-# Operator overloads
+Operator overloads
 
 =cut
 
@@ -350,6 +353,7 @@ use overload
  '-'        => \&subtract3, # Subtract one vector from another
  '*'        => \&multiply3, # Times by a scalar, or vector dot product 
  '/'        => \&divide3,   # Divide by a scalar
+ 'x'        => \&cross3,    # BEWARE LOW PRIORITY! Cross product
  '<'        => \&angle3,    # Angle in radians between two vectors
  '>'        => \&angle3,    # Angle in radians between two vectors
  '=='       => \&equals3,   # Equals
@@ -358,9 +362,9 @@ use overload
  'fallback' => FALSE;
 
 
-=head3 add
+=head4 Add operator
 
-Add operator.
+Add operator, see L</add>
 
 =cut
 
@@ -371,7 +375,7 @@ sub add3
  }
 
 
-=head3 subtract
+=head4 Subtract Operator
 
 Subtract operator.
 
@@ -379,16 +383,14 @@ Subtract operator.
 
 
 sub subtract3
- {#my ($a, $b, $c) = @_;
-  #return $a->subtract($b) if ref($b);
-  return new($_[0]->{x}-$_[1]->{x}, $_[0]->{y}-$_[1]->{y}) if ref($_[1]);
-  new(-$_[0]->{x}, -$_[0]->{y});
+ {return new($_[0]->{x}-$_[1]->{x}, $_[0]->{y}-$_[1]->{y}, $_[0]->{z}-$_[1]->{z}) if ref($_[1]);
+  new(-$_[0]->{x}, -$_[0]->{y}, -$_[0]->{z});
  }
 
 
-=head3 multiply
+=head4 Multiply Operator
 
-Multiply operator.
+Multiply operator, see L</multiply>
 
 =cut
 
@@ -400,9 +402,9 @@ sub multiply3
  }
 
 
-=head3 divide
+=head4 Divide Operator
 
-Divide operator.
+Divide operator, see L</divide>
 
 =cut
 
@@ -413,9 +415,22 @@ sub divide3
  }
 
 
-=head3 angle
+=head4 Cross Operator
 
-Angle between two vectors.
+Cross operator, see L</cross>
+
+=cut
+
+
+sub cross3
+ {my ($a, $b, $c) = @_;
+  return $a->cross($b);
+ }
+
+
+=head4 Angle Operator
+
+Angle operator, see L</angle>
 
 =cut
 
@@ -426,9 +441,9 @@ sub angle3
  }
 
 
-=head3 equals
+=head4 Equals Operator
 
-Equals operator.
+Equals operator, see L</equals>
 
 =cut
 
@@ -439,9 +454,9 @@ sub equals3
  }
 
 
-=head3 print
+=head4 Print Operator
 
-Print a vector.
+Print a vector, see L</print>
 
 =cut
 
@@ -452,21 +467,21 @@ sub print3
  }
 
 
-=head2 Exports
+=head2 Export Definitions
 
-Export L</vector2>, L</units>, L</check>, L</is>
+Export L</vector>, L</units>, L</check>, L</is>
 
 =cut
 
 
-use Math::Zap::Exports qw(                               
-  vector2 ($$)  
-  units   ()
-  check   (@)
-  is      (@)
+use Math::Zap::Exports qw(
+  vector ($$$)
+  units  ()
+  check  (@)
+  is     (@)
  );
 
-#_ Vector2 ____________________________________________________________
+#______________________________________________________________________
 # Package loaded successfully
 #______________________________________________________________________
 
