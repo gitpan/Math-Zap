@@ -47,7 +47,7 @@ under the same terms as Perl itself.
 This is alpha code. It is written in pure Perl. It uses the standard
 Perl install mechanism.
 
-Download Math-Zap-1.04.tar.gz from CPAN, untar and:
+Download Math-Zap-1.05.tar.gz from CPAN, untar and:
 
   perl Makefile.PL
   make

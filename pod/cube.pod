@@ -1,4 +1,5 @@
 
+
 =head1 Cube 
 
 
@@ -7,26 +8,49 @@ Cubes in 3d space
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 
+
 =head2 Synopsis
 
 
-#example t/cube.t
+Example t/cube.t
+
+ #_ Cube _______________________________________________________________
+ # Test cube      
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Cube unit=>u;
+ use Test::Simple tests=>5;
+ 
+ ok(u    eq 'cube(vector(0, 0, 0), vector(1, 0, 0), vector(0, 1, 0), vector(0, 0, 1))');
+ ok(u->a eq 'vector(0, 0, 0)');
+ ok(u->x eq 'vector(1, 0, 0)');
+ ok(u->y eq 'vector(0, 1, 0)');
+ ok(u->z eq 'vector(0, 0, 1)');
+ 
+
+
 
 =head2 Description
 
 
 Define and manipulate a cube in 3 dimensions
 
+
  
- package cube;
- use unique;
- use triangle;
- use vector check=>vectorCheck;     
+ 
+ package Math::Zap::Cube;
+ $VERSION=1.05;
+ use Math::Zap::Unique;
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector check=>vectorCheck;     
  use Carp;
+ 
  
 
 
 =head2 Constructors
+
 
 
 
@@ -35,7 +59,10 @@ Define and manipulate a cube in 3 dimensions
 
 Create a rectangle from 3 vectors:
 
+
 =over
+
+
 
 
 
@@ -43,7 +70,11 @@ Create a rectangle from 3 vectors:
 
 
 
+
+
 =item x first side
+
+
 
 
 
@@ -51,7 +82,11 @@ Create a rectangle from 3 vectors:
 
 
 
+
+
 =item z third side
+
+
 
 
 
@@ -59,11 +94,15 @@ Create a rectangle from 3 vectors:
 
 
 
+
+
+ 
  
  sub new($$$$)
   {my ($a, $x, $y, $z) = vectorCheck(@_);
    bless {a=>$a, x=>$x, y=>$y, z=>$z}; 
   }
+ 
  
 
 
@@ -72,8 +111,11 @@ Create a rectangle from 3 vectors:
 
 Synonym for L</new>
 
+
+ 
  
  sub cube($$$$) {new($_[0], $_[1], $_[2], $_[3])};
+ 
  
 
 
@@ -82,14 +124,18 @@ Synonym for L</new>
 
 Unit cube                   
 
+
+ 
  
  sub unit()
   {cube(vector(0,0,0), vector(1,0,0), vector(0,1,0), vector(0,0,1));
   }
  
+ 
 
 
 =head2 Methods
+
 
 
 
@@ -99,6 +145,8 @@ Unit cube
 Check that an anonymous reference is a reference to a cube and confess
 if it is not.
 
+
+ 
  
  sub check(@)
   {for my $c(@_)
@@ -107,6 +155,7 @@ if it is not.
    return (@_)
   }
  
+ 
 
 
 =head3 is
@@ -114,6 +163,8 @@ if it is not.
 
 Same as L</check> but return the result to the caller.   
 
+
+ 
  
  sub is(@)
   {for my $r(@_)
@@ -122,6 +173,7 @@ Same as L</check> but return the result to the caller.
    'cube';
   }
  
+ 
 
 
 =head3 a, x, y, z
@@ -129,11 +181,14 @@ Same as L</check> but return the result to the caller.
 
 Components of cube
 
+
+ 
  
  sub a($) {my ($c) = check(@_); $c->{a}}
  sub x($) {my ($c) = check(@_); $c->{x}}
  sub y($) {my ($c) = check(@_); $c->{y}}
  sub z($) {my ($c) = check(@_); $c->{z}}
+ 
  
 
 
@@ -142,11 +197,14 @@ Components of cube
 
 Create a cube from another cube
 
+
+ 
  
  sub clone($)
   {my ($c) = check(@_); # Cube
    bless {a=>$c->a, x=>$c->x, y=>$c->y, z=>$c->z};
   }
+ 
  
 
 
@@ -155,6 +213,8 @@ Create a cube from another cube
 
 Get/Set accuracy for comparisons
 
+
+ 
  
  my $accuracy = 1e-10;
  
@@ -163,6 +223,7 @@ Get/Set accuracy for comparisons
    $accuracy = shift();
   }
  
+ 
 
 
 =head3 Add
@@ -170,12 +231,15 @@ Get/Set accuracy for comparisons
 
 Add a vector to a cube                   
 
+
+ 
  
  sub add($$)
   {my ($c) =       check(@_[0..0]); # Cube       
    my ($v) = vectorCheck(@_[1..1]); # Vector     
    new($c->a+$v, $c->x, $c->y, $c->z);                         
   }
+ 
  
 
 
@@ -184,12 +248,15 @@ Add a vector to a cube
 
 Subtract a vector from a cube                   
 
+
+ 
  
  sub subtract($$)
   {my ($c) =       check(@_[0..0]); # Cube       
    my ($v) = vectorCheck(@_[1..1]); # Vector     
    new($c->a-$v, $c->x, $c->y, $c->z);                         
   }
+ 
  
 
 
@@ -198,6 +265,8 @@ Subtract a vector from a cube
 
 Cube times a scalar
 
+
+ 
  
  sub multiply($$)
   {my ($a) = check(@_[0..0]); # Cube   
@@ -206,6 +275,7 @@ Cube times a scalar
    new($a->a, $a->x*$b, $a->y*$b, $a->z*$b);
   }
  
+ 
 
 
 =head3 Divide
@@ -213,6 +283,8 @@ Cube times a scalar
 
 Cube divided by a non zero scalar
 
+
+ 
  
  sub divide($$)
   {my ($a) = check(@_[0..0]); # Cube   
@@ -222,6 +294,7 @@ Cube divided by a non zero scalar
    new($a->a, $a->x/$b, $a->y/$b, $a->z/$b);
   }
  
+ 
 
 
 =head3 Print
@@ -229,12 +302,15 @@ Cube divided by a non zero scalar
 
 Print cube     
 
+
+ 
  
  sub print($)
   {my ($t) = check(@_); # Cube       
    my ($a, $x, $y, $z) = ($t->a, $t->x, $t->y, $t->z);
    "cube($a, $x, $y, $z)";
   }
+ 
  
 
 
@@ -243,6 +319,8 @@ Print cube
 
 Triangulate cube
 
+
+ 
  
  sub triangulate($$)
   {my ($c)     = check(@_[0..0]); # Cube
@@ -283,6 +361,7 @@ Triangulate cube
    print "Done";
   }
  
+ 
 
 
 =head2 Operator Overloads
@@ -290,6 +369,8 @@ Triangulate cube
 
 Operator overloads
 
+
+ 
  
  use overload
   '+',       => \&add3,      # Add a vector
@@ -300,6 +381,7 @@ Operator overloads
   '""'       => \&print3,    # Print
   'fallback' => FALSE;
  
+ 
 
 
 =head3 Add
@@ -307,10 +389,13 @@ Operator overloads
 
 Add operator.
 
+
+ 
  sub add3
   {my ($a, $b, $c) = @_;
    return $a->add($b);
   }
+ 
  
 
 
@@ -319,11 +404,14 @@ Add operator.
 
 Subtract operator.
 
+
+ 
  
  sub sub3
   {my ($a, $b, $c) = @_;
    return $a->subtract($b);
   }
+ 
  
 
 
@@ -332,11 +420,14 @@ Subtract operator.
 
 Multiply operator.
 
+
+ 
  
  sub multiply3
   {my ($a, $b) = @_;
    return $a->multiply($b);
   }
+ 
  
 
 
@@ -345,11 +436,14 @@ Multiply operator.
 
 Divide operator.
 
+
+ 
  
  sub divide3
   {my ($a, $b, $c) = @_;
    return $a->divide($b);
   }
+ 
  
 
 
@@ -358,11 +452,14 @@ Divide operator.
 
 Equals operator.
 
+
+ 
  
  sub equals3
   {my ($a, $b, $c) = @_;
    return $a->equals($b);
   }
+ 
  
 
 
@@ -371,11 +468,14 @@ Equals operator.
 
 Print a cube
 
+
+ 
  
  sub print3
   {my ($a) = @_;
    return $a->print;
   }
+ 
  
 
 
@@ -384,8 +484,10 @@ Print a cube
 
 Export L</cube>, L</unit>
 
+
  
- use exports qw(                               
+ 
+ use Math::Zap::Exports qw(                               
    cube ($$$)  
    unit ()
   );
@@ -396,3 +498,30 @@ Export L</cube>, L</unit>
  
  1;
  
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

@@ -1,9 +1,13 @@
-=head1 Color____________________________________________________________
+
+=head1 Color
+
 Translate, lighten, darken, invert named colors.
 
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
-=head2 Synopsis_________________________________________________________
+
+=head2 Synopsis
+
 Example t/color.t
 
  #_ Color _______________________________________________________________
@@ -40,18 +44,26 @@ Example t/color.t
  ok(c('255,0,0')          eq '#ff0000');
  
 
-=head2 Description______________________________________________________
+
+=head2 Description
+
 Simplifies the management of colors by allowing X11 color names to be
 used; provides methods for manipulating the colors.
-=cut____________________________________________________________________
+
+=cut
+
 
 package Math::Zap::Color;
-$VERSION=1.04;
+$VERSION=1.05;
 use Carp;
 use constant debug=>0; # Debugging level
 
-=head2 Constructors_____________________________________________________
-=head3 color____________________________________________________________
+
+=head2 Constructors
+
+
+=head3 color
+
 A color may be constructed from a reference to an existing color, or
 from a string containing: a color name (quoted or preceeded by -, case
 insensitive), or 3 hexadecimal numbers optionally preceeded by #, or 3
@@ -62,7 +74,9 @@ color values in the range 0..255. Thus:
  -red
  'ff0000'
  '255,0,0'
-=cut____________________________________________________________________
+
+=cut
+
 
 sub color($)
  {my $C  = shift;
@@ -98,11 +112,17 @@ sub color($)
   bless \@rgb;
  }
 
-=head2 Methods__________________________________________________________
-=head3 check____________________________________________________________
+
+=head2 Methods
+
+
+=head3 check
+
 Check that an anonymous reference is a reference to a color and confess
 if it is not.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub check(@)
  {if (debug)
@@ -113,9 +133,13 @@ sub check(@)
   return (@_)
  }
 
-=head3 is_______________________________________________________________
+
+=head3 is
+
 Same as L</check> but return the result to the caller.   
-=cut____________________________________________________________________
+
+=cut
+
 
 sub is(@)
  {for my $t(@_)
@@ -124,9 +148,13 @@ sub is(@)
   'color';
  }
 
-=head3 normal___________________________________________________________
+
+=head3 normal
+
 Normal value of the color
-=cut____________________________________________________________________
+
+=cut
+
 
 sub normal($)
  {my $c = shift;
@@ -134,9 +162,13 @@ sub normal($)
   sprintf("#%02x%02x%02x", $c->[0], $c->[1], $c->[2]);
  }
 
-=head3 light____________________________________________________________
+
+=head3 light
+
 Lighter shade of the color
-=cut____________________________________________________________________
+
+=cut
+
 
 sub light($)
  {my $c = shift;
@@ -144,9 +176,13 @@ sub light($)
   sprintf("#%02x%02x%02x", 128+int($c->[0]/2), 128+int($c->[1]/2), 128+int($c->[2]/2));
  }
 
-=head3 dark_____________________________________________________________
+
+=head3 dark
+
 Darker shade of the color
-=cut____________________________________________________________________
+
+=cut
+
 
 sub dark($)
  {my $c = shift;
@@ -154,9 +190,13 @@ sub dark($)
   sprintf("#%02x%02x%02x", int($c->[0]/2), int($c->[1]/2), int($c->[2]/2));
  }
 
-=head3 invert___________________________________________________________
+
+=head3 invert
+
 Inversion of the color
-=cut____________________________________________________________________
+
+=cut
+
 
 sub invert($)
  {my $c = shift;
@@ -164,9 +204,13 @@ sub invert($)
   sprintf("#%02x%02x%02x", 255-$c->[0], 255-$c->[1], 255-$c->[2]);
  }
 
-=head2 Color table______________________________________________________
+
+=head2 Color table
+
 The names of the colors and their matching RGB values.
-=cut____________________________________________________________________
+
+=cut
+
 
 $colors = <<'END';
 255 250 250  snow
@@ -938,17 +982,25 @@ for (split(/\n/, $colors))
   $color->{$c} = [$r, $g, $b];
  }
 
-=head2 Operator Overloads_______________________________________________
+
+=head2 Operator Overloads
+
 Stringification returns the normal value of the color
-=cut____________________________________________________________________
+
+=cut
+
 
 use overload
  '""'       => \&normal, 
  'fallback' => FALSE;
 
-=head2 Exports__________________________________________________________
+
+=head2 Exports
+
 Export L</color>, L</light>, L</dark>, L</invert>
-=cut____________________________________________________________________
+
+=cut
+
 
 use Math::Zap::Exports qw(
   color  ($)

@@ -1,9 +1,13 @@
-=head1 Triangle2________________________________________________________
+
+=head1 Triangle2
+
 Triangles in 2D space
 
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
-=head2 Synopsis_________________________________________________________
+
+=head2 Synopsis
+
 Example t/triangle2.t
 
  #_ Triangle ___________________________________________________________
@@ -78,12 +82,16 @@ Example t/triangle2.t
  ok($p[5] == vector2(0, 3), 'Ring 5');
 
 
-=head2 Description______________________________________________________
+
+=head2 Description
+
 Triangles in 2d space
-=cut____________________________________________________________________
+
+=cut
+
 
 package Math::Zap::Triangle2;
-$VERSION=1.04;
+$VERSION=1.05;
 use Math::Zap::Line2;
 use Math::Zap::Matrix2 new2v=>'matrix2New2v';
 use Math::Zap::Vector2 check=>'vector2Check';
@@ -92,11 +100,17 @@ use Math::Trig;
 use Carp qw(cluck confess);
 use constant debug => 0; # Debugging level
 
-=head2 Constructors_____________________________________________________
-=head3 new______________________________________________________________
+
+=head2 Constructors
+
+
+=head3 new
+
 Create a triangle from 3 vectors specifying the coordinates of each
 corner in space coordinates.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub new($$$)
  {vector2Check(@_) if debug;
@@ -105,25 +119,37 @@ sub new($$$)
   $t;
  }
 
-=head3 triangle2________________________________________________________
+
+=head3 triangle2
+
 Create a triangle from 3 vectors specifying the coordinates of each
 corner in space coordinates - synonym for L</new>.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub triangle2($$$) {new($_[0],$_[1],$_[2])};
 
-=head3 newnnc___________________________________________________________
+
+=head3 newnnc
+
 New without narrowness check
-=cut____________________________________________________________________
+
+=cut
+
 
 sub newnnc($$$)
  {vector2Check(@_) if debug;
   bless {a=>$_[0], b=>$_[1], c=>$_[2]};
  }
 
-=head3 newV_____________________________________________________________
+
+=head3 newV
+
 Create a triangle from the x,y components of 3 3d vectors.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub newV($$$)
  {vectorCheck(@_) if debug;
@@ -135,10 +161,14 @@ sub newV($$$)
   $t;
  }
 
-=head3 newVnnc__________________________________________________________
+
+=head3 newVnnc
+
 Create a triangle from the x,y components of 3 3d vectors without
 narrowness checking - assumes caller will do thir own.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub newVnnc($$$)
  {vectorCheck(@_) if debug;
@@ -148,10 +178,16 @@ sub newVnnc($$$)
     c=>vector2($_[2]->{x}, $_[2]->{y})};
  }
 
-=head2 Methods__________________________________________________________
-=head3 accuracy_________________________________________________________
+
+=head2 Methods
+
+
+=head3 accuracy
+
 Get/Set accuracy for comparisons
-=cut____________________________________________________________________
+
+=cut
+
 
 my $accuracy = 1e-10;
 
@@ -160,9 +196,13 @@ sub accuracy
   $accuracy = shift();
  }
 
-=head3 narrow___________________________________________________________
+
+=head3 narrow
+
 Narrow (colinear) colinear?
-=cut____________________________________________________________________
+
+=cut
+
 
 sub narrow($$)
  {my $t = shift;  # Triangle
@@ -175,9 +215,13 @@ sub narrow($$)
   $n;      
  }
 
-=head3 check____________________________________________________________
+
+=head3 check
+
 Check its a triangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub check(@)
  {if (debug)
@@ -188,9 +232,13 @@ sub check(@)
   @_;
  }
 
-=head3 is_______________________________________________________________
+
+=head3 is
+
 Test its a triangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub is(@)
  {for my $t(@_)
@@ -199,9 +247,13 @@ sub is(@)
   'triangle2';
  }
 
-=head3 components_______________________________________________________
+
+=head3 components
+
 Components of a triangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub a($)   {check(@_) if debug; $_[0]->{a}}
 sub b($)   {check(@_) if debug; $_[0]->{b}}
@@ -223,45 +275,65 @@ sub lbc($)  {check(@_) if debug; line2($_[0]->{c}, $_[0]->{b})}
 sub lca($)  {check(@_) if debug; line2($_[0]->{a}, $_[0]->{c})}
 sub lcb($)  {check(@_) if debug; line2($_[0]->{b}, $_[0]->{c})}
 
-=head3 clone____________________________________________________________
+
+=head3 clone
+
 Create a triangle from another triangle 
-=cut____________________________________________________________________
+
+=cut
+
 
 sub clone($)
  {my ($t) = check(@_); # Triangle   
   bless {a=>$t->a, b=>$t->b, c=>$t->c};
  }
 
-=head3 permute__________________________________________________________
+
+=head3 permute
+
 Cyclically permute the points of a triangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub permute($)
  {my ($t) = check(@_); # Triangle   
   bless {a=>$t->b, b=>$t->c, c=>$t->a};
  }
 
-=head3 center___________________________________________________________
+
+=head3 center
+
 Center 
-=cut____________________________________________________________________
+
+=cut
+
 
 sub center($)
  {my ($t) = check(@_); # Triangle   
   ($t->a + $t->b + $t->c) / 3;
  }
 
-=head3 area_____________________________________________________________
+
+=head3 area
+
 Area 
-=cut____________________________________________________________________
+
+=cut
+
 
 sub area($)
  {my ($t) = check(@_); # Triangle   
   sqrt((($t->ab*$t->ab) * ($t->ac*$t->ac)) - ($t->ab * $t->ac))/2;
  }
 
-=head3 add______________________________________________________________
+
+=head3 add
+
 Add a vector to a triangle               
-=cut____________________________________________________________________
+
+=cut
+
 
 sub add($$)
  {my ($t) =          check(@_[0..0]); # Triangle   
@@ -269,9 +341,13 @@ sub add($$)
   new($t->a+$v, $t->b+$v, $t->c+$v);                         
  }
 
-=head3 subtract_________________________________________________________
+
+=head3 subtract
+
 Subtract a vector from a triangle               
-=cut____________________________________________________________________
+
+=cut
+
 
 sub subtract($$)
  {my ($t) =          check(@_[0..0]); # Triangle   
@@ -279,9 +355,13 @@ sub subtract($$)
   new($t->a-$v, $t->b-$v, $t->c-$v);                         
  }
 
-=head3 multiply_________________________________________________________
+
+=head3 multiply
+
 Multiply a triangle by a scalar               
-=cut____________________________________________________________________
+
+=cut
+
 
 sub multiply($$)
  {my ($t) = check(@_[0..0]); # Triangle   
@@ -289,9 +369,13 @@ sub multiply($$)
   new($t->a * $s, $t->b * $s, $t->c * $s);                         
  }
 
-=head3 divideBy_________________________________________________________
+
+=head3 divideBy
+
 Divide a triangle by a scalar               
-=cut____________________________________________________________________
+
+=cut
+
 
 sub divideBy($$)
  {my ($t) = check(@_[0..0]); # Triangle   
@@ -300,9 +384,13 @@ sub divideBy($$)
   new($t->a / $s, $t->b / $s, $t->c / $s);                         
  }
 
-=head3 print____________________________________________________________
+
+=head3 print
+
 Print triangle 
-=cut____________________________________________________________________
+
+=cut
+
 
 sub print($)
  {my ($t) = @_; # Triangle   
@@ -311,9 +399,13 @@ sub print($)
   "triangle2($a, $b, $c)";
  }
 
-=head3 convertSpaceToPlane______________________________________________
+
+=head3 convertSpaceToPlane
+
 Convert space to plane coordinates                                   
-=cut____________________________________________________________________
+
+=cut
+
 
 sub convertSpaceToPlane($$)
  {my ($t, $p) = @_;
@@ -328,9 +420,13 @@ sub convertSpaceToPlane($$)
    );
  }
 
-=head3 containsPoint____________________________________________________
+
+=head3 containsPoint
+
 Check whether point p is completely contained within triangle t.                                   
-=cut____________________________________________________________________
+
+=cut
+
 
 sub containsPoint($$)
  {my ($t, $p) = @_;
@@ -345,9 +441,13 @@ sub containsPoint($$)
   0;
  }
 
-=head3 contains_________________________________________________________
+
+=head3 contains
+
 Check whether triangle T is completely contained within triangle t.                                   
-=cut____________________________________________________________________
+
+=cut
+
 
 sub contains($$)
  {my ($t, $T) = @_; 
@@ -359,11 +459,15 @@ sub contains($$)
   0;
  }
 
-=head3 pointsInCommon___________________________________________________
+
+=head3 pointsInCommon
+
 Find points in common to two triangles.  A point in common is a point
 on the border of one triangle touched by the border of the other
 triangle.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub pointsInCommon($$)
  {my ($t, $T) = @_; 
@@ -397,9 +501,13 @@ sub pointsInCommon($$)
   values(%p); 
  }
 
-=head3 ring_____________________________________________________________
+
+=head3 ring
+
 Ring of points formed by overlaying triangle t and T
-=cut____________________________________________________________________
+
+=cut
+
 
 sub ring($$)
  {my ($t, $T) = @_; 
@@ -436,9 +544,13 @@ sub ring($$)
   @a;
  }
 
-=head3 convertPlaneToSpace______________________________________________
+
+=head3 convertPlaneToSpace
+
 Convert plane to space coordinates                                   
-=cut____________________________________________________________________
+
+=cut
+
 
 sub convertPlaneToSpace($$)
  {my ($t, $p) = @_;                               
@@ -448,10 +560,14 @@ sub convertPlaneToSpace($$)
   $t->a + ($p->x * $t->ab) + ($p->y * $t->ac);
  }
 
-=head3 split____________________________________________________________
+
+=head3 split
+
 Split a triangle into 4 sub triangles unless the sub triangles would
 be too small
-=cut____________________________________________________________________
+
+=cut
+
 
 sub split($$)
  {my ($t) = check(@_[0..0]); # Triangles 
@@ -469,9 +585,13 @@ sub split($$)
    )
  } 
 
-=head3 equals___________________________________________________________
+
+=head3 equals
+
 Compare two triangles for equality                                  
-=cut____________________________________________________________________
+
+=cut
+
 
 sub equals($$)
  {my ($a, $b) = check(@_); # Triangles
@@ -489,9 +609,13 @@ abs(($aa-$bc)->length) < $d and abs(($ab-$bb)->length) < $d and abs(($ac-$ba)->l
   0;
  } 
 
-=head3 Operators________________________________________________________
+
+=head3 Operators
+
 Operator overloads
-=cut____________________________________________________________________
+
+=cut
+
 
 use overload
  '+',       => \&add3,      # Add a vector
@@ -502,63 +626,91 @@ use overload
  '""'       => \&print3,    # Print
  'fallback' => FALSE;
 
-=head3 add______________________________________________________________
+
+=head3 add
+
 Add operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub add3
  {my ($a, $b, $c) = @_;
   return $a->add($b);
  }
 
-=head3 subtract_________________________________________________________
+
+=head3 subtract
+
 Subtract operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub sub3
  {my ($a, $b, $c) = @_;
   return $a->subtract($b);
  }
 
-=head3 multiply_________________________________________________________
+
+=head3 multiply
+
 Multiply operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub multiply3
  {my ($a, $b) = @_;
   return $a->multiply($b);
  }
 
-=head3 divide___________________________________________________________
+
+=head3 divide
+
 Divide operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub divide3
  {my ($a, $b, $c) = @_;
   return $a->divideBy($b);
  }
 
-=head3 equals___________________________________________________________
+
+=head3 equals
+
 Equals operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub equals3
  {my ($a, $b, $c) = @_;
   return $a->equals($b);
  }
 
-=head3 print____________________________________________________________
+
+=head3 print
+
 Print a triangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub print3
  {my ($a) = @_;
   return $a->print;
  }
 
-=head2 Exports__________________________________________________________
+
+=head2 Exports
+
 Export L</triangle2>, L</new>, L</newnnc>, L</newV>, L</newVnnc>
-=cut____________________________________________________________________
+
+=cut
+
 
 use Math::Zap::Exports qw(
   triangle2 ($$$)

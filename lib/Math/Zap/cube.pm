@@ -1,9 +1,13 @@
-=head1 Cube ___________________________________________________________
+
+=head1 Cube 
+
 Cubes in 3d space
     
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
-=head2 Synopsis_________________________________________________________
+
+=head2 Synopsis
+
 Example t/cube.t
 
  #_ Cube _______________________________________________________________
@@ -21,52 +25,94 @@ Example t/cube.t
  ok(u->z eq 'vector(0, 0, 1)');
  
 
-=head2 Description_____________________________________________________
+
+=head2 Description
+
 Define and manipulate a cube in 3 dimensions
-=cut____________________________________________________________________
+
+=cut
+
 
 package Math::Zap::Cube;
-$VERSION=1.04;
+$VERSION=1.05;
 use Math::Zap::Unique;
 use Math::Zap::Triangle;
 use Math::Zap::Vector check=>vectorCheck;     
 use Carp;
 
-=head2 Constructors____________________________________________________
-=head3 new_____________________________________________________________
+
+=head2 Constructors
+
+
+=head3 new
+
 Create a rectangle from 3 vectors:
+
 =over
+
+
+
 =item a position of corner
+
+
+
 =item x first side
+
+
+
 =item y second side
+
+
+
 =item z third side
+
+
+
 =back
-=cut___________________________________________________________________
+
+
+
+=cut
+
 
 sub new($$$$)
  {my ($a, $x, $y, $z) = vectorCheck(@_);
   bless {a=>$a, x=>$x, y=>$y, z=>$z}; 
  }
 
-=head3 cube____________________________________________________________
+
+=head3 cube
+
 Synonym for L</new>
-=cut___________________________________________________________________
+
+=cut
+
 
 sub cube($$$$) {new($_[0], $_[1], $_[2], $_[3])};
 
-=head3 unit____________________________________________________________
+
+=head3 unit
+
 Unit cube                   
-=cut___________________________________________________________________
+
+=cut
+
 
 sub unit()
  {cube(vector(0,0,0), vector(1,0,0), vector(0,1,0), vector(0,0,1));
  }
 
-=head2 Methods_________________________________________________________
-=head3 Check___________________________________________________________
+
+=head2 Methods
+
+
+=head3 Check
+
 Check that an anonymous reference is a reference to a cube and confess
 if it is not.
-=cut___________________________________________________________________
+
+=cut
+
 
 sub check(@)
  {for my $c(@_)
@@ -75,9 +121,13 @@ sub check(@)
   return (@_)
  }
 
-=head3 is_______________________________________________________________
+
+=head3 is
+
 Same as L</check> but return the result to the caller.   
-=cut____________________________________________________________________
+
+=cut
+
 
 sub is(@)
  {for my $r(@_)
@@ -86,27 +136,39 @@ sub is(@)
   'cube';
  }
 
-=head3 a, x, y, z______________________________________________________
+
+=head3 a, x, y, z
+
 Components of cube
-=cut___________________________________________________________________
+
+=cut
+
 
 sub a($) {my ($c) = check(@_); $c->{a}}
 sub x($) {my ($c) = check(@_); $c->{x}}
 sub y($) {my ($c) = check(@_); $c->{y}}
 sub z($) {my ($c) = check(@_); $c->{z}}
 
-=head3 Clone___________________________________________________________
+
+=head3 Clone
+
 Create a cube from another cube
-=cut___________________________________________________________________
+
+=cut
+
 
 sub clone($)
  {my ($c) = check(@_); # Cube
   bless {a=>$c->a, x=>$c->x, y=>$c->y, z=>$c->z};
  }
 
-=head3 Accuracy________________________________________________________
+
+=head3 Accuracy
+
 Get/Set accuracy for comparisons
-=cut___________________________________________________________________
+
+=cut
+
 
 my $accuracy = 1e-10;
 
@@ -115,9 +177,13 @@ sub accuracy
   $accuracy = shift();
  }
 
-=head3 Add_____________________________________________________________
+
+=head3 Add
+
 Add a vector to a cube                   
-=cut___________________________________________________________________
+
+=cut
+
 
 sub add($$)
  {my ($c) =       check(@_[0..0]); # Cube       
@@ -125,9 +191,13 @@ sub add($$)
   new($c->a+$v, $c->x, $c->y, $c->z);                         
  }
 
-=head3 Subtract________________________________________________________
+
+=head3 Subtract
+
 Subtract a vector from a cube                   
-=cut___________________________________________________________________
+
+=cut
+
 
 sub subtract($$)
  {my ($c) =       check(@_[0..0]); # Cube       
@@ -135,9 +205,13 @@ sub subtract($$)
   new($c->a-$v, $c->x, $c->y, $c->z);                         
  }
 
-=head3 Multiply________________________________________________________
+
+=head3 Multiply
+
 Cube times a scalar
-=cut___________________________________________________________________
+
+=cut
+
 
 sub multiply($$)
  {my ($a) = check(@_[0..0]); # Cube   
@@ -146,9 +220,13 @@ sub multiply($$)
   new($a->a, $a->x*$b, $a->y*$b, $a->z*$b);
  }
 
-=head3 Divide__________________________________________________________
+
+=head3 Divide
+
 Cube divided by a non zero scalar
-=cut___________________________________________________________________
+
+=cut
+
 
 sub divide($$)
  {my ($a) = check(@_[0..0]); # Cube   
@@ -158,9 +236,13 @@ sub divide($$)
   new($a->a, $a->x/$b, $a->y/$b, $a->z/$b);
  }
 
-=head3 Print___________________________________________________________
+
+=head3 Print
+
 Print cube     
-=cut___________________________________________________________________
+
+=cut
+
 
 sub print($)
  {my ($t) = check(@_); # Cube       
@@ -168,9 +250,13 @@ sub print($)
   "cube($a, $x, $y, $z)";
  }
 
-=head3 Triangulate_____________________________________________________
+
+=head3 Triangulate
+
 Triangulate cube
-=cut___________________________________________________________________
+
+=cut
+
 
 sub triangulate($$)
  {my ($c)     = check(@_[0..0]); # Cube
@@ -211,9 +297,13 @@ unless (caller())
   print "Done";
  }
 
-=head2 Operator Overloads______________________________________________
+
+=head2 Operator Overloads
+
 Operator overloads
-=cut___________________________________________________________________
+
+=cut
+
 
 use overload
  '+',       => \&add3,      # Add a vector
@@ -224,62 +314,90 @@ use overload
  '""'       => \&print3,    # Print
  'fallback' => FALSE;
 
-=head3 Add_____________________________________________________________
+
+=head3 Add
+
 Add operator.
-=cut___________________________________________________________________
+
+=cut
+
 sub add3
  {my ($a, $b, $c) = @_;
   return $a->add($b);
  }
 
-=head3 Subtract________________________________________________________
+
+=head3 Subtract
+
 Subtract operator.
-=cut___________________________________________________________________
+
+=cut
+
 
 sub sub3
  {my ($a, $b, $c) = @_;
   return $a->subtract($b);
  }
 
-=head3 Multiply________________________________________________________
+
+=head3 Multiply
+
 Multiply operator.
-=cut___________________________________________________________________
+
+=cut
+
 
 sub multiply3
  {my ($a, $b) = @_;
   return $a->multiply($b);
  }
 
-=head3 Divide__________________________________________________________
+
+=head3 Divide
+
 Divide operator.
-=cut___________________________________________________________________
+
+=cut
+
 
 sub divide3
  {my ($a, $b, $c) = @_;
   return $a->divide($b);
  }
 
-=head3 Equals__________________________________________________________
+
+=head3 Equals
+
 Equals operator.
-=cut___________________________________________________________________
+
+=cut
+
 
 sub equals3
  {my ($a, $b, $c) = @_;
   return $a->equals($b);
  }
 
-=head3 Print___________________________________________________________
+
+=head3 Print
+
 Print a cube
-=cut___________________________________________________________________
+
+=cut
+
 
 sub print3
  {my ($a) = @_;
   return $a->print;
  }
 
-=head2 Exports__________________________________________________________
+
+=head2 Exports
+
 Export L</cube>, L</unit>
-=cut____________________________________________________________________
+
+=cut
+
 
 use Math::Zap::Exports qw(                               
   cube ($$$)  

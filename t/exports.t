@@ -4,7 +4,7 @@
 #______________________________________________________________________
 
 package Math::Zap::Zzz;
-$VERSION=1.04;
+$VERSION=1.05;
 
 sub aaa {'hello from aaa'};
 sub bbb {'hello from bbb'};
@@ -17,7 +17,7 @@ use Math::Zap::Exports qw(
 1;
 
 package Math::Zap::Main;
-$VERSION=1.04;
+$VERSION=1.05;
 
 Math::Zap::Zzz::import(qw(zzz aaa -a bbb -b));
 use Test::Simple tests=>2;

@@ -1,4 +1,5 @@
 
+
 =head1 Rectangle
 
 
@@ -7,10 +8,40 @@ Rectangles in 3d space
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 
+
 =head2 Synopsis
 
 
-#example t/rectangle.t
+Example t/rectangle.t
+
+ #_ Rectangle __________________________________________________________
+ # Test 3d rectangles          
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Rectangle;
+ use Math::Zap::Vector;
+ use Test::Simple tests=>3;
+ 
+ my ($a, $b, $c, $d) =
+  (vector(0,    0, +1),
+   vector(0, -1.9, -1),
+   vector(0, -2.0, -1),
+   vector(0, -2.1, -1)
+  );
+ 
+ my $r = rectangle
+  (vector(-1,-1, 0),
+   vector( 2, 0, 0),
+   vector( 0, 2, 0)
+  );
+ 
+ ok($r->intersects($a, $b) == 1);
+ ok($r->intersects($a, $c) == 1);
+ ok($r->intersects($a, $d) == 0);
+ 
+
+
 
 
 =head2 Description
@@ -18,15 +49,20 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 
 Rectangles in 3d space    
 
+
  
- package rectangle;
- use vector check=>'vectorCheck';
- use matrix new3v=>'matrixNew3v';
+ 
+ package Math::Zap::Rectangle;
+ $VERSION=1.05;
+ use Math::Zap::Vector check=>'vectorCheck';
+ use Math::Zap::Matrix new3v=>'matrixNew3v';
  use Carp;
+ 
  
 
 
 =head2 Constructors
+
 
 
 
@@ -41,12 +77,15 @@ Create a rectangle from 3 vectors:
 
 Note that vectors b,c must be at right angles to each other.
 
+
+ 
  
  sub new($$$)
   {my ($a, $b, $c) = vectorCheck(@_);
    $b->dot($c) == 0 or confess 'non rectangular rectangle specified';
    bless {a=>$a, b=>$b, c=>$c}; 
   }
+ 
  
 
 
@@ -55,12 +94,16 @@ Note that vectors b,c must be at right angles to each other.
 
 Create a rectangle from 3 vectors - synonym for L</new>.
 
+
+ 
  
  sub rectangle($$$) {new($_[0],$_[1],$_[2])};
+ 
  
 
 
 =head2 Methods
+
 
 
 
@@ -69,6 +112,8 @@ Create a rectangle from 3 vectors - synonym for L</new>.
 
 Check its a rectangle
 
+
+ 
  
  sub check(@)
   {for my $r(@_)
@@ -77,6 +122,7 @@ Check its a rectangle
    return (@_)
   }
  
+ 
 
 
 =head3 is
@@ -84,6 +130,8 @@ Check its a rectangle
 
 Test its a rectangle
 
+
+ 
  
  sub is(@)
   {for my $r(@_)
@@ -92,6 +140,7 @@ Test its a rectangle
    'rectangle';
   }
  
+ 
 
 
 =head3 a,b,c
@@ -99,10 +148,13 @@ Test its a rectangle
 
 Components of rectangle
 
+
+ 
  
  sub a($) {my ($r) = check(@_); $r->{a}}
  sub b($) {my ($r) = check(@_); $r->{b}}
  sub c($) {my ($r) = check(@_); $r->{c}}
+ 
  
 
 
@@ -111,11 +163,14 @@ Components of rectangle
 
 Create a rectangle from another rectangle
 
+
+ 
  
  sub clone($)
   {my ($r) = check(@_); # Rectangles
    bless {a=>$r->a, b=>$r->b, c=>$r->c};
   }
+ 
  
 
 
@@ -124,6 +179,8 @@ Create a rectangle from another rectangle
 
 Get/Set accuracy for comparisons
 
+
+ 
  
  my $accuracy = 1e-10;
  
@@ -131,6 +188,7 @@ Get/Set accuracy for comparisons
   {return $accuracy unless scalar(@_);
    $accuracy = shift();
   }
+ 
  
 
 
@@ -151,6 +209,8 @@ rectangle and the line between the vectors:
 
 Note:  no checks (yet) for line parallel to plane.
 
+
+ 
  
  sub intersection($$$)
   {my ($r)     =       check(@_[0..0]); # Rectangles
@@ -158,6 +218,7 @@ Note:  no checks (yet) for line parallel to plane.
     
    $s = matrixNew3v($r->b, $r->c, $a-$b)/($a-$r->a);
   } 
+ 
  
 
 
@@ -167,6 +228,8 @@ Note:  no checks (yet) for line parallel to plane.
 # Test whether a line between two vectors intersects a rectangle
 # Note:  no checks (yet) for line parallel to plane.
 
+
+ 
  
  sub intersects($$$)
   {my ($r)     =       check(@_[0..0]); # Rectangles
@@ -179,6 +242,7 @@ Note:  no checks (yet) for line parallel to plane.
    0;
   } 
  
+ 
 
 
 =head3 visible
@@ -189,6 +253,8 @@ Note:  no checks (yet) for line parallel to plane.
 # Rectangle r is divided up into I*J sub rectangles: each sub rectangle
 # is tested for visibility from point p via the intervening rectangles.
 
+
+ 
  
  sub visible($$@)
   {my ($p)     = vectorCheck(@_[0.. 0]);    # Vector
@@ -216,6 +282,7 @@ Note:  no checks (yet) for line parallel to plane.
    $v;
   } 
  
+ 
 
 
 =head3 project
@@ -223,6 +290,8 @@ Note:  no checks (yet) for line parallel to plane.
 
 # Project rectangle r onto rectangle R from a point p
 
+
+ 
  
  sub project($$$)
   {my ($p)     = vectorCheck(@_[0.. 0]);    # Vector
@@ -246,6 +315,7 @@ Note:  no checks (yet) for line parallel to plane.
    rectangle($aR, $bR, $cR);
   } 
  
+ 
 
 
 =head3 projectInto
@@ -253,6 +323,8 @@ Note:  no checks (yet) for line parallel to plane.
 
 # Project rectangle r into rectangle R from a point p
 
+
+ 
  
  sub projectInto($$$)
   {my ($r, $R) =            (@_[0..1]);    # Rectangles           
@@ -271,6 +343,7 @@ Note:  no checks (yet) for line parallel to plane.
    ($a, $b, $d, $c);
   } 
  
+ 
 
 
 =head2 Exports
@@ -278,8 +351,10 @@ Note:  no checks (yet) for line parallel to plane.
 
 Export L</rectangle>                                      
 
+
  
- use exports qw(
+ 
+ use Math::Zap::Exports qw(
    rectangle ($$$)    
   );
  
@@ -288,3 +363,30 @@ Export L</rectangle>
  #______________________________________________________________________
  
  1;
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

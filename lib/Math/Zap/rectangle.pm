@@ -1,9 +1,13 @@
-=head1 Rectangle________________________________________________________
+
+=head1 Rectangle
+
 Rectangles in 3d space    
 
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
-=head2 Synopsis_________________________________________________________
+
+=head2 Synopsis
+
 Example t/rectangle.t
 
  #_ Rectangle __________________________________________________________
@@ -34,18 +38,26 @@ Example t/rectangle.t
  
 
 
-=head2 Description______________________________________________________
+
+=head2 Description
+
 Rectangles in 3d space    
-=cut____________________________________________________________________
+
+=cut
+
 
 package Math::Zap::Rectangle;
-$VERSION=1.04;
+$VERSION=1.05;
 use Math::Zap::Vector check=>'vectorCheck';
 use Math::Zap::Matrix new3v=>'matrixNew3v';
 use Carp;
 
-=head2 Constructors_____________________________________________________
-=head3 new______________________________________________________________
+
+=head2 Constructors
+
+
+=head3 new
+
 Create a rectangle from 3 vectors:
 
  a position of any corner
@@ -53,7 +65,9 @@ Create a rectangle from 3 vectors:
  c second side.
 
 Note that vectors b,c must be at right angles to each other.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub new($$$)
  {my ($a, $b, $c) = vectorCheck(@_);
@@ -61,16 +75,26 @@ sub new($$$)
   bless {a=>$a, b=>$b, c=>$c}; 
  }
 
-=head3 rectangle________________________________________________________
+
+=head3 rectangle
+
 Create a rectangle from 3 vectors - synonym for L</new>.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub rectangle($$$) {new($_[0],$_[1],$_[2])};
 
-=head2 Methods__________________________________________________________
-=head3 check____________________________________________________________
+
+=head2 Methods
+
+
+=head3 check
+
 Check its a rectangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub check(@)
  {for my $r(@_)
@@ -79,9 +103,13 @@ sub check(@)
   return (@_)
  }
 
-=head3 is_______________________________________________________________
+
+=head3 is
+
 Test its a rectangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub is(@)
  {for my $r(@_)
@@ -90,26 +118,38 @@ sub is(@)
   'rectangle';
  }
 
-=head3 a,b,c____________________________________________________________
+
+=head3 a,b,c
+
 Components of rectangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub a($) {my ($r) = check(@_); $r->{a}}
 sub b($) {my ($r) = check(@_); $r->{b}}
 sub c($) {my ($r) = check(@_); $r->{c}}
 
-=head3 clone____________________________________________________________
+
+=head3 clone
+
 Create a rectangle from another rectangle
-=cut____________________________________________________________________
+
+=cut
+
 
 sub clone($)
  {my ($r) = check(@_); # Rectangles
   bless {a=>$r->a, b=>$r->b, c=>$r->c};
  }
 
-=head3 accuracy_________________________________________________________
+
+=head3 accuracy
+
 Get/Set accuracy for comparisons
-=cut____________________________________________________________________
+
+=cut
+
 
 my $accuracy = 1e-10;
 
@@ -118,7 +158,9 @@ sub accuracy
   $accuracy = shift();
  }
 
-=head3 intersection_____________________________________________________
+
+=head3 intersection
+
 Intersect line between two vectors with plane defined by a rectangle
 
  r rectangle
@@ -132,7 +174,9 @@ rectangle and the line between the vectors:
  =>ra+l*rb+m*rc+n*(a-b) = a-ra 
 
 Note:  no checks (yet) for line parallel to plane.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub intersection($$$)
  {my ($r)     =       check(@_[0..0]); # Rectangles
@@ -141,10 +185,14 @@ sub intersection($$$)
   $s = matrixNew3v($r->b, $r->c, $a-$b)/($a-$r->a);
  } 
 
-=head3 intersects_______________________________________________________
+
+=head3 intersects
+
 # Test whether a line between two vectors intersects a rectangle
 # Note:  no checks (yet) for line parallel to plane.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub intersects($$$)
  {my ($r)     =       check(@_[0..0]); # Rectangles
@@ -157,12 +205,16 @@ sub intersects($$$)
   0;
  } 
 
-=head3 visible__________________________________________________________
+
+=head3 visible
+
 # Visibility of a rectangle r hid by other rectangles R from a view
 # point p.
 # Rectangle r is divided up into I*J sub rectangles: each sub rectangle
 # is tested for visibility from point p via the intervening rectangles.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub visible($$@)
  {my ($p)     = vectorCheck(@_[0.. 0]);    # Vector
@@ -190,9 +242,13 @@ sub visible($$@)
   $v;
  } 
 
-=head3 project__________________________________________________________
+
+=head3 project
+
 # Project rectangle r onto rectangle R from a point p
-=cut____________________________________________________________________
+
+=cut
+
 
 sub project($$$)
  {my ($p)     = vectorCheck(@_[0.. 0]);    # Vector
@@ -216,9 +272,13 @@ sub project($$$)
   rectangle($aR, $bR, $cR);
  } 
 
-=head3 projectInto______________________________________________________
+
+=head3 projectInto
+
 # Project rectangle r into rectangle R from a point p
-=cut____________________________________________________________________
+
+=cut
+
 
 sub projectInto($$$)
  {my ($r, $R) =            (@_[0..1]);    # Rectangles           
@@ -237,9 +297,13 @@ sub projectInto($$$)
   ($a, $b, $d, $c);
  } 
 
-=head2 Exports__________________________________________________________
+
+=head2 Exports
+
 Export L</rectangle>                                      
-=cut____________________________________________________________________
+
+=cut
+
 
 use Math::Zap::Exports qw(
   rectangle ($$$)    

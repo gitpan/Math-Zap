@@ -1,9 +1,13 @@
-=head1 Matrix2__________________________________________________________
+
+=head1 Matrix2
+
 2*2 matrix manipulation    
 
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
-=head2 Synopsis_________________________________________________________
+
+=head2 Synopsis
+
 Example t/matrix2.t
 
  #_ Matrix _____________________________________________________________
@@ -45,20 +49,30 @@ Example t/matrix2.t
  
 
 
-=head2 Description______________________________________________________
+
+=head2 Description
+
 2*2 matrix manipulation    
-=cut____________________________________________________________________
+
+=cut
+
 
 package Math::Zap::Matrix2;
-$VERSION=1.04;
+$VERSION=1.05;
 use Math::Zap::Vector2 check=>'vector2Check', is=>'vector2Is';
 use Carp;
 use constant debug => 0; # Debugging level
 
-=head2 Constructors_____________________________________________________
-=head3 new _____________________________________________________________
+
+=head2 Constructors
+
+
+=head3 new 
+
 Create a matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub new($$$$)
  {my
@@ -74,17 +88,25 @@ sub new($$$$)
   $m;
  }
 
-=head3 matrix2__________________________________________________________
+
+=head3 matrix2
+
 Create a matrix. Synonym for L</new>.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub matrix2($$$$)
  {new($_[0],$_[1],$_[2],$_[3]);
  }
 
-=head3 identity_________________________________________________________
+
+=head3 identity
+
 Identity matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub identity()
  {bless
@@ -93,9 +115,13 @@ sub identity()
    }; 
  }
 
-=head3 new2v____________________________________________________________
+
+=head3 new2v
+
 Create a matrix from two vectors
-=cut____________________________________________________________________
+
+=cut
+
 
 sub new2v($$)
  {vector2Check(@_) if debug;
@@ -108,10 +134,16 @@ sub new2v($$)
   $m;
  }
 
-=head2 Methods__________________________________________________________
-=head3 check____________________________________________________________
+
+=head2 Methods
+
+
+=head3 check
+
 Check its a matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub check(@)
  {if (debug)
@@ -122,9 +154,13 @@ sub check(@)
   return (@_)
  }
 
-=head3 is_______________________________________________________________
+
+=head3 is
+
 Test its a matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub is(@)
  {for my $m(@_)
@@ -133,9 +169,13 @@ sub is(@)
   'matrix2';
  }
 
-=head3 accuracy_________________________________________________________
+
+=head3 accuracy
+
 Get/Set accuracy 
-=cut____________________________________________________________________
+
+=cut
+
 
 my $accuracy = 1e-10;
 
@@ -144,9 +184,13 @@ sub accuracy
   $accuracy = shift();
  }
 
-=head3 round____________________________________________________________
+
+=head3 round
+
 Round: round to nearest integer if within accuracy of that integer 
-=cut____________________________________________________________________
+
+=cut
+
 
 sub round($)
  {unless (debug)
@@ -163,9 +207,13 @@ sub round($)
    }
  }
 
-=head3 singular_________________________________________________________
+
+=head3 singular
+
 Singular matrix?
-=cut____________________________________________________________________
+
+=cut
+
 
 sub singular($$)
  {my $m = shift;  # Matrix   
@@ -179,9 +227,13 @@ sub singular($$)
   $n;      
  }
 
-=head3 clone____________________________________________________________
+
+=head3 clone
+
 Create a matrix from another matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub clone($)
  {my ($m) = check(@_); # Matrix
@@ -191,9 +243,13 @@ sub clone($)
    }; 
  }
 
-=head3 print____________________________________________________________
+
+=head3 print
+
 Print matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub print($)
  {my ($m) = check(@_); # Matrix 
@@ -202,9 +258,13 @@ sub print($)
   ')';
  } 
 
-=head3 add______________________________________________________________
+
+=head3 add
+
 Add matrices
-=cut____________________________________________________________________
+
+=cut
+
 
 sub add($$)
  {my ($a, $b) = check(@_); # Matrices
@@ -216,9 +276,13 @@ sub add($$)
   $m;
  }
 
-=head3 negate___________________________________________________________
+
+=head3 negate
+
 Negate matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub negate($)
  {my ($a) = check(@_); # Matrices
@@ -230,9 +294,13 @@ sub negate($)
   $m;
  }
 
-=head3 subtract_________________________________________________________
+
+=head3 subtract
+
 Subtract matrices
-=cut____________________________________________________________________
+
+=cut
+
 
 sub subtract($$)
  {my ($a, $b) = check(@_); # Matrices
@@ -244,9 +312,13 @@ sub subtract($$)
   $m;
  }
 
-=head3 matrixVectorMultiply_____________________________________________
+
+=head3 matrixVectorMultiply
+
 Vector = Matrix * Vector     
-=cut____________________________________________________________________
+
+=cut
+
 
 sub matrixVectorMultiply($$)
  {       check(@_[0..0]) if debug; # Matrix
@@ -258,9 +330,13 @@ sub matrixVectorMultiply($$)
    );
  }
 
-=head3 matrixScalarMultiply_____________________________________________
+
+=head3 matrixScalarMultiply
+
 Matrix = Matrix * scalar      
-=cut____________________________________________________________________
+
+=cut
+
 
 sub matrixScalarMultiply($$)
  {my ($a) = check(@_[0..0]); # Matrix
@@ -272,9 +348,13 @@ sub matrixScalarMultiply($$)
    }; 
  }
 
-=head3 matrixMatrixMultiply_____________________________________________
+
+=head3 matrixMatrixMultiply
+
 Matrix = Matrix * Matrix      
-=cut____________________________________________________________________
+
+=cut
+
 
 sub matrixMatrixMultiply($$)
  {my ($a, $b) = check(@_); # Matrices
@@ -284,9 +364,13 @@ sub matrixMatrixMultiply($$)
    }; 
  }
 
-=head3 matrixScalarDivide_______________________________________________
+
+=head3 matrixScalarDivide
+
 Matrix=Matrix / non zero scalar
-=cut____________________________________________________________________
+
+=cut
+
 
 sub matrixScalarDivide($$)
  {my ($a) = check(@_[0..0]); # Matrices
@@ -299,9 +383,13 @@ sub matrixScalarDivide($$)
    }; 
  }
 
-=head3 det______________________________________________________________
+
+=head3 det
+
 Determinant of matrix.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub det($)
  {my ($a) = check(@_); # Matrices
@@ -310,9 +398,13 @@ sub det($)
 -$a->{12}*$a->{21}
  }
 
-=head3 inverse__________________________________________________________
+
+=head3 inverse
+
 Inverse of matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub inverse($)
  {my ($a) = check(@_); # Matrices
@@ -326,9 +418,13 @@ sub inverse($)
    }; 
  }
 
-=head3 rotate___________________________________________________________
+
+=head3 rotate
+
 Rotation matrix: rotate anti-clockwise by t radians
-=cut____________________________________________________________________
+
+=cut
+
 
 sub rotate($)
  {my ($a) = @_;
@@ -338,9 +434,13 @@ sub rotate($)
    }; 
  }
 
-=head3 equals___________________________________________________________
+
+=head3 equals
+
 Equals to within accuracy
-=cut____________________________________________________________________
+
+=cut
+
 
 sub equals($$)
  {my ($a, $b) = check(@_); # Matrices
@@ -351,9 +451,13 @@ sub equals($$)
   abs($a->{22}-$b->{22}) < $accuracy;
  }
 
-=head2 Operators _______________________________________________________
+
+=head2 Operators 
+
 Operator overloads
-=cut____________________________________________________________________
+
+=cut
+
 
 use overload
  '+'        => \&add3,      # Add two vectors
@@ -365,18 +469,26 @@ use overload
  '""'       => \&print3,    # Print
  'fallback' => FALSE;
 
-=head3 add operator_____________________________________________________
+
+=head3 add operator
+
 Add operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub add3
  {my ($a, $b) = @_;
   $a->add($b);
  }
 
-=head3 subtract operator________________________________________________
+
+=head3 subtract operator
+
 Subtract operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub subtract3
  {my ($a, $b, $c) = @_;
@@ -385,9 +497,13 @@ sub subtract3
   negate($a);
  }
 
-=head3 multiply operator________________________________________________
+
+=head3 multiply operator
+
 Multiply operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub multiply3
  {my ($a, $b) = @_;
@@ -397,9 +513,13 @@ sub multiply3
   confess "Cannot multiply $a by $b\n";
  }
 
-=head3 divide operator__________________________________________________
+
+=head3 divide operator
+
 Divide operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub divide3
  {my ($a, $b, $c) = @_;
@@ -414,36 +534,52 @@ sub divide3
    }
  }
 
-=head3 equals operator__________________________________________________
+
+=head3 equals operator
+
 Equals operator.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub equals3
  {my ($a, $b, $c) = @_;
   return $a->equals($b);
  }
 
-=head3 determinant operator_____________________________________________
+
+=head3 determinant operator
+
 Determinant of a matrix
-=cut____________________________________________________________________
+
+=cut
+
 
 sub det3
  {my ($a, $b, $c) = @_;
   $a->det;
  }
 
-=head3 print operator___________________________________________________
+
+=head3 print operator
+
 Print a vector.
-=cut____________________________________________________________________
+
+=cut
+
 
 sub print3
  {my ($a) = @_;
   return $a->print;
  }
 
-=head2 Exports__________________________________________________________
+
+=head2 Exports
+
 Export L</matrix2>, L</identity>
-=cut____________________________________________________________________
+
+=cut
+
 
 use Math::Zap::Exports qw(
   matrix2  ($$$$)

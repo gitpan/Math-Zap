@@ -1,4 +1,5 @@
 
+
 =head1 Unique
 
 
@@ -7,10 +8,26 @@ Unique id
 PhilipRBrenan@yahoo.com, 2004, Perl license
 
 
+
 =head2 Synopsis
 
 
-#example t/unique.t
+Example t/unique.t
+
+ #_ Unique _____________________________________________________________
+ # Unique           
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Unique;
+ use Test::Simple tests=>3;
+    
+ ok(unique() ne unique());
+ ok(unique() ne unique());
+ ok(unique() ne unique());
+ 
+
+
 
 
 =head2 Description
@@ -18,13 +35,18 @@ PhilipRBrenan@yahoo.com, 2004, Perl license
 
 Returns a unique id each time it is called.
 
+
  
- package unique;
+ 
+ package Math::Zap::Unique;
+ $VERSION=1.05;
  use Carp;
+ 
  
 
 
 =head2 Constructors
+
 
 
 
@@ -33,10 +55,13 @@ Returns a unique id each time it is called.
 
 Return new unique id
 
+
+ 
  
  my $unique = 0;
  
  sub unique() {++$unique}
+ 
  
 
 
@@ -45,8 +70,11 @@ Return new unique id
 
 Return new unique id, synonym for L</unique>
 
+
+ 
  
  sub new {unique()}
+ 
  
 
 
@@ -55,8 +83,10 @@ Return new unique id, synonym for L</unique>
 
 Export L</unique>
 
+
  
- use exports qw(
+ 
+ use Math::Zap::Exports qw(
    unique ()
   );
  
@@ -65,3 +95,30 @@ Export L</unique>
  #______________________________________________________________________
  
  1;
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

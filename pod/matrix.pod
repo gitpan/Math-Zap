@@ -1,4 +1,5 @@
 
+
 =head1 Matrix
 
 
@@ -7,10 +8,54 @@
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 
+
 =head2 Synopsis
 
 
-#example t/matrix.t
+Example t/matrix.t
+
+ #_ Matrix _____________________________________________________________
+ # Test 3*3 matrices    
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Matrix identity=>i;
+ use Math::Zap::Vector;
+ use Test::Simple tests=>8;
+ 
+ my ($a, $b, $c, $v);
+ 
+ $a = matrix
+  (8, 0, 0,
+   0, 8, 0,
+   0, 0, 8
+  );
+ 
+ $b = matrix
+  (4, 2, 0,
+   2, 4, 2,
+   0, 2, 4
+  );
+ 
+ $c = matrix
+  (4, 2, 1,
+   2, 4, 2,
+   1, 2, 4
+  );
+ 
+ $v = vector(1,2,3);
+ 
+ ok($a/$a           == i());
+ ok($b/$b           == i());
+ ok($c/$c           == i());
+ ok(2/$a*$a/2       == i());
+ ok(($a+$b)/($a+$b) == i());
+ ok(($a-$c)/($a-$c) == i());
+ ok(-$a/-$a         == i());
+ ok(1/$a*($a*$v)    == $v);
+ 
+
+
 
 
 =head2 Description
@@ -18,15 +63,20 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 
 3*3 matrix manipulation    
 
+
  
- package matrix;
- use vector check=>'vectorCheck', is=>'vectorIs';
+ 
+ package Math::Zap::Matrix;
+ $VERSION=1.05;
+ use Math::Zap::Vector check=>'vectorCheck', is=>'vectorIs';
  use Carp;
  use constant debug => 0; # Debugging level
+ 
  
 
 
 =head2 Constructors
+
 
 
 
@@ -35,6 +85,8 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 
 Create a matrix
 
+
+ 
  
  sub new($$$$$$$$$)
   {my
@@ -52,6 +104,7 @@ Create a matrix
    $m;
   }
  
+ 
 
 
 =head3 matrix
@@ -59,10 +112,13 @@ Create a matrix
 
 Create a matrix = synonym for L</new>
 
+
+ 
  
  sub matrix($$$$$$$$$)
   {new($_[0],$_[1],$_[2],$_[3],$_[4],$_[5],$_[6],$_[7],$_[8]);
   }
+ 
  
 
 
@@ -71,6 +127,8 @@ Create a matrix = synonym for L</new>
 
 Create a matrix from three vectors
 
+
+ 
  
  sub new3v($$$)
   {my ($a, $b, $c) = @_; 
@@ -84,6 +142,7 @@ Create a matrix from three vectors
    $m;
   }
  
+ 
 
 
 =head3 new3vnc
@@ -91,6 +150,8 @@ Create a matrix from three vectors
 
 Create a matrix from three vectors without checking
 
+
+ 
  
  sub new3vnc($$$)
   {my ($a, $b, $c) = vectorCheck(@_); 
@@ -102,9 +163,11 @@ Create a matrix from three vectors without checking
    $m;
   }
  
+ 
 
 
 =head2 Methods
+
 
 
 
@@ -113,6 +176,8 @@ Create a matrix from three vectors without checking
 
 Check its a matrix
 
+
+ 
  
  sub check(@)
   {if (debug)
@@ -123,6 +188,7 @@ Check its a matrix
    return (@_)
   }
  
+ 
 
 
 =head3 is
@@ -130,6 +196,8 @@ Check its a matrix
 
 Test its a matrix
 
+
+ 
  
  sub is(@)
   {for my $m(@_)
@@ -138,6 +206,7 @@ Test its a matrix
    'matrix';
   }
  
+ 
 
 
 =head3 singular
@@ -145,6 +214,8 @@ Test its a matrix
 
 Singular matrix?
 
+
+ 
  
  sub singular($$)
   {my $m = shift;  # Matrix   
@@ -163,6 +234,7 @@ Singular matrix?
    $n;      
   }
  
+ 
 
 
 =head3 accuracy
@@ -170,6 +242,8 @@ Singular matrix?
 
 Get/Set accuracy for comparisons
 
+
+ 
  
  my $accuracy = 1e-10;
  
@@ -178,6 +252,7 @@ Get/Set accuracy for comparisons
    $accuracy = shift();
   }
  
+ 
 
 
 =head3 round
@@ -185,6 +260,8 @@ Get/Set accuracy for comparisons
 
 Round: round to nearest integer if within accuracy of that integer 
 
+
+ 
  
  sub round($)
   {my ($a) = @_;
@@ -198,6 +275,7 @@ Round: round to nearest integer if within accuracy of that integer
    $a;
   }
  
+ 
 
 
 =head3 clone
@@ -205,6 +283,8 @@ Round: round to nearest integer if within accuracy of that integer
 
 Create a matrix from another matrix
 
+
+ 
  
  sub clone($)
   {my ($m) = check(@_); # Matrix
@@ -215,6 +295,7 @@ Create a matrix from another matrix
     }; 
   }
  
+ 
 
 
 =head3 print
@@ -222,6 +303,8 @@ Create a matrix from another matrix
 
 Print matrix
 
+
+ 
  
  sub print($)
   {my ($m) = check(@_); # Matrix 
@@ -231,6 +314,7 @@ Print matrix
    ')';
   } 
  
+ 
 
 
 =head3 add
@@ -238,6 +322,8 @@ Print matrix
 
 Add matrices
 
+
+ 
  
  sub add($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -248,6 +334,7 @@ Add matrices
     }; 
   }
  
+ 
 
 
 =head3 negate
@@ -255,6 +342,8 @@ Add matrices
 
 Negate matrix
 
+
+ 
  
  sub negate($)
   {my ($a) = check(@_); # Matrices
@@ -265,6 +354,7 @@ Negate matrix
     }; 
   }
  
+ 
 
 
 =head3 subtract
@@ -272,6 +362,8 @@ Negate matrix
 
 Subtract matrices
 
+
+ 
  
  sub subtract($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -282,6 +374,7 @@ Subtract matrices
     }; 
   }
  
+ 
 
 
 =head3 matrixVectorMultiply
@@ -289,6 +382,8 @@ Subtract matrices
 
 Vector = Matrix * Vector     
 
+
+ 
  
  sub matrixVectorMultiply($$)
   {my ($a) =       check(@_[0..0]); # Matrix
@@ -300,6 +395,7 @@ Vector = Matrix * Vector
     );
   }
  
+ 
 
 
 =head3 matrixScalarMultiply
@@ -307,6 +403,8 @@ Vector = Matrix * Vector
 
 Matrix = Matrix * scalar      
 
+
+ 
  
  sub matrixScalarMultiply($$)
   {my ($a) = check(@_[0..0]); # Matrix
@@ -319,6 +417,7 @@ Matrix = Matrix * scalar
     }; 
   }
  
+ 
 
 
 =head3 matrixMatrixMultiply
@@ -326,6 +425,8 @@ Matrix = Matrix * scalar
 
 Matrix = Matrix * Matrix      
 
+
+ 
  
  sub matrixMatrixMultiply($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -336,6 +437,7 @@ Matrix = Matrix * Matrix
     }; 
   }
  
+ 
 
 
 =head3 matrixScalarDivide
@@ -343,6 +445,8 @@ Matrix = Matrix * Matrix
 
 Matrix=Matrix / non zero scalar
 
+
+ 
  
  sub matrixScalarDivide($$)
   {my ($a) = check(@_[0..0]); # Matrices
@@ -356,6 +460,7 @@ Matrix=Matrix / non zero scalar
     }; 
   }
  
+ 
 
 
 =head3 det
@@ -363,6 +468,8 @@ Matrix=Matrix / non zero scalar
 
 Determinant of matrix.
 
+
+ 
  
  sub det($)
   {my ($a) = @_;       # Matrix
@@ -376,6 +483,7 @@ Determinant of matrix.
  -$a->{13}*$a->{22}*$a->{31};
   }
  
+ 
 
 
 =head3 d2
@@ -383,11 +491,14 @@ Determinant of matrix.
 
 Determinant of 2*2 matrix
 
+
+ 
  
  sub d2($$$$)
   {my ($a, $b, $c, $d) = @_;    
    $a*$d-$b*$c;
   }
+ 
  
 
 
@@ -396,6 +507,8 @@ Determinant of 2*2 matrix
 
 Inverse of matrix
 
+
+ 
  
  sub inverse($)
   {my ($a) = @_;       # Matrix
@@ -422,6 +535,7 @@ Inverse of matrix
    $i;
   }
  
+ 
 
 
 =head3 identity
@@ -429,6 +543,8 @@ Inverse of matrix
 
 Identity matrix
 
+
+ 
  
  sub identity()
   {bless
@@ -438,6 +554,7 @@ Identity matrix
     }; 
   }
  
+ 
 
 
 =head3 equals
@@ -445,6 +562,8 @@ Identity matrix
 
 Equals to within accuracy
 
+
+ 
  
  sub equals($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -461,6 +580,7 @@ Equals to within accuracy
    abs($a->{33}-$b->{33}) < $accuracy;
   }
  
+ 
 
 
 =head3 Operator
@@ -468,6 +588,8 @@ Equals to within accuracy
 
 Operator overloads
 
+
+ 
  
  use overload
   '+'        => \&add3,      # Add two vectors
@@ -479,6 +601,7 @@ Operator overloads
   '""'       => \&print3,    # Print
   'fallback' => FALSE;
  
+ 
 
 
 =head3 Add operator
@@ -486,11 +609,14 @@ Operator overloads
 
 Add operator.
 
+
+ 
  
  sub add3
   {my ($a, $b) = @_;
    $a->add($b);
   }
+ 
  
 
 
@@ -499,6 +625,8 @@ Add operator.
 
 Negate operator.
 
+
+ 
  
  sub subtract3
   {my ($a, $b, $c) = @_;
@@ -507,6 +635,7 @@ Negate operator.
    negate($a);
   }
  
+ 
 
 
 =head3 multiply operator
@@ -514,6 +643,8 @@ Negate operator.
 
 Multiply operator.
 
+
+ 
  
  sub multiply3
   {my ($a, $b) = @_;
@@ -523,6 +654,7 @@ Multiply operator.
    confess "Cannot multiply $a by $b\n";
   }
  
+ 
 
 
 =head3 divide operator
@@ -530,6 +662,8 @@ Multiply operator.
 
 Divide operator.
 
+
+ 
  
  sub divide3
   {my ($a, $b, $c) = @_;
@@ -544,6 +678,7 @@ Divide operator.
     }
   }
  
+ 
 
 
 =head3 equals operator
@@ -551,11 +686,14 @@ Divide operator.
 
 Equals operator.
 
+
+ 
  
  sub equals3
   {my ($a, $b, $c) = @_;
    return $a->equals($b);
   }
+ 
  
 
 
@@ -564,11 +702,14 @@ Equals operator.
 
 Determinant of a matrix
 
+
+ 
  
  sub det3
   {my ($a, $b, $c) = @_;
    $a->det;
   }
+ 
  
 
 
@@ -577,11 +718,14 @@ Determinant of a matrix
 
 Print a vector.
 
+
+ 
  
  sub print3
   {my ($a) = @_;
    return $a->print;
   }
+ 
  
 
 
@@ -590,8 +734,10 @@ Print a vector.
 
 Export L</matrix>, L</identity>, L</new3v>, L</new3vnc>
 
+
  
- use exports qw(
+ 
+ use Math::Zap::Exports qw(
    matrix   ($$$$$$$$$)
    identity ()
    new3v    ($$$)
@@ -603,3 +749,30 @@ Export L</matrix>, L</identity>, L</new3v>, L</new3vnc>
  #______________________________________________________________________
  
  1;
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

@@ -1,9 +1,13 @@
-=head1 Line2 ___________________________________________________________
+
+=head1 Line2 
+
 Lines in 2d space
 
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
-=head2 Synopsis_________________________________________________________
+
+=head2 Synopsis
+
 Example t/line2.t
 
  #_ Vector _____________________________________________________________
@@ -37,21 +41,31 @@ Example t/line2.t
  ok(!line2( $x * 0.5, $x)->crossOver(line2( $y * 0.5, $y)), 'Crosses 3');
  
 
-=head2 Description______________________________________________________
+
+=head2 Description
+
 Manipulate lines in 2D space                                           
-=cut____________________________________________________________________
+
+=cut
+
 
 package Math::Zap::Line2;
-$VERSION=1.04;
+$VERSION=1.05;
 use Math::Zap::Vector2 check=>'vector2Check';
 use Math::Zap::Matrix2 new2v=>'matrix2New2v';
 use Carp;
 use constant debug => 0; # Debugging level
 
-=head2 Constructors_____________________________________________________
-=head3 new______________________________________________________________
+
+=head2 Constructors
+
+
+=head3 new
+
 Create a line from two vectors
-=cut____________________________________________________________________
+
+=cut
+
 
 sub new($$)
  {vector2Check(@_) if debug;
@@ -60,16 +74,26 @@ sub new($$)
   $l; 
  }
 
-=head3 line2 ___________________________________________________________
+
+=head3 line2 
+
 Create a line from two vectors
-=cut____________________________________________________________________
+
+=cut
+
 
 sub line2($$) {new($_[0],$_[1])};
 
-=head2 Methods__________________________________________________________
-=head3 accuracy_________________________________________________________
+
+=head2 Methods
+
+
+=head3 accuracy
+
 Get/Set accuracy for comparisons
-=cut____________________________________________________________________
+
+=cut
+
 
 my $accuracy = 1e-10;
 
@@ -78,9 +102,13 @@ sub accuracy
   $accuracy = shift();
  }
 
-=head3 short ___________________________________________________________
+
+=head3 short 
+
 Short line?                      
-=cut____________________________________________________________________
+
+=cut
+
 
 sub short($$)
  {my $l = shift;  # Line       
@@ -93,9 +121,13 @@ sub short($$)
   $n;      
  }
 
-=head3 check ___________________________________________________________
+
+=head3 check 
+
 Check its a line
-=cut____________________________________________________________________
+
+=cut
+
 
 sub check(@)
  {unless (debug)
@@ -106,9 +138,13 @@ sub check(@)
    @_;
  }
 
-=head3 is_______________________________________________________________
+
+=head3 is
+
 Test its a line
-=cut____________________________________________________________________
+
+=cut
+
 
 sub is(@)
  {for my $l(@_)
@@ -117,27 +153,39 @@ sub is(@)
   'line2';
  }
 
-=head3 a,b,ab,ba________________________________________________________
+
+=head3 a,b,ab,ba
+
 Components of line
-=cut____________________________________________________________________
+
+=cut
+
 
 sub a($)  {check(@_) if (debug); $_[0]->{a}}
 sub b($)  {check(@_) if (debug); $_[0]->{b}}
 sub ab($) {check(@_) if (debug); vector2($_[0]->{b}{x}-$_[0]->{a}{x}, $_[0]->{b}{y}-$_[0]->{a}{y})}
 sub ba($) {check(@_) if (debug); $_[0]->a-$_[0]->b}
 
-=head3 clone ___________________________________________________________
+
+=head3 clone 
+
 Create a line from another line
-=cut____________________________________________________________________
+
+=cut
+
 
 sub clone($)
  {my ($l) = check(@_); # Lines
   bless {a=>$l->a, b=>$l->b}; 
  }
 
-=head3 print ___________________________________________________________
+
+=head3 print 
+
 Print line
-=cut____________________________________________________________________
+
+=cut
+
 
 sub print($)
  {my ($l) = check(@_); # Lines
@@ -146,18 +194,26 @@ sub print($)
   "line2($A, $B)";
  } 
 
-=head3 angle ___________________________________________________________
+
+=head3 angle 
+
 Angle between two lines
-=cut____________________________________________________________________
+
+=cut
+
 
 sub angle($$)
  {my ($a, $b) = check(@_); # Lines
   $a->a-$a->b < $b->a-$b->b;     
  } 
 
-=head3 parallel_________________________________________________________
+
+=head3 parallel
+
 Are two lines parallel
-=cut____________________________________________________________________
+
+=cut
+
 
 sub parallel($$)
  {my ($a, $b) = check(@_); # Lines
@@ -167,9 +223,13 @@ sub parallel($$)
   0;
  }
 
-=head3 intersect________________________________________________________
+
+=head3 intersect
+
 Intersection of two lines
-=cut____________________________________________________________________
+
+=cut
+
 
 sub intersect($$)
  {my ($a, $b) = check(@_); # Lines
@@ -180,9 +240,13 @@ sub intersect($$)
   $a->a+$i->x*$a->ab;
  }
 
-=head3 intersectWithin__________________________________________________
+
+=head3 intersectWithin
+
 Intersection of two lines occurs within second line?
-=cut____________________________________________________________________
+
+=cut
+
 
 sub intersectWithin($$)
  {my ($a, $b) = check(@_); # Lines
@@ -193,9 +257,13 @@ sub intersectWithin($$)
   0 <= $i->y and $i->y <= 1;
  } 
 
-=head3 crossOver________________________________________________________
+
+=head3 crossOver
+
 Do the two line segments cross over each other?
-=cut____________________________________________________________________
+
+=cut
+
 
 sub crossOver($$)
  {my ($a, $b) = check(@_); # Lines
@@ -206,9 +274,13 @@ sub crossOver($$)
   0 <= $i->x and $i->x <= 1 and 0 <= $i->y and $i->y <= 1;
  } 
 
-=head2 Exports__________________________________________________________
+
+=head2 Exports
+
 Export L</line2>
-=cut____________________________________________________________________
+
+=cut
+
 
 use Math::Zap::Exports qw(
   line2  ($$)

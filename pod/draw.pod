@@ -1,4 +1,5 @@
 
+
 =head1 Draw 
 
 
@@ -8,10 +9,79 @@ observer in reconstructing the original 3d scene.
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 
+
 =head2 Synopsis
 
 
-#example t/draw.t      
+Example t/draw.t      
+
+ #!perl -w
+ #______________________________________________________________________
+ # Test drawing.
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Draw;
+ use Math::Zap::Cube unit=>'cu';
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector;
+ 
+ use Test::Simple tests=>1;
+ 
+ #_ Draw _______________________________________________________________
+ # Draw this set of objects.
+ #______________________________________________________________________
+ 
+ $l = 
+ draw 
+   ->from    (vector( 10,   10,  10))
+   ->to      (vector(  0,    0,   0))
+   ->horizon (vector(  1,  0.5,   0))
+   ->light   (vector( 20,   30, -20))
+ 
+     ->object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0,  8,  0)),                         'red')
+     ->object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0,  8,  0)),                         'green')
+     ->object(triangle(vector( 0,  0,  0), vector(12,  0,  0), vector( 0,  0, 12)) - vector(2.5,  0,  2.5), 'blue')
+     ->object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0, -8,  0)),                         'pink')
+     ->object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0, -8,  0)),                         'orange')
+     ->object(cu()*2+vector(3,5,1), 'lightblue')
+ 
+ ->print;
+ 
+ $L = <<'END'; 
+ #!perl -w
+ use Math::Zap::Draw;
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector;
+ 
+ draw
+ ->from    (vector(10, 10, 10))
+ ->to      (vector(0, 0, 0))
+ ->horizon (vector(1, 0.5, 0))
+ ->light   (vector(20, 30, -20))
+   ->object(triangle(vector(0, 0, 0), vector(8, 0, 0), vector(0, 8, 0)), 'red')
+   ->object(triangle(vector(0, 0, 0), vector(0, 0, 8), vector(0, 8, 0)), 'green')
+   ->object(triangle(vector(-2.5, 0, -2.5), vector(9.5, 0, -2.5), vector(-2.5, 0, 9.5)), 'blue')
+   ->object(triangle(vector(0, 0, 0), vector(8, 0, 0), vector(0, -8, 0)), 'pink')
+   ->object(triangle(vector(0, 0, 0), vector(0, 0, 8), vector(0, -8, 0)), 'orange')
+   ->object(triangle(vector(3, 5, 1), vector(5, 5, 1), vector(3, 7, 1)), 'lightblue')
+   ->object(triangle(vector(5, 7, 1), vector(5, 5, 1), vector(3, 7, 1)), 'lightblue')
+   ->object(triangle(vector(3, 5, 3), vector(5, 5, 3), vector(3, 7, 3)), 'lightblue')
+   ->object(triangle(vector(5, 7, 3), vector(5, 5, 3), vector(3, 7, 3)), 'lightblue')
+   ->object(triangle(vector(3, 5, 1), vector(3, 7, 1), vector(3, 5, 3)), 'lightblue')
+   ->object(triangle(vector(3, 7, 3), vector(3, 7, 1), vector(3, 5, 3)), 'lightblue')
+   ->object(triangle(vector(5, 5, 1), vector(5, 7, 1), vector(5, 5, 3)), 'lightblue')
+   ->object(triangle(vector(5, 7, 3), vector(5, 7, 1), vector(5, 5, 3)), 'lightblue')
+   ->object(triangle(vector(3, 5, 1), vector(3, 5, 3), vector(5, 5, 1)), 'lightblue')
+   ->object(triangle(vector(5, 5, 3), vector(3, 5, 3), vector(5, 5, 1)), 'lightblue')
+   ->object(triangle(vector(3, 7, 1), vector(3, 7, 3), vector(5, 7, 1)), 'lightblue')
+   ->object(triangle(vector(5, 7, 3), vector(3, 7, 3), vector(5, 7, 1)), 'lightblue')
+ ->done;
+ END
+ 
+ ok($l eq $L);
+
+
 
 
 =head2 Description
@@ -22,7 +92,8 @@ objects, as a two dimensional image, using lighting and shadowing to assist the
 human observer in reconstructing the original three dimensional scene.
 
 There are many existing packages to perform this important task: this
-package is the only one to make the attempt in Pure Perl. Pending the
+package Math::Zap::Is the only one to make the attempt in Pure Perl. Pending the
+$VERSION=1.05;
 power of Petaflop Parallel Perl (when we will be set free from C), this
 approach is slow. However, it is not so slow as to be completely useless
 for simple scenes as might be encountered inside, say for instance, beam
@@ -32,21 +103,26 @@ have large Perl computers.
 The key advantage of this package is that is open: you can manipulate
 both the objects to be drawn and the drawing itself all in Pure Perl.
 
+
  
- package draw;
- use vector check=>'vectorCheck';
- use vector2;
- use triangle2  newnnc=>'triangle2Newnnc';
- use triangle;
- use color;
+ 
+ package Math::Zap::Draw;
+ $VERSION=1.05;
+ use Math::Zap::Vector check=>'vectorCheck';
+ use Math::Zap::Vector2;
+ use Math::Zap::Triangle2  newnnc=>'triangle2Newnnc';
+ use Math::Zap::Triangle;
+ use Math::Zap::Color;
  use Tk;
  use Carp;
  
  use constant debug=>0;
  
+ 
 
 
 =head2 Constructors
+
 
 
 
@@ -55,12 +131,16 @@ both the objects to be drawn and the drawing itself all in Pure Perl.
 
 Constructor
 
+
+ 
  
  sub draw() {bless {}}
+ 
  
 
 
 =head2 Methods
+
 
 
 
@@ -69,6 +149,8 @@ Constructor
 
 Set view point 
 
+
+ 
  
  sub from($$)
   {my ($d) =         check(@_[0..0]); # Drawing 
@@ -78,6 +160,7 @@ Set view point
    $d;
   }
  
+ 
 
 
 =head3 to
@@ -85,6 +168,8 @@ Set view point
 
 Viewing this point
 
+
+ 
  
  sub to($$)
   {my ($d) =         check(@_[0..0]); # Drawing 
@@ -94,6 +179,7 @@ Viewing this point
    $d;
   }
  
+ 
 
 
 =head3 Horizon
@@ -101,6 +187,8 @@ Viewing this point
 
 Sets the direction of the horizon.
 
+
+ 
  
  sub horizon($$)
   {my ($d) =         check(@_[0..0]); # Drawing 
@@ -110,6 +198,7 @@ Sets the direction of the horizon.
    $d;
   }
  
+ 
 
 
 =head3 light
@@ -117,6 +206,8 @@ Sets the direction of the horizon.
 
 Light source position
 
+
+ 
  
  sub light($$)
   {my ($d) =         check(@_[0..0]); # Drawing 
@@ -126,6 +217,7 @@ Light source position
    $d;
   }
  
+ 
 
 
 =head3 withControls
@@ -133,6 +225,8 @@ Light source position
 
 Display a window allowing the user to set to,from,horizon,light
 
+
+ 
  
  sub withControls($)
   {my ($d) =         check(@_[0..0]); # Drawing 
@@ -140,6 +234,7 @@ Display a window allowing the user to set to,from,horizon,light
    $d->{withControls} = 1;
    $d;
   }
+ 
 
 
 =head3 object
@@ -147,6 +242,8 @@ Display a window allowing the user to set to,from,horizon,light
 
 Draw this object
 
+
+ 
  
  sub object($$$)
   {my ($d) = check(@_[0..0]); # Drawing 
@@ -162,6 +259,7 @@ Draw this object
    $d;
   }
  
+ 
 
 
 =head3 done 
@@ -169,6 +267,8 @@ Draw this object
 
 Draw the complete object list
 
+
+ 
  
  sub done($)
   {my ($d) = check(@_[0..0]); # Drawing 
@@ -176,9 +276,11 @@ Draw the complete object list
    &new($d);
   }
  
+ 
 
 
 =head2 Methods
+
 
 
 
@@ -187,14 +289,16 @@ Draw the complete object list
 
 Print the complete object list as a triangles in a reusable manner.
 
+
+ 
  
  sub print($)
   {my ($d) = check(@_[0..0]); # Drawing
    my $l = << 'END';
  #!perl -w
- use draw;
- use triangle;
- use vector;
+ use Math::Zap::Draw;
+ use Math::Zap::Triangle;
+ use Math::Zap::Vector;
  
  draw
  END
@@ -209,6 +313,7 @@ Print the complete object list as a triangles in a reusable manner.
    $l .= "->done;\n";
   }
  
+ 
 
 
 =head3 check
@@ -216,6 +321,8 @@ Print the complete object list as a triangles in a reusable manner.
 
 Check its a drawing 
 
+
+ 
  
  sub check(@)
   {if (debug)
@@ -226,6 +333,7 @@ Check its a drawing
    return (@_)
   }
  
+ 
 
 
 =head3 is
@@ -233,6 +341,8 @@ Check its a drawing
 
 Test its a drawing 
 
+
+ 
  
  sub is(@)
   {for my $t(@_)
@@ -240,6 +350,7 @@ Test its a drawing
     }
    'draw';
   }
+ 
  
 
 
@@ -250,6 +361,8 @@ Show fission fragments: the objects to be drawn are triangulated
 where-ever they may intersect.  It is useful to see these sub triangles
 when debugging.  See also L</fission>.
 
+
+ 
  
  sub showFissionFragments($)
   {my ($d) =         check(@_[0..0]); # Drawing 
@@ -258,6 +371,7 @@ when debugging.  See also L</fission>.
    $d;
   }
  
+ 
 
 
 =head3 Fission
@@ -265,6 +379,8 @@ when debugging.  See also L</fission>.
 
 Fission the triangles that intersect.  See L</showFissionFragments>
 
+
+ 
  
  sub fission($)
   {my ($d) = check(@_[0..0]);    # Drawing 
@@ -332,6 +448,7 @@ Fission the triangles that intersect.  See L</showFissionFragments>
    $d->{triangles} = [@p];
   }
  
+ 
 
 
 =head3 new 
@@ -339,6 +456,8 @@ Fission the triangles that intersect.  See L</showFissionFragments>
 
 New drawing - not a constructor
 
+
+ 
  
  sub new($)
   {my ($d) = check(@_[0..0]); # Drawing 
@@ -348,6 +467,7 @@ New drawing - not a constructor
    MainLoop;
   } 
  
+ 
 
 
 =head3 newCanvas
@@ -355,6 +475,8 @@ New drawing - not a constructor
 
 Canvas for drawing
 
+
+ 
  
  sub newCanvas($)
   {my ($d) = check(@_[0..0]); # Drawing 
@@ -371,11 +493,14 @@ Canvas for drawing
  }
  
 
+
 =head3 newControl
 
 
 Controls for drawing
 
+
+ 
  
  sub newControl()
   {my ($d) = check(@_[0..0]);                   # Drawing 
@@ -409,6 +534,7 @@ Controls for drawing
    $a51->grid($a52, $a53, $a54);
   }
  
+ 
 
 
 =head3 Configure
@@ -416,6 +542,8 @@ Controls for drawing
 
 Configuration of canvas has been changed
 
+
+ 
  
  sub configure
   {my ($d)    = check(@_[0..0]);                # Drawing 
@@ -425,6 +553,7 @@ Configuration of canvas has been changed
    &drawing($d, 0);
   } 
  
+ 
 
 
 =head3 drawing
@@ -432,6 +561,8 @@ Configuration of canvas has been changed
 
 New drawing of objects
 
+
+ 
  
  sub drawing($$)
   {my ($d)    = check(@_[0..0]);                # Drawing 
@@ -526,6 +657,7 @@ New drawing of objects
     }
   }
  
+ 
 
 
 =head3 shadows
@@ -533,6 +665,8 @@ New drawing of objects
 
 Shadows from a point of illumination
 
+
+ 
  
  sub shadows($$)
   {my ($d)   = check(@_[0..0]);                           # Drawing 
@@ -592,6 +726,7 @@ Shadows from a point of illumination
     } 
   }
  
+ 
 
 
 =head4 zorder
@@ -617,6 +752,8 @@ point as a measure of which is first.
 fission() guarantees that no two triangles intersect, this algorithm
 should correctly order each pair of triangles.
 
+
+ 
  
  sub zorder($)
   {my ($d) = check(@_[0..0]);       # Drawing
@@ -696,6 +833,7 @@ should correctly order each pair of triangles.
    $d->{triangles} = [@p];
   }
  
+ 
 
 
 =head2 Exports
@@ -703,8 +841,10 @@ should correctly order each pair of triangles.
 
 Export L</draw>
 
+
  
- use exports qw(
+ 
+ use Math::Zap::Exports qw(
    draw ()
   );
  
@@ -714,3 +854,30 @@ Export L</draw>
  
  1;
  
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

@@ -1,9 +1,11 @@
 
+
 =head1 Exports
 
 
 Export routines from a package with names specified by caller of the
 package.
+
 
 
 =head2 Synopsis
@@ -20,14 +22,16 @@ Rather than:
  my $y = Math::Zap::Vector::units();
 
 
+
 =head2 Description
 
 
 Export routines from a package with names specified by caller of the
 package. The routines to be exported are defined in the exporting
-package as:
+package Math::Zap::As:
+$VERSION=1.05;
 
- use exports qw(
+ use Math::Zap::Exports qw(
    vector ($$$)
    units  ()
  );
@@ -51,11 +55,13 @@ and
 have identical effects.
 
 The advantage of this is approach is that it allows the importing
-package to control the names of the exported routines in its name space
+package Math::Zap::To control the names of the exported routines in its name space
+$VERSION=1.05;
 rather than the developer of the exporting package, a facility I have
 not been able to discover in the standard Perl Exporter.pm.
                                  
 PhilipRBrenan@yahoo.com, 2004, Perl licence
+
 
 
 =head2 Method: Exports
@@ -63,9 +69,12 @@ PhilipRBrenan@yahoo.com, 2004, Perl licence
 
 Construct import routine. 
 
+
+ 
  
  ##1
- package exports;
+ package Math::Zap::Exports;
+ $VERSION=1.05;
  
  #______________________________________________________________________
  # Import for exports: export from exporting package.
@@ -135,3 +144,30 @@ Construct import routine.
  #______________________________________________________________________
  
  1;
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

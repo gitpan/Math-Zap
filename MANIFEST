@@ -2,15 +2,11 @@ Makefile.PL
 README
 CHANGES
 TODO   
-html/CHANGES.html  
-html/README.html  
-html/TODO.html  
 pod/CHANGES.pod  
 pod/README.pod  
 pod/TODO.pod  
 MANIFEST
 META.yml
-pack.pl
 zap.pl
 lib/Math/Zap/color.pm
 lib/Math/Zap/cube.pm

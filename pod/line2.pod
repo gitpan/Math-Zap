@@ -1,4 +1,5 @@
 
+
 =head1 Line2 
 
 
@@ -7,26 +8,65 @@ Lines in 2d space
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 
+
 =head2 Synopsis
 
 
-#example t/line2.t
+Example t/line2.t
+
+ #_ Vector _____________________________________________________________
+ # Test 2d lines    
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Line2;
+ use Math::Zap::Vector2;
+ use Test::Simple tests=>12;
+ 
+ my $x = vector2(1,0);
+ my $y = vector2(0,1);
+ my $c = vector2(0,0);
+ 
+ my $a = line2( -$x,  +$x);
+ my $b = line2( -$y,  +$y);
+ my $B = line2(3*$y, 4*$y);
+ 
+ ok($a->intersect($b) == $c);
+ ok($b->intersect($a) == $c);
+ ok($a->intersectWithin($b) == 1);
+ ok($a->intersectWithin($B) == 0);
+ ok($b->intersectWithin($a) == 1);
+ ok($B->intersectWithin($a) == 1);
+ ok($a->parallel($b) == 0);
+ ok($B->parallel($b) == 1);
+ ok(!$b->intersectWithin($B), 'Parallel intersection');
+ ok( line2(-$x,       $x)->crossOver(line2(-$y,       $y)), 'Crosses 1');
+ ok(!line2(-$x,       $x)->crossOver(line2( $y * 0.5, $y)), 'Crosses 2');
+ ok(!line2( $x * 0.5, $x)->crossOver(line2( $y * 0.5, $y)), 'Crosses 3');
+ 
+
+
 
 =head2 Description
 
 
 Manipulate lines in 2D space                                           
 
+
  
- package line2;
- use vector2 check=>'vector2Check';
- use matrix2 new2v=>'matrix2New2v';
+ 
+ package Math::Zap::Line2;
+ $VERSION=1.05;
+ use Math::Zap::Vector2 check=>'vector2Check';
+ use Math::Zap::Matrix2 new2v=>'matrix2New2v';
  use Carp;
  use constant debug => 0; # Debugging level
+ 
  
 
 
 =head2 Constructors
+
 
 
 
@@ -35,6 +75,8 @@ Manipulate lines in 2D space
 
 Create a line from two vectors
 
+
+ 
  
  sub new($$)
   {vector2Check(@_) if debug;
@@ -43,6 +85,7 @@ Create a line from two vectors
    $l; 
   }
  
+ 
 
 
 =head3 line2 
@@ -50,12 +93,16 @@ Create a line from two vectors
 
 Create a line from two vectors
 
+
+ 
  
  sub line2($$) {new($_[0],$_[1])};
+ 
  
 
 
 =head2 Methods
+
 
 
 
@@ -64,6 +111,8 @@ Create a line from two vectors
 
 Get/Set accuracy for comparisons
 
+
+ 
  
  my $accuracy = 1e-10;
  
@@ -72,6 +121,7 @@ Get/Set accuracy for comparisons
    $accuracy = shift();
   }
  
+ 
 
 
 =head3 short 
@@ -79,6 +129,8 @@ Get/Set accuracy for comparisons
 
 Short line?                      
 
+
+ 
  
  sub short($$)
   {my $l = shift;  # Line       
@@ -91,6 +143,7 @@ Short line?
    $n;      
   }
  
+ 
 
 
 =head3 check 
@@ -98,6 +151,8 @@ Short line?
 
 Check its a line
 
+
+ 
  
  sub check(@)
   {unless (debug)
@@ -108,6 +163,7 @@ Check its a line
     @_;
   }
  
+ 
 
 
 =head3 is
@@ -115,6 +171,8 @@ Check its a line
 
 Test its a line
 
+
+ 
  
  sub is(@)
   {for my $l(@_)
@@ -123,6 +181,7 @@ Test its a line
    'line2';
   }
  
+ 
 
 
 =head3 a,b,ab,ba
@@ -130,11 +189,14 @@ Test its a line
 
 Components of line
 
+
+ 
  
  sub a($)  {check(@_) if (debug); $_[0]->{a}}
  sub b($)  {check(@_) if (debug); $_[0]->{b}}
  sub ab($) {check(@_) if (debug); vector2($_[0]->{b}{x}-$_[0]->{a}{x}, $_[0]->{b}{y}-$_[0]->{a}{y})}
  sub ba($) {check(@_) if (debug); $_[0]->a-$_[0]->b}
+ 
  
 
 
@@ -143,11 +205,14 @@ Components of line
 
 Create a line from another line
 
+
+ 
  
  sub clone($)
   {my ($l) = check(@_); # Lines
    bless {a=>$l->a, b=>$l->b}; 
   }
+ 
  
 
 
@@ -156,6 +221,8 @@ Create a line from another line
 
 Print line
 
+
+ 
  
  sub print($)
   {my ($l) = check(@_); # Lines
@@ -164,6 +231,7 @@ Print line
    "line2($A, $B)";
   } 
  
+ 
 
 
 =head3 angle 
@@ -171,11 +239,14 @@ Print line
 
 Angle between two lines
 
+
+ 
  
  sub angle($$)
   {my ($a, $b) = check(@_); # Lines
    $a->a-$a->b < $b->a-$b->b;     
   } 
+ 
  
 
 
@@ -184,6 +255,8 @@ Angle between two lines
 
 Are two lines parallel
 
+
+ 
  
  sub parallel($$)
   {my ($a, $b) = check(@_); # Lines
@@ -193,6 +266,7 @@ Are two lines parallel
    0;
   }
  
+ 
 
 
 =head3 intersect
@@ -200,6 +274,8 @@ Are two lines parallel
 
 Intersection of two lines
 
+
+ 
  
  sub intersect($$)
   {my ($a, $b) = check(@_); # Lines
@@ -210,6 +286,7 @@ Intersection of two lines
    $a->a+$i->x*$a->ab;
   }
  
+ 
 
 
 =head3 intersectWithin
@@ -217,6 +294,8 @@ Intersection of two lines
 
 Intersection of two lines occurs within second line?
 
+
+ 
  
  sub intersectWithin($$)
   {my ($a, $b) = check(@_); # Lines
@@ -227,6 +306,7 @@ Intersection of two lines occurs within second line?
    0 <= $i->y and $i->y <= 1;
   } 
  
+ 
 
 
 =head3 crossOver
@@ -234,6 +314,8 @@ Intersection of two lines occurs within second line?
 
 Do the two line segments cross over each other?
 
+
+ 
  
  sub crossOver($$)
   {my ($a, $b) = check(@_); # Lines
@@ -244,6 +326,7 @@ Do the two line segments cross over each other?
    0 <= $i->x and $i->x <= 1 and 0 <= $i->y and $i->y <= 1;
   } 
  
+ 
 
 
 =head2 Exports
@@ -251,8 +334,10 @@ Do the two line segments cross over each other?
 
 Export L</line2>
 
+
  
- use exports qw(
+ 
+ use Math::Zap::Exports qw(
    line2  ($$)
   );
  
@@ -261,3 +346,30 @@ Export L</line2>
  #______________________________________________________________________
  
  1;
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

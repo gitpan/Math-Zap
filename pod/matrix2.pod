@@ -1,4 +1,5 @@
 
+
 =head1 Matrix2
 
 
@@ -7,10 +8,51 @@
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 
+
 =head2 Synopsis
 
 
-#example t/matrix2.t
+Example t/matrix2.t
+
+ #_ Matrix _____________________________________________________________
+ # Test 2*2 matrices    
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #______________________________________________________________________
+ 
+ use Math::Zap::Matrix2 identity=>i;
+ use Math::Zap::Vector2;
+ use Test::Simple tests=>8;
+ 
+ my ($a, $b, $c, $v);
+ 
+ $a = matrix2
+  (8, 0,
+   0, 8,
+  );
+ 
+ $b = matrix2
+  (4, 2,
+   2, 4,
+  );
+ 
+ $c = matrix2
+  (2, 2,
+   1, 2,
+  );
+ 
+ $v = vector2(1,2);
+ 
+ ok($a/$a           == i());
+ ok($b/$b           == i());
+ ok($c/$c           == i());
+ ok(2/$a*$a/2       == i());
+ ok(($a+$b)/($a+$b) == i());
+ ok(($a-$c)/($a-$c) == i());
+ ok(-$a/-$a         == i());
+ ok(1/$a*($a*$v)    == $v);
+ 
+
+
 
 
 =head2 Description
@@ -18,15 +60,20 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 
 2*2 matrix manipulation    
 
+
  
- package matrix2;
- use vector2 check=>'vector2Check', is=>'vector2Is';
+ 
+ package Math::Zap::Matrix2;
+ $VERSION=1.05;
+ use Math::Zap::Vector2 check=>'vector2Check', is=>'vector2Is';
  use Carp;
  use constant debug => 0; # Debugging level
+ 
  
 
 
 =head2 Constructors
+
 
 
 
@@ -35,6 +82,8 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 
 Create a matrix
 
+
+ 
  
  sub new($$$$)
   {my
@@ -50,6 +99,7 @@ Create a matrix
    $m;
   }
  
+ 
 
 
 =head3 matrix2
@@ -57,10 +107,13 @@ Create a matrix
 
 Create a matrix. Synonym for L</new>.
 
+
+ 
  
  sub matrix2($$$$)
   {new($_[0],$_[1],$_[2],$_[3]);
   }
+ 
  
 
 
@@ -69,6 +122,8 @@ Create a matrix. Synonym for L</new>.
 
 Identity matrix
 
+
+ 
  
  sub identity()
   {bless
@@ -77,6 +132,7 @@ Identity matrix
     }; 
   }
  
+ 
 
 
 =head3 new2v
@@ -84,6 +140,8 @@ Identity matrix
 
 Create a matrix from two vectors
 
+
+ 
  
  sub new2v($$)
   {vector2Check(@_) if debug;
@@ -96,9 +154,11 @@ Create a matrix from two vectors
    $m;
   }
  
+ 
 
 
 =head2 Methods
+
 
 
 
@@ -107,6 +167,8 @@ Create a matrix from two vectors
 
 Check its a matrix
 
+
+ 
  
  sub check(@)
   {if (debug)
@@ -117,6 +179,7 @@ Check its a matrix
    return (@_)
   }
  
+ 
 
 
 =head3 is
@@ -124,6 +187,8 @@ Check its a matrix
 
 Test its a matrix
 
+
+ 
  
  sub is(@)
   {for my $m(@_)
@@ -132,6 +197,7 @@ Test its a matrix
    'matrix2';
   }
  
+ 
 
 
 =head3 accuracy
@@ -139,6 +205,8 @@ Test its a matrix
 
 Get/Set accuracy 
 
+
+ 
  
  my $accuracy = 1e-10;
  
@@ -147,6 +215,7 @@ Get/Set accuracy
    $accuracy = shift();
   }
  
+ 
 
 
 =head3 round
@@ -154,6 +223,8 @@ Get/Set accuracy
 
 Round: round to nearest integer if within accuracy of that integer 
 
+
+ 
  
  sub round($)
   {unless (debug)
@@ -170,6 +241,7 @@ Round: round to nearest integer if within accuracy of that integer
     }
   }
  
+ 
 
 
 =head3 singular
@@ -177,6 +249,8 @@ Round: round to nearest integer if within accuracy of that integer
 
 Singular matrix?
 
+
+ 
  
  sub singular($$)
   {my $m = shift;  # Matrix   
@@ -190,6 +264,7 @@ Singular matrix?
    $n;      
   }
  
+ 
 
 
 =head3 clone
@@ -197,6 +272,8 @@ Singular matrix?
 
 Create a matrix from another matrix
 
+
+ 
  
  sub clone($)
   {my ($m) = check(@_); # Matrix
@@ -206,6 +283,7 @@ Create a matrix from another matrix
     }; 
   }
  
+ 
 
 
 =head3 print
@@ -213,6 +291,8 @@ Create a matrix from another matrix
 
 Print matrix
 
+
+ 
  
  sub print($)
   {my ($m) = check(@_); # Matrix 
@@ -221,6 +301,7 @@ Print matrix
    ')';
   } 
  
+ 
 
 
 =head3 add
@@ -228,6 +309,8 @@ Print matrix
 
 Add matrices
 
+
+ 
  
  sub add($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -239,6 +322,7 @@ Add matrices
    $m;
   }
  
+ 
 
 
 =head3 negate
@@ -246,6 +330,8 @@ Add matrices
 
 Negate matrix
 
+
+ 
  
  sub negate($)
   {my ($a) = check(@_); # Matrices
@@ -257,6 +343,7 @@ Negate matrix
    $m;
   }
  
+ 
 
 
 =head3 subtract
@@ -264,6 +351,8 @@ Negate matrix
 
 Subtract matrices
 
+
+ 
  
  sub subtract($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -275,6 +364,7 @@ Subtract matrices
    $m;
   }
  
+ 
 
 
 =head3 matrixVectorMultiply
@@ -282,6 +372,8 @@ Subtract matrices
 
 Vector = Matrix * Vector     
 
+
+ 
  
  sub matrixVectorMultiply($$)
   {       check(@_[0..0]) if debug; # Matrix
@@ -293,6 +385,7 @@ Vector = Matrix * Vector
     );
   }
  
+ 
 
 
 =head3 matrixScalarMultiply
@@ -300,6 +393,8 @@ Vector = Matrix * Vector
 
 Matrix = Matrix * scalar      
 
+
+ 
  
  sub matrixScalarMultiply($$)
   {my ($a) = check(@_[0..0]); # Matrix
@@ -311,6 +406,7 @@ Matrix = Matrix * scalar
     }; 
   }
  
+ 
 
 
 =head3 matrixMatrixMultiply
@@ -318,6 +414,8 @@ Matrix = Matrix * scalar
 
 Matrix = Matrix * Matrix      
 
+
+ 
  
  sub matrixMatrixMultiply($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -327,6 +425,7 @@ Matrix = Matrix * Matrix
     }; 
   }
  
+ 
 
 
 =head3 matrixScalarDivide
@@ -334,6 +433,8 @@ Matrix = Matrix * Matrix
 
 Matrix=Matrix / non zero scalar
 
+
+ 
  
  sub matrixScalarDivide($$)
   {my ($a) = check(@_[0..0]); # Matrices
@@ -346,6 +447,7 @@ Matrix=Matrix / non zero scalar
     }; 
   }
  
+ 
 
 
 =head3 det
@@ -353,6 +455,8 @@ Matrix=Matrix / non zero scalar
 
 Determinant of matrix.
 
+
+ 
  
  sub det($)
   {my ($a) = check(@_); # Matrices
@@ -361,6 +465,7 @@ Determinant of matrix.
  -$a->{12}*$a->{21}
   }
  
+ 
 
 
 =head3 inverse
@@ -368,6 +473,8 @@ Determinant of matrix.
 
 Inverse of matrix
 
+
+ 
  
  sub inverse($)
   {my ($a) = check(@_); # Matrices
@@ -381,6 +488,7 @@ Inverse of matrix
     }; 
   }
  
+ 
 
 
 =head3 rotate
@@ -388,6 +496,8 @@ Inverse of matrix
 
 Rotation matrix: rotate anti-clockwise by t radians
 
+
+ 
  
  sub rotate($)
   {my ($a) = @_;
@@ -397,6 +507,7 @@ Rotation matrix: rotate anti-clockwise by t radians
     }; 
   }
  
+ 
 
 
 =head3 equals
@@ -404,6 +515,8 @@ Rotation matrix: rotate anti-clockwise by t radians
 
 Equals to within accuracy
 
+
+ 
  
  sub equals($$)
   {my ($a, $b) = check(@_); # Matrices
@@ -414,6 +527,7 @@ Equals to within accuracy
    abs($a->{22}-$b->{22}) < $accuracy;
   }
  
+ 
 
 
 =head2 Operators 
@@ -421,6 +535,8 @@ Equals to within accuracy
 
 Operator overloads
 
+
+ 
  
  use overload
   '+'        => \&add3,      # Add two vectors
@@ -432,6 +548,7 @@ Operator overloads
   '""'       => \&print3,    # Print
   'fallback' => FALSE;
  
+ 
 
 
 =head3 add operator
@@ -439,11 +556,14 @@ Operator overloads
 
 Add operator.
 
+
+ 
  
  sub add3
   {my ($a, $b) = @_;
    $a->add($b);
   }
+ 
  
 
 
@@ -452,6 +572,8 @@ Add operator.
 
 Subtract operator.
 
+
+ 
  
  sub subtract3
   {my ($a, $b, $c) = @_;
@@ -460,6 +582,7 @@ Subtract operator.
    negate($a);
   }
  
+ 
 
 
 =head3 multiply operator
@@ -467,6 +590,8 @@ Subtract operator.
 
 Multiply operator.
 
+
+ 
  
  sub multiply3
   {my ($a, $b) = @_;
@@ -476,6 +601,7 @@ Multiply operator.
    confess "Cannot multiply $a by $b\n";
   }
  
+ 
 
 
 =head3 divide operator
@@ -483,6 +609,8 @@ Multiply operator.
 
 Divide operator.
 
+
+ 
  
  sub divide3
   {my ($a, $b, $c) = @_;
@@ -497,6 +625,7 @@ Divide operator.
     }
   }
  
+ 
 
 
 =head3 equals operator
@@ -504,11 +633,14 @@ Divide operator.
 
 Equals operator.
 
+
+ 
  
  sub equals3
   {my ($a, $b, $c) = @_;
    return $a->equals($b);
   }
+ 
  
 
 
@@ -517,11 +649,14 @@ Equals operator.
 
 Determinant of a matrix
 
+
+ 
  
  sub det3
   {my ($a, $b, $c) = @_;
    $a->det;
   }
+ 
  
 
 
@@ -530,11 +665,14 @@ Determinant of a matrix
 
 Print a vector.
 
+
+ 
  
  sub print3
   {my ($a) = @_;
    return $a->print;
   }
+ 
  
 
 
@@ -543,8 +681,10 @@ Print a vector.
 
 Export L</matrix2>, L</identity>
 
+
  
- use exports qw(
+ 
+ use Math::Zap::Exports qw(
    matrix2  ($$$$)
    new2v    ($$)
    identity ()
@@ -555,3 +695,30 @@ Export L</matrix2>, L</identity>
  #______________________________________________________________________
  
  1;
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

@@ -1,4 +1,5 @@
 
+
 =head1 Color
 
 
@@ -7,10 +8,47 @@ Translate, lighten, darken, invert named colors.
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 
+
 =head2 Synopsis
 
 
-#example t/color.t
+Example t/color.t
+
+ #_ Color _______________________________________________________________
+ # Test colors
+ # philiprbrenan@yahoo.com, 2004, Perl License    
+ #_______________________________________________________________________
+ 
+ use Math::Zap::Color;
+ use Test::Simple tests=>20;
+ 
+ ok(color('dark red')->normal eq '#8b0000');
+ ok(color('dark red')->light  eq '#c58080');
+ ok(color('red')->normal      eq '#ff0000');
+ ok(color('red')->light       eq '#ff8080');
+ ok(color('red')->dark        eq '#7f0000');
+ ok(color('red')->invert      eq '#00ffff');
+ 
+ use Math::Zap::Color color=>'c', invert=>-i;
+ 
+ my $c = c -red;
+ ok("$c"                  eq '#ff0000');
+ ok(i(-red)               eq '#00ffff');
+ ok(c('dark red')->normal eq '#8b0000');
+ ok(c('dark red')->light  eq '#c58080');
+ ok($c->normal            eq '#ff0000');
+ ok($c->light             eq '#ff8080');
+ ok($c->dark              eq '#7f0000');
+ ok($c->invert            eq '#00ffff');
+ ok(c(-green)             eq '#00ff00');
+ ok(c('ReD')              eq '#ff0000');
+ ok(c(-red)               eq '#ff0000');
+ ok(c('#ff0000')          eq '#ff0000');
+ ok(c('ff0000')           eq '#ff0000');
+ ok(c('255,0,0')          eq '#ff0000');
+ 
+
+
 
 =head2 Description
 
@@ -18,14 +56,19 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 Simplifies the management of colors by allowing X11 color names to be
 used; provides methods for manipulating the colors.
 
+
  
- package color;
+ 
+ package Math::Zap::Color;
+ $VERSION=1.05;
  use Carp;
  use constant debug=>0; # Debugging level
+ 
  
 
 
 =head2 Constructors
+
 
 
 
@@ -43,6 +86,8 @@ color values in the range 0..255. Thus:
  'ff0000'
  '255,0,0'
 
+
+ 
  
  sub color($)
   {my $C  = shift;
@@ -78,9 +123,11 @@ color values in the range 0..255. Thus:
    bless \@rgb;
   }
  
+ 
 
 
 =head2 Methods
+
 
 
 
@@ -90,6 +137,8 @@ color values in the range 0..255. Thus:
 Check that an anonymous reference is a reference to a color and confess
 if it is not.
 
+
+ 
  
  sub check(@)
   {if (debug)
@@ -100,6 +149,7 @@ if it is not.
    return (@_)
   }
  
+ 
 
 
 =head3 is
@@ -107,6 +157,8 @@ if it is not.
 
 Same as L</check> but return the result to the caller.   
 
+
+ 
  
  sub is(@)
   {for my $t(@_)
@@ -115,6 +167,7 @@ Same as L</check> but return the result to the caller.
    'color';
   }
  
+ 
 
 
 =head3 normal
@@ -122,12 +175,15 @@ Same as L</check> but return the result to the caller.
 
 Normal value of the color
 
+
+ 
  
  sub normal($)
   {my $c = shift;
       $c = color($c) unless ref($c) eq __PACKAGE__;
    sprintf("#%02x%02x%02x", $c->[0], $c->[1], $c->[2]);
   }
+ 
  
 
 
@@ -136,12 +192,15 @@ Normal value of the color
 
 Lighter shade of the color
 
+
+ 
  
  sub light($)
   {my $c = shift;
       $c = color($c) unless ref($c) eq __PACKAGE__;
    sprintf("#%02x%02x%02x", 128+int($c->[0]/2), 128+int($c->[1]/2), 128+int($c->[2]/2));
   }
+ 
  
 
 
@@ -150,12 +209,15 @@ Lighter shade of the color
 
 Darker shade of the color
 
+
+ 
  
  sub dark($)
   {my $c = shift;
       $c = color($c) unless ref($c) eq __PACKAGE__;
    sprintf("#%02x%02x%02x", int($c->[0]/2), int($c->[1]/2), int($c->[2]/2));
   }
+ 
  
 
 
@@ -164,12 +226,15 @@ Darker shade of the color
 
 Inversion of the color
 
+
+ 
  
  sub invert($)
   {my $c = shift;
       $c = color($c) unless ref($c) eq __PACKAGE__;
    sprintf("#%02x%02x%02x", 255-$c->[0], 255-$c->[1], 255-$c->[2]);
   }
+ 
  
 
 
@@ -178,6 +243,8 @@ Inversion of the color
 
 The names of the colors and their matching RGB values.
 
+
+ 
  
  $colors = <<'END';
  255 250 250  snow
@@ -949,6 +1016,7 @@ The names of the colors and their matching RGB values.
    $color->{$c} = [$r, $g, $b];
   }
  
+ 
 
 
 =head2 Operator Overloads
@@ -956,10 +1024,13 @@ The names of the colors and their matching RGB values.
 
 Stringification returns the normal value of the color
 
+
+ 
  
  use overload
   '""'       => \&normal, 
   'fallback' => FALSE;
+ 
  
 
 
@@ -968,8 +1039,10 @@ Stringification returns the normal value of the color
 
 Export L</color>, L</light>, L</dark>, L</invert>
 
+
  
- use exports qw(
+ 
+ use Math::Zap::Exports qw(
    color  ($)
    light  ($)
    dark   ($)
@@ -982,3 +1055,30 @@ Export L</color>, L</light>, L</dark>, L</invert>
  
  1;
  
+ 
+ 
+
+
+=head2 Credits
+
+
+
+=head3 Author
+
+
+philiprbrenan@yahoo.com
+
+
+=head3 Copyright
+
+
+philiprbrenan@yahoo.com, 2004
+
+
+=head3 License
+
+
+Perl License.
+
+
+

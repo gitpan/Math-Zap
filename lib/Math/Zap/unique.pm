@@ -1,9 +1,13 @@
-=head1 Unique__________________________________________________________
+
+=head1 Unique
+
 Unique id    
 
 PhilipRBrenan@yahoo.com, 2004, Perl license
 
-=head2 Synopsis_________________________________________________________
+
+=head2 Synopsis
+
 Example t/unique.t
 
  #_ Unique _____________________________________________________________
@@ -20,32 +24,50 @@ Example t/unique.t
  
 
 
-=head2 Description______________________________________________________
+
+=head2 Description
+
 Returns a unique id each time it is called.
-=cut____________________________________________________________________
+
+=cut
+
 
 package Math::Zap::Unique;
-$VERSION=1.04;
+$VERSION=1.05;
 use Carp;
 
-=head2 Constructors____________________________________________________
-=head3 unique__________________________________________________________
+
+=head2 Constructors
+
+
+=head3 unique
+
 Return new unique id
-=cut___________________________________________________________________
+
+=cut
+
 
 my $unique = 0;
 
 sub unique() {++$unique}
 
-=head3 new_____________________________________________________________
+
+=head3 new
+
 Return new unique id, synonym for L</unique>
-=cut___________________________________________________________________
+
+=cut
+
 
 sub new {unique()}
 
-=head2 Exports__________________________________________________________
+
+=head2 Exports
+
 Export L</unique>
-=cut____________________________________________________________________
+
+=cut
+
 
 use Math::Zap::Exports qw(
   unique ()
