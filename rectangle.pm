@@ -5,11 +5,11 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-package Math::zap::rectangle;
+package Math::Zap::rectangle;
 $VERSION=1.01;
 
-use Math::zap::vector;
-use Math::zap::matrix;
+use Math::Zap::vector;
+use Math::Zap::matrix;
 use Carp;
 
 #_ Rectangle __________________________________________________________

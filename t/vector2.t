@@ -4,7 +4,7 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-use Math::zap::vector2;
+use Math::Zap::vector2;
 use Test::Simple tests=>7;
 
 my ($x, $y) = vector2::units();

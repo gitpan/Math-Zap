@@ -6,7 +6,7 @@
 # PhilipRBrenan@yahoo.com, 2004.
 #________________________________________________________________________
 
-package Math::zap::zap;
+package Math::Zap::zap;
 $VERSION=1.01;
 
 use Carp;
@@ -65,7 +65,7 @@ sub import
 #________________________________________________________________________
 
   my $s = <<'END';
-package Math::zap::XXXX;
+package Math::Zap::XXXX;
 $VERSION=1.01;
 
 

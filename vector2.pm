@@ -5,7 +5,7 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-package Math::zap::vector2; 
+package Math::Zap::vector2; 
 $VERSION=1.01;
 
 use Math::Trig;

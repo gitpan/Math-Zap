@@ -4,9 +4,9 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-use Math::zap::unique;
-use Math::zap::triangle;
-use Math::zap::vector;     
+use Math::Zap::unique;
+use Math::Zap::triangle;
+use Math::Zap::vector;     
 use Carp;
 use Test::Simple tests=>3;
 

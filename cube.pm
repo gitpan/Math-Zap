@@ -5,12 +5,12 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-package Math::zap::cube;
+package Math::Zap::cube;
 $VERSION=1.01;
 
-use Math::zap::unique;
-use Math::zap::triangle;
-use Math::zap::vector;     
+use Math::Zap::unique;
+use Math::Zap::triangle;
+use Math::Zap::vector;     
 use Carp;
 
 #_ Cube _______________________________________________________________

@@ -4,8 +4,8 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-use Math::zap::matrix;
-use Math::zap::vector;
+use Math::Zap::matrix;
+use Math::Zap::vector;
 use Test::Simple tests=>8;
 
 my ($a, $b, $c, $v);

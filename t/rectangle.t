@@ -4,8 +4,8 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-use Math::zap::rectangle;
-use Math::zap::vector;
+use Math::Zap::rectangle;
+use Math::Zap::vector;
 use Test::Simple tests=>3;
 
 my ($a, $b, $c, $d) =

@@ -5,7 +5,7 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-package Math::zap::unique;
+package Math::Zap::unique;
 $VERSION=1.01;
 
 

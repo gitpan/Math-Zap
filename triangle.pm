@@ -11,14 +11,14 @@
 #     the triangles first point to its other points.   
 #______________________________________________________________________
 
-package Math::zap::triangle;
+package Math::Zap::triangle;
 $VERSION=1.01;
 
-use Math::zap::line2;
-use Math::zap::unique;
-use Math::zap::vector2;
-use Math::zap::vector;
-use Math::zap::matrix;
+use Math::Zap::line2;
+use Math::Zap::unique;
+use Math::Zap::vector2;
+use Math::Zap::vector;
+use Math::Zap::matrix;
 use Carp qw(cluck confess);
 use constant debug => 0; # Debugging level
 

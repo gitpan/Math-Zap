@@ -5,13 +5,13 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-package Math::zap::draw;
+package Math::Zap::draw;
 $VERSION=1.01;
 
-use Math::zap::vector;
-use Math::zap::vector2;
-use Math::zap::triangle2;
-use Math::zap::triangle;
+use Math::Zap::vector;
+use Math::Zap::vector2;
+use Math::Zap::triangle2;
+use Math::Zap::triangle;
 use color qw(color);
 use Tk;
 use Carp;

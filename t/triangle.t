@@ -4,9 +4,9 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-use Math::zap::vector;
-use Math::zap::vector2;
-use Math::zap::triangle;
+use Math::Zap::vector;
+use Math::Zap::vector2;
+use Math::Zap::triangle;
 use Test::Simple tests=>25;
  
 $t = triangle::new

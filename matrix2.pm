@@ -5,10 +5,10 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-package Math::zap::matrix2;
+package Math::Zap::matrix2;
 $VERSION=1.01;
 
-use Math::zap::vector2;
+use Math::Zap::vector2;
 use Carp;
 use constant debug => 0; # Debugging level
 

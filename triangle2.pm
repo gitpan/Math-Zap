@@ -5,13 +5,13 @@
 # PhilipRBrenan@yahoo.com, 2004
 #______________________________________________________________________
 
-package Math::zap::triangle2;
+package Math::Zap::triangle2;
 $VERSION=1.01;
 
-use Math::zap::line2;
-use Math::zap::matrix2;
-use Math::zap::vector2;
-use Math::zap::vector;
+use Math::Zap::line2;
+use Math::Zap::matrix2;
+use Math::Zap::vector2;
+use Math::Zap::vector;
 use Math::Trig;            
 use Carp qw(cluck confess);
 use constant debug => 0; # Debugging level

@@ -5,7 +5,7 @@
 # PhilipRBrenan@yahoo.com, 2004.
 #________________________________________________________________________
 
-package Math::zap::color;
+package Math::Zap::color;
 $VERSION=1.01;
 
 use Carp;
