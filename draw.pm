@@ -6,7 +6,7 @@
 #______________________________________________________________________
 
 package Math::Zap::draw;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Math::Zap::vector;
 use Math::Zap::vector2;
@@ -16,7 +16,7 @@ use color qw(color);
 use Tk;
 use Carp;
 
-use constant debug=>1;
+use constant debug=>0;
 
 #_ Draw _______________________________________________________________
 # Exports 
@@ -118,6 +118,17 @@ sub withControls($)
  }
 
 #_ Draw _______________________________________________________________
+# Show fission fragments
+#______________________________________________________________________
+
+sub showFissionFragments($)
+ {my ($d) =         check(@_[0..0]); # Drawing 
+
+  $d->{showFissionFragments} = 1;
+  $d;
+ }
+
+#_ Draw _______________________________________________________________
 # Draw this object
 #______________________________________________________________________
 
@@ -146,6 +157,32 @@ sub done($)
  }
 
 #_ Draw _______________________________________________________________
+# Print the complete object list as a triangles in a reusable manner.
+#______________________________________________________________________
+
+sub print($)
+ {my ($d) = check(@_[0..0]); # Drawing
+  my $l = << 'END';
+#!perl -w
+use Math::Zap::draw;
+use Math::Zap::color;
+use Math::Zap::triangle;
+use Math::Zap::vector;
+
+draw
+END
+  $l .= '->from    ('. $d->{from}   ->print .")\n";
+  $l .= '->to      ('. $d->{to}     ->print .")\n";
+  $l .= '->horizon ('. $d->{horizon}->print .")\n";
+  $l .= '->light   ('. $d->{light}  ->print .")\n";
+
+  for my $p(@{$d->{triangles}}) # Triangulation
+   {$l .= '  ->object('. $p->{triangle}->print .', \''. $p->{color}. "\')\n";
+   }
+  $l .= "->done;\n";
+ }
+
+#_ Draw _______________________________________________________________
 # Fission the triangles that intersect
 #______________________________________________________________________
 
@@ -155,7 +192,7 @@ sub fission($)
   my $tested;                   # Source triangles already tested
 
 #_ Draw _______________________________________________________________
-# Check each pair if triangles
+# Check each pair of triangles
 #______________________________________________________________________
 
   L: for(;;)
@@ -311,7 +348,7 @@ sub drawing($$)
   
   my $v = (($from-$to) x $hz)->norm;           # Vertical   in background plane
   my $h = ($v  x ($from-$to))->norm;           # Horizontal in background plane
-  my $B = triangle($to, $to+$h, $to+$v);  # Background plane
+  my $B = triangle($to, $to+$h, $to+$v);       # Background plane
   $d->{background} = $B;
 
   &zorder($d) if $zorder;                      # Partially order triangles from view point 
@@ -370,6 +407,7 @@ sub drawing($$)
              $dx+$t->b->x*$s, $dy-$t->b->y*$s,
              $dx+$t->c->x*$s, $dy-$t->c->y*$s,
              );
+    push @a,  -outline=>'black' if defined($d->{showFissionFragments});
 
 #_ Draw _______________________________________________________________
 # Side towards/away from the light
@@ -444,7 +482,7 @@ sub shadows($$)
 # Draw shadow
 #______________________________________________________________________
 
-      push @a, -fill=>color($p->{color})->dark;
+      push @a, -outline=>color($p->{color})->dark, -fill=>color($p->{color})->dark;
       $c->createPolygon(@a);
      }
    } 
@@ -478,10 +516,10 @@ sub zorder($)
 #______________________________________________________________________
 
   my @o;
-  for  (my $ip = 0;    $ip < @P; ++$ip)
-
-  {my $t = $P[$ip]{triangle};
+  for(my $ip = 0; $ip < @P; ++$ip)
+   {my $t = $P[$ip]{triangle};
 #   next unless $t->area > .1;     # Ignore small triangles
+#   next if $t->narrow(0);
 
     $o{$ip} = {};
     push @o, $ip;
@@ -500,8 +538,10 @@ sub zorder($)
       my $i = $back->project($t, $from);
       my $I = $back->project($T, $from);
 
-      my $i2 = triangle2(vector2($i->a->x, $i->a->y), vector2($i->b->x, $i->b->y), vector2($i->c->x, $i->c->y));
-      my $I2 = triangle2(vector2($I->a->x, $I->a->y), vector2($I->b->x, $I->b->y), vector2($I->c->x, $I->c->y));
+      my $i2 = triangle2::newnnc(vector2($i->a->x, $i->a->y), vector2($i->b->x, $i->b->y), vector2($i->c->x, $i->c->y));
+      my $I2 = triangle2::newnnc(vector2($I->a->x, $I->a->y), vector2($I->b->x, $I->b->y), vector2($I->c->x, $I->c->y));
+#      next if $i2->narrow(0);
+#      next if $I2->narrow(0);
 
       my @c = $i2->pointsInCommon($I2);
       next unless scalar(@c);

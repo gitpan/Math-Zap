@@ -6,7 +6,7 @@
 #______________________________________________________________________
 
 package Math::Zap::matrix2;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Math::Zap::vector2;
 use Carp;

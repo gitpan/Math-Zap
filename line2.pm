@@ -6,7 +6,7 @@
 #______________________________________________________________________
 
 package Math::Zap::line2;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Math::Zap::vector2;
 use Math::Zap::matrix2;
@@ -131,7 +131,8 @@ sub angle($$)
 sub parallel($$)
  {my ($a, $b) = check(@_); # Lines
 
-  return 1 if abs(1 - abs($a->ab->norm * $b->ab->norm)) < $accuracy;
+# return 1 if abs(1 - abs($a->ab->norm * $b->ab->norm)) < $accuracy;
+  return 1 if abs(1 - abs($a->ab->norm * $b->ab->norm)) < 1e-3;     
   0;
  }
 

@@ -7,7 +7,7 @@
 #________________________________________________________________________
 
 package Math::Zap::zap;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Carp;
 
@@ -66,7 +66,7 @@ sub import
 
   my $s = <<'END';
 package Math::Zap::XXXX;
-$VERSION=1.01;
+$VERSION=1.02;
 
 
 BEGIN  {delete $XXXX::{NNNN}}

@@ -12,7 +12,7 @@
 #______________________________________________________________________
 
 package Math::Zap::triangle;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Math::Zap::line2;
 use Math::Zap::unique;
@@ -394,7 +394,7 @@ sub divide($$)
 
 # There should be either 0 or 2 intersections.
    {my $n = $i1+$i2+$i3;
-    ($n == 1 or $n == 3) and  warn "There should 0 or 2 intersections, not $n";
+    ($n == 1 or $n == 3) and  debug and warn "There should 0 or 2 intersections, not $n";
     return ($b) unless $n == 2; # No division required
    }
 

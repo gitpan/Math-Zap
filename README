@@ -1,5 +1,5 @@
-Math::zap
-    Zap objects in 3d space
+Math::Zap
+    Zap 3d objects drawn in 2d with lighting and shadowing.
 
     Copyright Philip R Brenan, 2004
 
@@ -8,12 +8,12 @@ Math::zap
 
     #!perl -w
     #______________________________________________________________________
-    # Zap # Perl License. # PhilipRBrenan@yahoo.com, 2004.
+    # Draw cube floating against triangular corner in 3d with shadows.
     #______________________________________________________________________
 
     use draw; use color; use cube; use triangle; use vector;
 
-    #_ Draw _______________________________________________________________
+    #______________________________________________________________________
     # Draw this set of objects.
     #______________________________________________________________________
 
@@ -25,7 +25,9 @@ Math::zap
         ->object(triangle(vector( 0,  0,  0), vector(12,  0,  0), vector( 0,  0, 12)) - vector(2.5,  0,  2.5), 'blue')
         ->object(triangle(vector( 0,  0,  0), vector( 8,  0,  0), vector( 0, -8,  0)),                         'pink')
         ->object(triangle(vector( 0,  0,  0), vector( 0,  0,  8), vector( 0, -8,  0)),                         'orange')
-    ->done; 
+        ->object(cube::unit()*2+vector(3,5,1), 'lightblue')
+
+    ->done;
 
     This program is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
@@ -33,7 +35,7 @@ Math::zap
     This is alpha code. It is written in pure Perl. It uses the standard
     Perl install mechanism.
 
-    Download Math-zap-1.01.tar.gz from CPAN, untar and:
+    Download Math-Zap-1.02.tar.gz from CPAN, untar and:
 
       perl Makefile.PL
       make

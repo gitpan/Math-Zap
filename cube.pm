@@ -6,7 +6,7 @@
 #______________________________________________________________________
 
 package Math::Zap::cube;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Math::Zap::unique;
 use Math::Zap::triangle;
@@ -104,7 +104,7 @@ sub unit()
 sub add($$)
  {my ($c) =         check(@_[0..0]); # Cube       
   my ($v) = vector::check(@_[1..1]); # Vector     
-  new($c->a+$v, $c->x+$v, $c->y+$v, $c->z+$v);                         
+  new($c->a+$v, $c->x, $c->y, $c->z);                         
  }
 
 #_ Cube _______________________________________________________________
@@ -114,7 +114,7 @@ sub add($$)
 sub subtract($$)
  {my ($c) =         check(@_[0..0]); # Cube       
   my ($v) = vector::check(@_[1..1]); # Vector     
-  new($c->a-$v, $c->x-$v, $c->y-$v, $c->z-$v);                         
+  new($c->a-$v, $c->x, $c->y, $c->z);                         
  }
 
 #_ Cube _______________________________________________________________

@@ -6,7 +6,7 @@
 #______________________________________________________________________
 
 package Math::Zap::triangle2;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Math::Zap::line2;
 use Math::Zap::matrix2;
@@ -280,6 +280,10 @@ sub contains($$)
  {my ($t, $T) = @_; 
   check(@_) if debug; # Triangles
 
+$DB::single = 1 if 
+ref($t) eq 'triangle2=HASH(0x20c8038)' and
+ref($T) eq 'triangle2=HASH(0x20c6cc8)';
+
   return 1 if $t->containsPoint($T->a) and
               $t->containsPoint($T->b) and
               $t->containsPoint($T->c);   
@@ -287,7 +291,9 @@ sub contains($$)
  }
 
 #_ Triangle2 __________________________________________________________
-# Find a point in common to two triangles, or undef
+# Find points in common to two triangles.  A point in common is a point
+# on the border of one triangle touched by the border of the other
+# triangle.
 #______________________________________________________________________
 
 sub pointsInCommon($$)
@@ -301,6 +307,10 @@ sub pointsInCommon($$)
   push @p, $t->a if $T->containsPoint($t->a);  
   push @p, $t->b if $T->containsPoint($t->b);  
   push @p, $t->c if $T->containsPoint($t->c);
+
+  push @p, $T->a if $t->containsPoint($T->a);  
+  push @p, $T->b if $t->containsPoint($T->b);  
+  push @p, $T->c if $t->containsPoint($T->c);
   
   push @p, $t->lab->intersect($T->lab) if $t->lab->crossOver($T->lab); 
   push @p, $t->lab->intersect($T->lac) if $t->lab->crossOver($T->lac); 
@@ -327,7 +337,8 @@ sub ring($$)
   check(@_) if debug; # Triangles
 
   my @p = $t->pointsInCommon($T);
-# scalar(@p) > 2 or warn "Odd: only one or two points in common";
+# scalar(@p) == 1 and warn "Only one point in common";
+# scalar(@p) == 2 and warn "Only two points in common";
   return () unless scalar(@p) > 2;
 
 # Find center

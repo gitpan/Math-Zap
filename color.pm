@@ -6,7 +6,7 @@
 #________________________________________________________________________
 
 package Math::Zap::color;
-$VERSION=1.01;
+$VERSION=1.02;
 
 use Carp;
 use constant debug=>0; # Debugging level
