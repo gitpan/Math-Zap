@@ -64,7 +64,7 @@ Example t/matrix2.t
  
  
  package Math::Zap::Matrix2;
- $VERSION=1.05;
+ $VERSION=1.06;
  use Math::Zap::Vector2 check=>'vector2Check', is=>'vector2Is';
  use Carp;
  use constant debug => 0; # Debugging level

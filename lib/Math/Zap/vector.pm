@@ -38,7 +38,7 @@ Manipulate 3 dimensional vectors via operators.
 
 
 package Math::Zap::Vector; 
-$VERSION=1.05;
+$VERSION=1.06;
 use Math::Trig;
 use Carp;
 use constant debug => 0; # Debugging level

@@ -38,7 +38,7 @@ Manipulate 2D vectors
 
 
 package Math::Zap::Vector2; 
-$VERSION=1.05;
+$VERSION=1.06;
 use Math::Trig;
 use Carp;
 use constant debug => 0; # Debugging level

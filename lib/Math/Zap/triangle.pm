@@ -168,7 +168,7 @@ first point to its other points.
 
 
 package Math::Zap::Triangle;
-$VERSION=1.05;
+$VERSION=1.06;
 use Math::Zap::Line2;
 use Math::Zap::Unique;
 use Math::Zap::Vector2 check=>'vector2Check';

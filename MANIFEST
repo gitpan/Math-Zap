@@ -1,10 +1,8 @@
 Makefile.PL
 README
 CHANGES
-TODO   
 pod/CHANGES.pod  
 pod/README.pod  
-pod/TODO.pod  
 MANIFEST
 META.yml
 zap.pl

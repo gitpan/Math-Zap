@@ -50,7 +50,7 @@ Manipulate lines in 2D space
 
 
 package Math::Zap::Line2;
-$VERSION=1.05;
+$VERSION=1.06;
 use Math::Zap::Vector2 check=>'vector2Check';
 use Math::Zap::Matrix2 new2v=>'matrix2New2v';
 use Carp;

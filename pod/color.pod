@@ -60,7 +60,7 @@ used; provides methods for manipulating the colors.
  
  
  package Math::Zap::Color;
- $VERSION=1.05;
+ $VERSION=1.06;
  use Carp;
  use constant debug=>0; # Debugging level
  

@@ -34,7 +34,7 @@ Define and manipulate a cube in 3 dimensions
 
 
 package Math::Zap::Cube;
-$VERSION=1.05;
+$VERSION=1.06;
 use Math::Zap::Unique;
 use Math::Zap::Triangle;
 use Math::Zap::Vector check=>vectorCheck;     

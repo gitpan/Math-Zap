@@ -44,10 +44,12 @@ See directory B<eg> for further examples.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself. 
 
+=head1 INSTALL
+
 This is alpha code. It is written in pure Perl. It uses the standard
 Perl install mechanism.
 
-Download Math-Zap-1.05.tar.gz from CPAN, untar and:
+Download Math-Zap-1.06.tar.gz from CPAN, untar and:
 
   perl Makefile.PL
   make
@@ -58,8 +60,23 @@ If you are on Windows, use nmake, available at:
 
 http://download.microsoft.com/download/vc15/Patch/1.52/W95/EN-US/Nmake15.exe
 
-Help with this project would be appreciated.
-
 For bug reports or suggestions please send email to:
 philiprbrenan@yahoo.com
+
+=head1 TO DO
+
+Help with this project would be appreciated, expecially in the following
+areas:
+
+Optimization
+
+Cylinders, spheres, torii
+
+Integration of incident power
+
+More object types
+
+Lighting effects
+
+Textures for each plane
 
