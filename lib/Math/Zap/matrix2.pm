@@ -1,41 +1,38 @@
-=head1 Matrix___________________________________________________________
-3*3 matrix manipulation    
+=head1 Matrix2__________________________________________________________
+2*2 matrix manipulation    
 
 PhilipRBrenan@yahoo.com, 2004, Perl License
 
 =head2 Synopsis_________________________________________________________
-Example t/matrix.t
+Example t/matrix2.t
 
  #_ Matrix _____________________________________________________________
- # Test 3*3 matrices    
+ # Test 2*2 matrices    
  # philiprbrenan@yahoo.com, 2004, Perl License    
  #______________________________________________________________________
  
- use Math::Zap::Matrix identity=>i;
- use Math::Zap::Vector;
+ use Math::Zap::Matrix2 identity=>i;
+ use Math::Zap::Vector2;
  use Test::Simple tests=>8;
  
  my ($a, $b, $c, $v);
  
- $a = matrix
-  (8, 0, 0,
-   0, 8, 0,
-   0, 0, 8
+ $a = matrix2
+  (8, 0,
+   0, 8,
   );
  
- $b = matrix
-  (4, 2, 0,
-   2, 4, 2,
-   0, 2, 4
+ $b = matrix2
+  (4, 2,
+   2, 4,
   );
  
- $c = matrix
-  (4, 2, 1,
-   2, 4, 2,
-   1, 2, 4
+ $c = matrix2
+  (2, 2,
+   1, 2,
   );
  
- $v = vector(1,2,3);
+ $v = vector2(1,2);
  
  ok($a/$a           == i());
  ok($b/$b           == i());
@@ -49,71 +46,65 @@ Example t/matrix.t
 
 
 =head2 Description______________________________________________________
-3*3 matrix manipulation    
+2*2 matrix manipulation    
 =cut____________________________________________________________________
 
-package Math::Zap::Matrix;
-$VERSION=1.03;
-use Math::Zap::Vector check=>'vectorCheck', is=>'vectorIs';
+package Math::Zap::Matrix2;
+$VERSION=1.04;
+use Math::Zap::Vector2 check=>'vector2Check', is=>'vector2Is';
 use Carp;
 use constant debug => 0; # Debugging level
 
 =head2 Constructors_____________________________________________________
-=head3 new______________________________________________________________
+=head3 new _____________________________________________________________
 Create a matrix
 =cut____________________________________________________________________
 
-sub new($$$$$$$$$)
+sub new($$$$)
  {my
-  ($a11, $a12, $a13,
-   $a21, $a22, $a23,
-   $a31, $a32, $a33,
+  ($a11, $a12,
+   $a21, $a22,
   ) = @_;
 
   my $m = round(bless(
-   {11=>$a11, 12=>$a12, 13=>$a13,
-    21=>$a21, 22=>$a22, 23=>$a23,
-    31=>$a31, 32=>$a32, 33=>$a33,
-   })); 
-  singular($m, 1);
-  $m;
- }
-
-=head3 matrix___________________________________________________________
-Create a matrix = synonym for L</new>
-=cut____________________________________________________________________
-
-sub matrix($$$$$$$$$)
- {new($_[0],$_[1],$_[2],$_[3],$_[4],$_[5],$_[6],$_[7],$_[8]);
- }
-
-=head3 new3v____________________________________________________________
-Create a matrix from three vectors
-=cut____________________________________________________________________
-
-sub new3v($$$)
- {my ($a, $b, $c) = @_; 
-  vectorCheck(@_) if debug; 
-  my $m = round(bless(
-   {11=>$a->x, 12=>$b->x, 13=>$c->x,
-    21=>$a->y, 22=>$b->y, 23=>$c->y,
-    31=>$a->z, 32=>$b->z, 33=>$c->z,
+   {11=>$a11, 12=>$a12,
+    21=>$a21, 22=>$a22,
    }));
   singular($m, 1);
   $m;
  }
 
-=head3 new3vnc__________________________________________________________
-Create a matrix from three vectors without checking
+=head3 matrix2__________________________________________________________
+Create a matrix. Synonym for L</new>.
 =cut____________________________________________________________________
 
-sub new3vnc($$$)
- {my ($a, $b, $c) = vectorCheck(@_); 
+sub matrix2($$$$)
+ {new($_[0],$_[1],$_[2],$_[3]);
+ }
+
+=head3 identity_________________________________________________________
+Identity matrix
+=cut____________________________________________________________________
+
+sub identity()
+ {bless
+   {11=>1, 21=>0,                              
+    12=>0, 22=>1,                              
+   }; 
+ }
+
+=head3 new2v____________________________________________________________
+Create a matrix from two vectors
+=cut____________________________________________________________________
+
+sub new2v($$)
+ {vector2Check(@_) if debug;
+  my ($a, $b, $c) =  @_;
   my $m = round(bless(
-   {11=>$a->x, 12=>$b->x, 13=>$c->x,
-    21=>$a->y, 22=>$b->y, 23=>$c->y,
-    31=>$a->z, 32=>$b->z, 33=>$c->z,
+   {11=>$a->{x}, 12=>$b->{x},
+    21=>$a->{y}, 22=>$b->{y},
    }));
+  singular($m, 1);
   $m;
  }
 
@@ -125,9 +116,9 @@ Check its a matrix
 sub check(@)
  {if (debug)
    {for my $m(@_)
-     {confess "$m is not a matrix" unless ref($m) eq __PACKAGE__;
-     }
-    }
+     {confess "$m is not a matrix2" unless ref($m) eq __PACKAGE__;
+     } 
+   }
   return (@_)
  }
 
@@ -139,32 +130,11 @@ sub is(@)
  {for my $m(@_)
    {return 0 unless ref($m) eq __PACKAGE__;
    }
-  'matrix';
- }
-
-=head3 singular_________________________________________________________
-Singular matrix?
-=cut____________________________________________________________________
-
-sub singular($$)
- {my $m = shift;  # Matrix   
-  my $a = 1e-2;   # Accuracy
-  my $A = shift;  # Action 0: return indicator, 1: confess 
-
-  my $n = abs
-   ($m->{11}*$m->{22}*$m->{33}
-   -$m->{11}*$m->{23}*$m->{32}
-   -$m->{12}*$m->{21}*$m->{33}
-   +$m->{12}*$m->{23}*$m->{31}
-   +$m->{13}*$m->{21}*$m->{32}
-   -$m->{13}*$m->{22}*$m->{31})
-   < $a;
-  confess "Singular matrix2" if $n and $A;
-  $n;      
+  'matrix2';
  }
 
 =head3 accuracy_________________________________________________________
-Get/Set accuracy for comparisons
+Get/Set accuracy 
 =cut____________________________________________________________________
 
 my $accuracy = 1e-10;
@@ -179,15 +149,34 @@ Round: round to nearest integer if within accuracy of that integer
 =cut____________________________________________________________________
 
 sub round($)
- {my ($a) = @_;
-  check(@_) if debug; 
-  my ($n, $N);
-  for my $k(qw(11 12 13  21 22 23 31 32 33))
-   {$n = $a->{$k};
-    $N = int($n);
-    $a->{$k} = $N if abs($n-$N) < $accuracy;
+ {unless (debug)
+   {return $_[0];
    }
-  $a;
+  else
+   {my ($a) = @_;
+    for my $k(keys(%$a))
+     {my $n = $a->{$k};
+      my $N = int($n);
+      $a->{$k} = $N if abs($n-$N) < $accuracy;
+     }
+    return $a;
+   }
+ }
+
+=head3 singular_________________________________________________________
+Singular matrix?
+=cut____________________________________________________________________
+
+sub singular($$)
+ {my $m = shift;  # Matrix   
+  my $a = 1e-2;   # Accuracy
+  my $A = shift;  # Action 0: return indicator, 1: confess 
+  my $n = abs
+    ($m->{11} * $m->{22} -                                        
+     $m->{12} * $m->{21})
+    < $a;
+  confess "Singular matrix2" if $n and $A;
+  $n;      
  }
 
 =head3 clone____________________________________________________________
@@ -197,9 +186,8 @@ Create a matrix from another matrix
 sub clone($)
  {my ($m) = check(@_); # Matrix
   round bless
-   {11=>$m->{11}, 12=>$m->{12}, 13=>$m->{13},
-    21=>$m->{21}, 22=>$m->{22}, 23=>$m->{23},
-    31=>$m->{31}, 32=>$m->{32}, 33=>$m->{33},
+   {11=>$m->{11}, 12=>$m->{12},
+    21=>$m->{21}, 22=>$m->{22},
    }; 
  }
 
@@ -209,9 +197,8 @@ Print matrix
 
 sub print($)
  {my ($m) = check(@_); # Matrix 
-  'matrix('.$m->{11}.', '.$m->{12}.', '.$m->{13}.
-       ', '.$m->{21}.', '.$m->{22}.', '.$m->{23}.
-       ', '.$m->{31}.', '.$m->{32}.', '.$m->{33}.
+  'matrix2('.$m->{11}.', '.$m->{12}. 
+        ', '.$m->{21}.', '.$m->{22}.
   ')';
  } 
 
@@ -221,11 +208,12 @@ Add matrices
 
 sub add($$)
  {my ($a, $b) = check(@_); # Matrices
-  round bless
-   {11=>$a->{11}+$b->{11}, 12=>$a->{12}+$b->{12}, 13=>$a->{13}+$b->{13},
-    21=>$a->{21}+$b->{21}, 22=>$a->{22}+$b->{22}, 23=>$a->{23}+$b->{23},
-    31=>$a->{31}+$b->{31}, 32=>$a->{32}+$b->{32}, 33=>$a->{33}+$b->{33},
+  my $m = round bless
+   {11=>$a->{11}+$b->{11}, 12=>$a->{12}+$b->{12}, 
+    21=>$a->{21}+$b->{21}, 22=>$a->{22}+$b->{22}, 
    }; 
+  singular($m, 1);
+  $m;
  }
 
 =head3 negate___________________________________________________________
@@ -234,11 +222,12 @@ Negate matrix
 
 sub negate($)
  {my ($a) = check(@_); # Matrices
-  round bless
-   {11=>-$a->{11}, 12=>-$a->{12}, 13=>-$a->{13},
-    21=>-$a->{21}, 22=>-$a->{22}, 23=>-$a->{23},
-    31=>-$a->{31}, 32=>-$a->{32}, 33=>-$a->{33},
+  my $m = round bless
+   {11=>-$a->{11}, 12=>-$a->{12},
+    21=>-$a->{21}, 22=>-$a->{22},
    }; 
+  singular($m, 1);
+  $m;
  }
 
 =head3 subtract_________________________________________________________
@@ -247,11 +236,12 @@ Subtract matrices
 
 sub subtract($$)
  {my ($a, $b) = check(@_); # Matrices
-  round bless
-   {11=>$a->{11}-$b->{11}, 12=>$a->{12}-$b->{12}, 13=>$a->{13}-$b->{13},
-    21=>$a->{21}-$b->{21}, 22=>$a->{22}-$b->{22}, 23=>$a->{23}-$b->{23},
-    31=>$a->{31}-$b->{31}, 32=>$a->{32}-$b->{32}, 33=>$a->{33}-$b->{33},
+  my $m = round bless
+   {11=>$a->{11}-$b->{11}, 12=>$a->{12}-$b->{12},
+    21=>$a->{21}-$b->{21}, 22=>$a->{22}-$b->{22},
    }; 
+  singular($m, 1);
+  $m;
  }
 
 =head3 matrixVectorMultiply_____________________________________________
@@ -259,12 +249,12 @@ Vector = Matrix * Vector
 =cut____________________________________________________________________
 
 sub matrixVectorMultiply($$)
- {my ($a) =       check(@_[0..0]); # Matrix
-  my ($b) = vectorCheck(@_[1..1]); # Vector 
-  vector
-   ($a->{11}*$b->x+$a->{12}*$b->y+$a->{13}*$b->z,
-    $a->{21}*$b->x+$a->{22}*$b->y+$a->{23}*$b->z,
-    $a->{31}*$b->x+$a->{32}*$b->y+$a->{33}*$b->z,
+ {       check(@_[0..0]) if debug; # Matrix
+  vector2Check(@_[1..1]) if debug; # Vector 
+  my ($a, $b) = @_;
+  vector2
+   ($a->{11}*$b->{x}+$a->{12}*$b->{y},
+    $a->{21}*$b->{x}+$a->{22}*$b->{y},
    );
  }
 
@@ -274,12 +264,11 @@ Matrix = Matrix * scalar
 
 sub matrixScalarMultiply($$)
  {my ($a) = check(@_[0..0]); # Matrix
-  my ($b) =       @_[1..1];  # Scalar
+  my ($b) = @_[1..1];        # Scalar
   confess "$b is not a scalar" if ref($b);   
   round bless
-   {11=>$a->{11}*$b, 12=>$a->{12}*$b, 13=>$a->{13}*$b,
-    21=>$a->{21}*$b, 22=>$a->{22}*$b, 23=>$a->{23}*$b,
-    31=>$a->{31}*$b, 32=>$a->{32}*$b, 33=>$a->{33}*$b,
+   {11=>$a->{11}*$b, 12=>$a->{12}*$b,
+    21=>$a->{21}*$b, 22=>$a->{22}*$b,
    }; 
  }
 
@@ -290,9 +279,8 @@ Matrix = Matrix * Matrix
 sub matrixMatrixMultiply($$)
  {my ($a, $b) = check(@_); # Matrices
   round bless
-   {11=>$a->{11}*$b->{11}+$a->{12}*$b->{21}+$a->{13}*$b->{31}, 12=>$a->{11}*$b->{12}+$a->{12}*$b->{22}+$a->{13}*$b->{32}, 13=>$a->{11}*$b->{13}+$a->{12}*$b->{23}+$a->{13}*$b->{33},
-    21=>$a->{21}*$b->{11}+$a->{22}*$b->{21}+$a->{23}*$b->{31}, 22=>$a->{21}*$b->{12}+$a->{22}*$b->{22}+$a->{23}*$b->{32}, 23=>$a->{21}*$b->{13}+$a->{22}*$b->{23}+$a->{23}*$b->{33},
-    31=>$a->{31}*$b->{11}+$a->{32}*$b->{21}+$a->{33}*$b->{31}, 32=>$a->{31}*$b->{12}+$a->{32}*$b->{22}+$a->{33}*$b->{32}, 33=>$a->{31}*$b->{13}+$a->{32}*$b->{23}+$a->{33}*$b->{33},
+   {11=>$a->{11}*$b->{11}+$a->{12}*$b->{21}, 12=>$a->{11}*$b->{12}+$a->{12}*$b->{22},
+    21=>$a->{21}*$b->{11}+$a->{22}*$b->{21}, 22=>$a->{21}*$b->{12}+$a->{22}*$b->{22},
    }; 
  }
 
@@ -306,9 +294,8 @@ sub matrixScalarDivide($$)
   confess "$b is not a scalar" if ref($b);   
   confess "$b is zero"         if $b == 0;   
   round bless
-   {11=>$a->{11}/$b, 12=>$a->{12}/$b, 13=>$a->{13}/$b,
-    21=>$a->{21}/$b, 22=>$a->{22}/$b, 23=>$a->{23}/$b,
-    31=>$a->{31}/$b, 32=>$a->{32}/$b, 33=>$a->{33}/$b,
+   {11=>$a->{11}/$b, 12=>$a->{12}/$b,
+    21=>$a->{21}/$b, 22=>$a->{22}/$b,
    }; 
  }
 
@@ -317,24 +304,10 @@ Determinant of matrix.
 =cut____________________________________________________________________
 
 sub det($)
- {my ($a) = @_;       # Matrix
-  check(@_) if debug; # Check
+ {my ($a) = check(@_); # Matrices
 
-+$a->{11}*$a->{22}*$a->{33}
--$a->{11}*$a->{23}*$a->{32}
--$a->{12}*$a->{21}*$a->{33}
-+$a->{12}*$a->{23}*$a->{31}
-+$a->{13}*$a->{21}*$a->{32}
--$a->{13}*$a->{22}*$a->{31};
- }
-
-=head3 d2_______________________________________________________________
-Determinant of 2*2 matrix
-=cut____________________________________________________________________
-
-sub d2($$$$)
- {my ($a, $b, $c, $d) = @_;    
-  $a*$d-$b*$c;
++$a->{11}*$a->{22}
+-$a->{12}*$a->{21}
  }
 
 =head3 inverse__________________________________________________________
@@ -342,39 +315,26 @@ Inverse of matrix
 =cut____________________________________________________________________
 
 sub inverse($)
- {my ($a) = @_;       # Matrix
-  check(@_) if debug; # Check
-  return $a->{inverse} if defined($a->{inverse});
+ {my ($a) = check(@_); # Matrices
 
   my $d = det($a);
   return undef if $d == 0;
 
-  my $i = round bless
-   {11=>d2($a->{22}, $a->{32}, $a->{23}, $a->{33})/$d,
-    21=>d2($a->{23}, $a->{33}, $a->{21}, $a->{31})/$d,
-    31=>d2($a->{21}, $a->{31}, $a->{22}, $a->{32})/$d,
-
-    12=>d2($a->{13}, $a->{33}, $a->{12}, $a->{32})/$d,
-    22=>d2($a->{11}, $a->{31}, $a->{13}, $a->{33})/$d,
-    32=>d2($a->{12}, $a->{32}, $a->{11}, $a->{31})/$d,
-
-    13=>d2($a->{12}, $a->{22}, $a->{13}, $a->{23})/$d,
-    23=>d2($a->{13}, $a->{23}, $a->{11}, $a->{21})/$d,
-    33=>d2($a->{11}, $a->{21}, $a->{12}, $a->{22})/$d,
-   };
-  $a->{inverse} = $i;
-  $i;
+  round bless
+   {11=> $a->{22}/$d, 21=>-$a->{21}/$d,
+    12=>-$a->{12}/$d, 22=> $a->{11}/$d,
+   }; 
  }
 
-=head3 identity_________________________________________________________
-Identity matrix
+=head3 rotate___________________________________________________________
+Rotation matrix: rotate anti-clockwise by t radians
 =cut____________________________________________________________________
 
-sub identity()
- {bless
-   {11=>1, 21=>0, 31=>0,                              
-    12=>0, 22=>1, 32=>0,                              
-    13=>0, 23=>0, 33=>1,
+sub rotate($)
+ {my ($a) = @_;
+   bless
+   {11=>cos($t), 21=>-sin($t),                              
+    12=>sin($t), 22=> cos($t),                              
    }; 
  }
 
@@ -386,18 +346,12 @@ sub equals($$)
  {my ($a, $b) = check(@_); # Matrices
   abs($a->{11}-$b->{11}) < $accuracy and
   abs($a->{12}-$b->{12}) < $accuracy and
-  abs($a->{13}-$b->{13}) < $accuracy and
 
   abs($a->{21}-$b->{21}) < $accuracy and
-  abs($a->{22}-$b->{22}) < $accuracy and
-  abs($a->{23}-$b->{23}) < $accuracy and
-
-  abs($a->{31}-$b->{31}) < $accuracy and
-  abs($a->{32}-$b->{32}) < $accuracy and
-  abs($a->{33}-$b->{33}) < $accuracy;
+  abs($a->{22}-$b->{22}) < $accuracy;
  }
 
-=head3 Operator_________________________________________________________
+=head2 Operators _______________________________________________________
 Operator overloads
 =cut____________________________________________________________________
 
@@ -411,7 +365,7 @@ use overload
  '""'       => \&print3,    # Print
  'fallback' => FALSE;
 
-=head3 Add operator_____________________________________________________
+=head3 add operator_____________________________________________________
 Add operator.
 =cut____________________________________________________________________
 
@@ -421,7 +375,7 @@ sub add3
  }
 
 =head3 subtract operator________________________________________________
-Negate operator.
+Subtract operator.
 =cut____________________________________________________________________
 
 sub subtract3
@@ -438,7 +392,7 @@ Multiply operator.
 sub multiply3
  {my ($a, $b) = @_;
   return $a->matrixScalarMultiply($b) unless ref($b);
-  return $a->matrixVectorMultiply($b) if vectorIs($b);
+  return $a->matrixVectorMultiply($b) if vector2Is($b);
   return $a->matrixMatrixMultiply($b) if is($b);
   confess "Cannot multiply $a by $b\n";
  }
@@ -454,7 +408,7 @@ sub divide3
     return $a->inverse->matrixScalarMultiply($b) if     $c;
    }
   else 
-   {return $a->inverse->matrixVectorMultiply($b) if vectorIs($b);
+   {return $a->inverse->matrixVectorMultiply($b) if vector2Is($b);
     return $a->matrixMatrixMultiply($b->inverse) if is($b);
     confess "Cannot multiply $a by $b\n";
    }
@@ -469,7 +423,7 @@ sub equals3
   return $a->equals($b);
  }
 
-=head3 det operator_____________________________________________________
+=head3 determinant operator_____________________________________________
 Determinant of a matrix
 =cut____________________________________________________________________
 
@@ -478,7 +432,7 @@ sub det3
   $a->det;
  }
 
-=head3 print vector_____________________________________________________
+=head3 print operator___________________________________________________
 Print a vector.
 =cut____________________________________________________________________
 
@@ -488,17 +442,16 @@ sub print3
  }
 
 =head2 Exports__________________________________________________________
-Export L</matrix>, L</identity>, L</new3v>, L</new3vnc>
+Export L</matrix2>, L</identity>
 =cut____________________________________________________________________
 
 use Math::Zap::Exports qw(
-  matrix   ($$$$$$$$$)
+  matrix2  ($$$$)
+  new2v    ($$)
   identity ()
-  new3v    ($$$)
-  new3vnc  ($$$)
  );
 
-#_ Matrix _____________________________________________________________
+#_ Matrix2 ____________________________________________________________
 # Package loaded successfully
 #______________________________________________________________________
 

@@ -10,27 +10,7 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 =head2 Synopsis
 
 
-Example t/vector2.t
-
- #_ Vector _____________________________________________________________
- # Test 2d vectors    
- # philiprbrenan@yahoo.com, 2004, Perl License    
- #______________________________________________________________________
- 
- use Math::Zap::Vector2 vector2=>v, units=>u;
- use Test::Simple tests=>7;
- 
- my ($x, $y) = u();
- 
- ok(!$x                    == 1);
- ok(2*$x+3*$y              == v( 2,  3));
- ok(-$x-$y                 == v(-1, -1));
- ok((2*$x+3*$y) + (-$x-$y) == v( 1,  2));
- ok((2*$x+3*$y) * (-$x-$y) == -5);  
- ok($x*2                   == v( 2,  0));
- ok($y/2                   == v( 0,  0.5));
- 
-
+#example t/vector2.t
 
 =head2 Description
 
@@ -38,8 +18,7 @@ Example t/vector2.t
 Manipulate 2D vectors    
 
  
- package Math::Zap::Vector2; 
- $VERSION=1.03;
+ package vector2; 
  use Math::Trig;
  use Carp;
  use constant debug => 0; # Debugging level
@@ -462,7 +441,7 @@ Print a vector.
 Export L</vector2>, L</units>, L</check>, L</is>
 
  
- use Math::Zap::Exports qw(                               
+ use exports qw(                               
    vector2 ($$)  
    units   ()
    check   (@)
@@ -474,34 +453,3 @@ Export L</vector2>, L</units>, L</check>, L</is>
  #______________________________________________________________________
  
  1;
- 
- 
-
-
-=head2 Credits
-
-
-
-
-=head3 Author
-
-
-
-philiprbrenan@yahoo.com
-
-
-=head3 Copyright
-
-
-
-philiprbrenan@yahoo.com, 2004
-
-
-=head3 License
-
-
-
-Perl License.
-
-
-

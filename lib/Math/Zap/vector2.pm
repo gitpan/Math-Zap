@@ -30,7 +30,7 @@ Manipulate 2D vectors
 =cut____________________________________________________________________
 
 package Math::Zap::Vector2; 
-$VERSION=1.03;
+$VERSION=1.04;
 use Math::Trig;
 use Carp;
 use constant debug => 0; # Debugging level

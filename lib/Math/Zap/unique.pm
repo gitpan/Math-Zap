@@ -25,7 +25,7 @@ Returns a unique id each time it is called.
 =cut____________________________________________________________________
 
 package Math::Zap::Unique;
-$VERSION=1.03;
+$VERSION=1.04;
 use Carp;
 
 =head2 Constructors____________________________________________________

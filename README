@@ -45,7 +45,7 @@ README: Math::Zap
     This is alpha code. It is written in pure Perl. It uses the standard
     Perl install mechanism.
 
-    Download Math-Zap-1.03.tar.gz from CPAN, untar and:
+    Download Math-Zap-1.04.tar.gz from CPAN, untar and:
 
       perl Makefile.PL
       make

@@ -1,4 +1,7 @@
 =head1 Exports__________________________________________________________
+Export routines from a package with names specified by caller of the
+package.
+
 =head2 Synopsis_________________________________________________________
  use Math::Zap::Vector vector=>'v', units=>'u';
 
@@ -7,14 +10,14 @@
 
 Rather than:
 
- my $x = Math::Zap::Vector::vector(1,0,0);
- my $y = Math::Zap::Vector::units();
+ my $x = Math::Zap::Math::Zap::Vector::vector(1,0,0);
+ my $y = Math::Zap::Math::Zap::Vector::units();
 
 =head2 Description______________________________________________________
 Export routines from a package with names specified by caller of the
 package. The routines to be exported are defined in the exporting
 package Math::Zap::As:
-$VERSION=1.03;
+$VERSION=1.04;
 
  use Math::Zap::Exports qw(
    vector ($$$)
@@ -25,8 +28,8 @@ A suitable sub import() is created, allowing the caller to specify:
 
  use Math::Zap::Vector vector=>'v', units=>'u';
 
-The caller may then refer to Math::Zap::Vector::vector() as v() and
-Math::Zap::Vector::units() as u().
+The caller may then refer to Math::Zap::Math::Zap::Vector::vector() as v() and
+Math::Zap::Math::Zap::Vector::units() as u().
 
 The first routine exported is always imported by its export name unless
 a new name is supplied. Thus:
@@ -41,7 +44,7 @@ have identical effects.
 
 The advantage of this is approach is that it allows the importing
 package Math::Zap::To control the names of the exported routines in its name space
-$VERSION=1.03;
+$VERSION=1.04;
 rather than the developer of the exporting package, a facility I have
 not been able to discover in the standard Perl Exporter.pm.
                                  
@@ -53,7 +56,7 @@ Construct import routine.
 
 ##1
 package Math::Zap::Exports;
-$VERSION=1.03;
+$VERSION=1.04;
 
 #______________________________________________________________________
 # Import for exports: export from exporting package.
@@ -68,7 +71,7 @@ sub import(@)
   my $s =                 # Push data into space of exporting package 
 '@'.$p.'::EXPORTS = qw('.$q.');';
   eval $s; die $@ if $@;  # Perform push and check it worked
-# print "AAAA ", join(' ', @zzz::EXPORTS), "\n"; # Print pushed data
+# print "AAAA ", join(' ', @Math::Zap::Zzz::EXPORTS), "\n"; # Print pushed data
 
 #______________________________________________________________________
 # Construct import routine for exporting package.

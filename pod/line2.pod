@@ -10,39 +10,7 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 =head2 Synopsis
 
 
-Example t/line2.t
-
- #_ Vector _____________________________________________________________
- # Test 2d lines    
- # philiprbrenan@yahoo.com, 2004, Perl License    
- #______________________________________________________________________
- 
- use Math::Zap::Line2;
- use Math::Zap::Vector2;
- use Test::Simple tests=>12;
- 
- my $x = vector2(1,0);
- my $y = vector2(0,1);
- my $c = vector2(0,0);
- 
- my $a = line2( -$x,  +$x);
- my $b = line2( -$y,  +$y);
- my $B = line2(3*$y, 4*$y);
- 
- ok($a->intersect($b) == $c);
- ok($b->intersect($a) == $c);
- ok($a->intersectWithin($b) == 1);
- ok($a->intersectWithin($B) == 0);
- ok($b->intersectWithin($a) == 1);
- ok($B->intersectWithin($a) == 1);
- ok($a->parallel($b) == 0);
- ok($B->parallel($b) == 1);
- ok(!$b->intersectWithin($B), 'Parallel intersection');
- ok( line2(-$x,       $x)->crossOver(line2(-$y,       $y)), 'Crosses 1');
- ok(!line2(-$x,       $x)->crossOver(line2( $y * 0.5, $y)), 'Crosses 2');
- ok(!line2( $x * 0.5, $x)->crossOver(line2( $y * 0.5, $y)), 'Crosses 3');
- 
-
+#example t/line2.t
 
 =head2 Description
 
@@ -50,10 +18,9 @@ Example t/line2.t
 Manipulate lines in 2D space                                           
 
  
- package Math::Zap::Line2;
- $VERSION=1.03;
- use Math::Zap::Vector2 check=>'vector2Check';
- use Math::Zap::Matrix2 new2v=>'matrix2New2v';
+ package line2;
+ use vector2 check=>'vector2Check';
+ use matrix2 new2v=>'matrix2New2v';
  use Carp;
  use constant debug => 0; # Debugging level
  
@@ -285,7 +252,7 @@ Do the two line segments cross over each other?
 Export L</line2>
 
  
- use Math::Zap::Exports qw(
+ use exports qw(
    line2  ($$)
   );
  
@@ -294,34 +261,3 @@ Export L</line2>
  #______________________________________________________________________
  
  1;
- 
- 
-
-
-=head2 Credits
-
-
-
-
-=head3 Author
-
-
-
-philiprbrenan@yahoo.com
-
-
-=head3 Copyright
-
-
-
-philiprbrenan@yahoo.com, 2004
-
-
-=head3 License
-
-
-
-Perl License.
-
-
-

@@ -39,7 +39,7 @@ Rectangles in 3d space
 =cut____________________________________________________________________
 
 package Math::Zap::Rectangle;
-$VERSION=1.03;
+$VERSION=1.04;
 use Math::Zap::Vector check=>'vectorCheck';
 use Math::Zap::Matrix new3v=>'matrixNew3v';
 use Carp;

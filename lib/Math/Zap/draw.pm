@@ -81,7 +81,7 @@ human observer in reconstructing the original three dimensional scene.
 
 There are many existing packages to perform this important task: this
 package Math::Zap::Is the only one to make the attempt in Pure Perl. Pending the
-$VERSION=1.03;
+$VERSION=1.04;
 power of Petaflop Parallel Perl (when we will be set free from C), this
 approach is slow. However, it is not so slow as to be completely useless
 for simple scenes as might be encountered inside, say for instance, beam
@@ -93,7 +93,7 @@ both the objects to be drawn and the drawing itself all in Pure Perl.
 =cut____________________________________________________________________
 
 package Math::Zap::Draw;
-$VERSION=1.03;
+$VERSION=1.04;
 use Math::Zap::Vector check=>'vectorCheck';
 use Math::Zap::Vector2;
 use Math::Zap::Triangle2  newnnc=>'triangle2Newnnc';

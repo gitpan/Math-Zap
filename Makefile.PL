@@ -1,9 +1,9 @@
 use ExtUtils::MakeMaker;
 
 WriteMakefile
- (NAME     => "Math::Zap".'::'.Zap,
+ (NAME     => "Math::Zap::zzz",
   DISTNAME => "Math-Zap",
-  VERSION  => "1.03",	
+  VERSION  => "1.04",	
   ABSTRACT => "Draw 3D objects in 2D",
   AUTHOR   => "philiprbrenan@yahoo.com",
   PREREQ_PM=> 

@@ -10,21 +10,7 @@ PhilipRBrenan@yahoo.com, 2004, Perl license
 =head2 Synopsis
 
 
-Example t/unique.t
-
- #_ Unique _____________________________________________________________
- # Unique           
- # philiprbrenan@yahoo.com, 2004, Perl License    
- #______________________________________________________________________
- 
- use Math::Zap::Unique;
- use Test::Simple tests=>3;
-    
- ok(unique() ne unique());
- ok(unique() ne unique());
- ok(unique() ne unique());
- 
-
+#example t/unique.t
 
 
 =head2 Description
@@ -33,8 +19,7 @@ Example t/unique.t
 Returns a unique id each time it is called.
 
  
- package Math::Zap::Unique;
- $VERSION=1.03;
+ package unique;
  use Carp;
  
 
@@ -71,7 +56,7 @@ Return new unique id, synonym for L</unique>
 Export L</unique>
 
  
- use Math::Zap::Exports qw(
+ use exports qw(
    unique ()
   );
  
@@ -80,34 +65,3 @@ Export L</unique>
  #______________________________________________________________________
  
  1;
- 
- 
-
-
-=head2 Credits
-
-
-
-
-=head3 Author
-
-
-
-philiprbrenan@yahoo.com
-
-
-=head3 Copyright
-
-
-
-philiprbrenan@yahoo.com, 2004
-
-
-=head3 License
-
-
-
-Perl License.
-
-
-

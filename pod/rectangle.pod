@@ -10,35 +10,7 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 =head2 Synopsis
 
 
-Example t/rectangle.t
-
- #_ Rectangle __________________________________________________________
- # Test 3d rectangles          
- # philiprbrenan@yahoo.com, 2004, Perl License    
- #______________________________________________________________________
- 
- use Math::Zap::Rectangle;
- use Math::Zap::Vector;
- use Test::Simple tests=>3;
- 
- my ($a, $b, $c, $d) =
-  (vector(0,    0, +1),
-   vector(0, -1.9, -1),
-   vector(0, -2.0, -1),
-   vector(0, -2.1, -1)
-  );
- 
- my $r = rectangle
-  (vector(-1,-1, 0),
-   vector( 2, 0, 0),
-   vector( 0, 2, 0)
-  );
- 
- ok($r->intersects($a, $b) == 1);
- ok($r->intersects($a, $c) == 1);
- ok($r->intersects($a, $d) == 0);
- 
-
+#example t/rectangle.t
 
 
 =head2 Description
@@ -47,10 +19,9 @@ Example t/rectangle.t
 Rectangles in 3d space    
 
  
- package Math::Zap::Rectangle;
- $VERSION=1.03;
- use Math::Zap::Vector check=>'vectorCheck';
- use Math::Zap::Matrix new3v=>'matrixNew3v';
+ package rectangle;
+ use vector check=>'vectorCheck';
+ use matrix new3v=>'matrixNew3v';
  use Carp;
  
 
@@ -308,7 +279,7 @@ Note:  no checks (yet) for line parallel to plane.
 Export L</rectangle>                                      
 
  
- use Math::Zap::Exports qw(
+ use exports qw(
    rectangle ($$$)    
   );
  
@@ -317,34 +288,3 @@ Export L</rectangle>
  #______________________________________________________________________
  
  1;
- 
- 
-
-
-=head2 Credits
-
-
-
-
-=head3 Author
-
-
-
-philiprbrenan@yahoo.com
-
-
-=head3 Copyright
-
-
-
-philiprbrenan@yahoo.com, 2004
-
-
-=head3 License
-
-
-
-Perl License.
-
-
-

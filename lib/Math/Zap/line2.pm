@@ -42,7 +42,7 @@ Manipulate lines in 2D space
 =cut____________________________________________________________________
 
 package Math::Zap::Line2;
-$VERSION=1.03;
+$VERSION=1.04;
 use Math::Zap::Vector2 check=>'vector2Check';
 use Math::Zap::Matrix2 new2v=>'matrix2New2v';
 use Carp;

@@ -46,7 +46,7 @@ used; provides methods for manipulating the colors.
 =cut____________________________________________________________________
 
 package Math::Zap::Color;
-$VERSION=1.03;
+$VERSION=1.04;
 use Carp;
 use constant debug=>0; # Debugging level
 

@@ -10,49 +10,7 @@ PhilipRBrenan@yahoo.com, 2004, Perl License
 =head2 Synopsis
 
 
-Example t/matrix.t
-
- #_ Matrix _____________________________________________________________
- # Test 3*3 matrices    
- # philiprbrenan@yahoo.com, 2004, Perl License    
- #______________________________________________________________________
- 
- use Math::Zap::Matrix identity=>i;
- use Math::Zap::Vector;
- use Test::Simple tests=>8;
- 
- my ($a, $b, $c, $v);
- 
- $a = matrix
-  (8, 0, 0,
-   0, 8, 0,
-   0, 0, 8
-  );
- 
- $b = matrix
-  (4, 2, 0,
-   2, 4, 2,
-   0, 2, 4
-  );
- 
- $c = matrix
-  (4, 2, 1,
-   2, 4, 2,
-   1, 2, 4
-  );
- 
- $v = vector(1,2,3);
- 
- ok($a/$a           == i());
- ok($b/$b           == i());
- ok($c/$c           == i());
- ok(2/$a*$a/2       == i());
- ok(($a+$b)/($a+$b) == i());
- ok(($a-$c)/($a-$c) == i());
- ok(-$a/-$a         == i());
- ok(1/$a*($a*$v)    == $v);
- 
-
+#example t/matrix.t
 
 
 =head2 Description
@@ -61,9 +19,8 @@ Example t/matrix.t
 3*3 matrix manipulation    
 
  
- package Math::Zap::Matrix;
- $VERSION=1.03;
- use Math::Zap::Vector check=>'vectorCheck', is=>'vectorIs';
+ package matrix;
+ use vector check=>'vectorCheck', is=>'vectorIs';
  use Carp;
  use constant debug => 0; # Debugging level
  
@@ -634,7 +591,7 @@ Print a vector.
 Export L</matrix>, L</identity>, L</new3v>, L</new3vnc>
 
  
- use Math::Zap::Exports qw(
+ use exports qw(
    matrix   ($$$$$$$$$)
    identity ()
    new3v    ($$$)
@@ -646,34 +603,3 @@ Export L</matrix>, L</identity>, L</new3v>, L</new3vnc>
  #______________________________________________________________________
  
  1;
- 
- 
-
-
-=head2 Credits
-
-
-
-
-=head3 Author
-
-
-
-philiprbrenan@yahoo.com
-
-
-=head3 Copyright
-
-
-
-philiprbrenan@yahoo.com, 2004
-
-
-=head3 License
-
-
-
-Perl License.
-
-
-

@@ -10,27 +10,7 @@ PhilipRBrenan@yahoo.com, 2004, Perl licence
 =head2 Synopsis
 
 
-Example t/vector.t
-
- #_ Vector _____________________________________________________________
- # Test 3d vectors    
- # philiprbrenan@yahoo.com, 2004, Perl License    
- #______________________________________________________________________
- 
- use Math::Zap::Vector vector=>'v', units=>'u';
- use Test::Simple tests=>7;
- 
- my ($x, $y, $z) = u();
- 
- ok(!$x                            == 1);
- ok(2*$x+3*$y+4*$z                 == v( 2,  3,   4));
- ok(-$x-$y-$z                      == v(-1, -1,  -1));
- ok((2*$x+3*$y+4*$z) + (-$x-$y-$z) == v( 1,  2,   3));
- ok((2*$x+3*$y+4*$z) * (-$x-$y-$z) == -9);  
- ok($x*2                           == v( 2,  0,   0));
- ok($y/2                           == v( 0,  0.5, 0));
- 
-
+#example t/vector.t
 
 =head2 Description
 
@@ -38,8 +18,7 @@ Example t/vector.t
 Manipulate 3 dimensional vectors via operators.
 
  
- package Math::Zap::Vector; 
- $VERSION=1.03;
+ package vector; 
  use Math::Trig;
  use Carp;
  use constant debug => 0; # Debugging level
@@ -477,7 +456,7 @@ Print a vector, see L</print>
 Export L</vector>, L</units>, L</check>, L</is>
 
  
- use Math::Zap::Exports qw(
+ use exports qw(
    vector ($$$)
    units  ()
    check  (@)
@@ -489,34 +468,3 @@ Export L</vector>, L</units>, L</check>, L</is>
  #______________________________________________________________________
  
  1;
- 
- 
-
-
-=head2 Credits
-
-
-
-
-=head3 Author
-
-
-
-philiprbrenan@yahoo.com
-
-
-=head3 Copyright
-
-
-
-philiprbrenan@yahoo.com, 2004
-
-
-=head3 License
-
-
-
-Perl License.
-
-
-

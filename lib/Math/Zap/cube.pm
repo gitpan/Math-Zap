@@ -1,4 +1,3 @@
-#!perl -w
 =head1 Cube ___________________________________________________________
 Cubes in 3d space
     
@@ -27,7 +26,7 @@ Define and manipulate a cube in 3 dimensions
 =cut____________________________________________________________________
 
 package Math::Zap::Cube;
-$VERSION=1.03;
+$VERSION=1.04;
 use Math::Zap::Unique;
 use Math::Zap::Triangle;
 use Math::Zap::Vector check=>vectorCheck;     

@@ -83,7 +83,7 @@ Triangles in 2d space
 =cut____________________________________________________________________
 
 package Math::Zap::Triangle2;
-$VERSION=1.03;
+$VERSION=1.04;
 use Math::Zap::Line2;
 use Math::Zap::Matrix2 new2v=>'matrix2New2v';
 use Math::Zap::Vector2 check=>'vector2Check';
